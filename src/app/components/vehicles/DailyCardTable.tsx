@@ -70,7 +70,7 @@ export function DailyCardTable() {
           <TH className="w-[110px] text-center">Sử dụng</TH>
           <TH className="w-[140px] text-center">Số lần sử dụng</TH>
           <TH className="w-[190px]">Đã sử dụng lần cuối</TH>
-          <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[160px] pl-3 text-left">
+          <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[110px] pl-3 text-left">
             Trạng thái
           </TH>
           <TH sticky="right" stickyOffset={0} className="w-[84px] text-center" />

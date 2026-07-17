@@ -19,7 +19,7 @@ export const metrics = [
   },
   {
     label: "Số chỗ ô tô sử dụng",
-    value: "7.056",
+    value: "76",
     change: "Tổng : 200 chỗ",
     icon: TicketCheck,
     tone: "purple",

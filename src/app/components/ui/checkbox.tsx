@@ -27,7 +27,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         data-state={state}
         disabled={disabled}
         className={cn(
-          "peer grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-[4px] border border-[var(--sp-border-strong)] bg-white text-white shadow-none outline-none transition-all",
+          "peer grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-[4px] border border-[var(--badge-disabled-fg)] bg-white text-white shadow-none outline-none transition-all",
           "hover:border-[var(--sp-blue)]/55 focus-visible:border-[var(--sp-blue)] focus-visible:ring-4 focus-visible:ring-primary/10",
           "data-[state=checked]:border-[var(--sp-blue)] data-[state=checked]:bg-[var(--sp-blue)] data-[state=indeterminate]:border-[var(--sp-blue)] data-[state=indeterminate]:bg-[var(--sp-blue)]",
           "disabled:cursor-not-allowed disabled:opacity-50",

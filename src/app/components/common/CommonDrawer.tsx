@@ -26,7 +26,12 @@ export function CommonDrawer({
   if (!open) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[100] flex justify-end bg-[#111827]/20 backdrop-blur-[3px]">
+    <div
+      className="fixed inset-0 z-[100] flex justify-end bg-[#111827]/20 backdrop-blur-[3px]"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
       <section
         className={cn(
           "flex h-full w-full min-w-0 flex-col bg-white shadow-lg lg:w-[66.666vw]",
@@ -58,9 +63,9 @@ export function CommonDrawerHeader({
 }) {
   return (
     <header className="shrink-0 bg-white">
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--sp-border)] px-3 py-3 sm:gap-6 sm:px-3 sm:py-3">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--sp-border)] px-3 py-3 sm:gap-6 sm:px-5 sm:py-3">
         <div className="min-w-0">
-          <h2 className="text-lg font-semibold text-[var(--sp-strong)] sm:text-xl">{title}</h2>
+          <h2 className="text-base font-semibold text-[var(--sp-strong)] sm:text-lg">{title}</h2>
         </div>
         <Button variant="outline" size="icon" className="size-9 shrink-0" onClick={onClose}>
           <X />

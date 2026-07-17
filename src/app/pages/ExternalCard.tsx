@@ -1,8 +1,74 @@
 import { MainTableCard } from "@/app/components/common/MainTableCard";
+import type { FilterPanelField } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { ExternalCardTable } from "@/app/components/vehicles/ExternalCardTable";
-import { FileDown, ListFilter, MoreVertical, Plus } from "lucide-react";
+import { FileDown, MoreVertical, Plus } from "lucide-react";
+
+const externalCardFilterFields: FilterPanelField[] = [
+  {
+    type: "select",
+    name: "cardType",
+    label: "Loại thẻ",
+    options: [
+      { value: "all", label: "Tất cả" },
+      { value: "external", label: "Vé ngoài" },
+    ],
+  },
+  {
+    type: "select",
+    name: "vehicleType",
+    label: "Loại xe",
+    options: [
+      { value: "all", label: "Tất cả" },
+      { value: "car", label: "Ô tô" },
+      { value: "motorbike", label: "Xe máy" },
+      { value: "bike", label: "Xe đạp" },
+    ],
+  },
+  {
+    type: "text",
+    name: "cardCode",
+    label: "Mã thẻ",
+    placeholder: "Mã thẻ",
+  },
+  {
+    type: "text",
+    name: "plate",
+    label: "Biển số",
+    placeholder: "Biển số",
+  },
+  {
+    type: "select",
+    name: "status",
+    label: "Trạng thái",
+    colSpan: 2,
+    options: [
+      { value: "all", label: "Tất cả" },
+      { value: "active", label: "Đang hoạt động" },
+      { value: "locked", label: "Tạm khóa" },
+      { value: "paymentOverdue", label: "Quá hạn TT" },
+    ],
+  },
+  {
+    type: "date-range",
+    name: "enableTime",
+    label: "Thời gian",
+    fromName: "fromDate",
+    toName: "toDate",
+    fromLabel: "Từ ngày",
+    toLabel: "Đến ngày",
+    fromPlaceholder: "Tất cả",
+    toPlaceholder: "Tất cả",
+    colSpan: 3,
+  },
+];
+
+const externalCardDefaultFilters = {
+  cardType: "all",
+  vehicleType: "all",
+  status: "active",
+};
 
 export function ExternalCard() {
   return (
@@ -17,16 +83,15 @@ export function ExternalCard() {
           <MainTableCard
             title="Danh sách vé ngoài"
             searchPlaceholder="Tìm số thẻ, họ tên, số điện thoại, biển số..."
-            actions={
+            filterFields={externalCardFilterFields}
+            defaultFilterValues={externalCardDefaultFilters}
+            actions={({ filterButton }) => (
               <>
                 <Button variant="outline" size="md">
                   <FileDown />
                   Xuất file
                 </Button>
-                <Button variant="outline" size="md">
-                  <ListFilter />
-                  Lọc
-                </Button>
+                {filterButton}
                 <Button size="md">
                   <Plus />
                   Thêm mới
@@ -35,7 +100,7 @@ export function ExternalCard() {
                   <MoreVertical />
                 </Button>
               </>
-            }
+            )}
           >
             <ExternalCardTable />
           </MainTableCard>

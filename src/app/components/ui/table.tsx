@@ -30,7 +30,7 @@ export function DataTable({
   return (
     <div
       className={cn(
-        "flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden rounded-md border border-[var(--sp-border)] bg-white",
+        "flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden rounded-md border border-[var(--sp-border)] bg-[var(--sp-table-bg)]",
         containerClassName,
       )}
     >
@@ -45,7 +45,7 @@ export function DataTable({
         />
       </div>
       {footer ? (
-        <div className="min-w-0 shrink-0 border-t border-[var(--sp-border)] bg-white">
+        <div className="min-w-0 shrink-0 border-t border-[var(--sp-border)] bg-[var(--sp-table-footer)]">
           {footer}
         </div>
       ) : null}
@@ -57,7 +57,7 @@ export function THead({ className, ...props }: React.HTMLAttributes<HTMLTableSec
   return (
     <thead
       className={cn(
-        "sticky top-0 z-30 border-b border-[var(--sp-border-strong)] bg-[#F8FAFD] text-base font-medium text-[var(--sp-muted)]",
+        "sticky top-0 z-30 border-b border-[var(--sp-border-strong)] bg-[var(--sp-table-header)] text-md font-medium text-[var(--sp-muted)]",
         className,
       )}
       {...props}
@@ -78,7 +78,7 @@ export function TR({
     <tr
       data-selected={selected ? "true" : undefined}
       className={cn(
-        "group bg-white transition-colors hover:bg-[#F8FAFD] data-[selected=true]:bg-[#F0F6FF] data-[selected=true]:hover:bg-[#E6F0FF]",
+        "group bg-[var(--sp-table-row)] transition-colors hover:bg-[var(--sp-table-row-hover)] data-[selected=true]:bg-[var(--sp-table-selected)] data-[selected=true]:hover:bg-[var(--sp-table-selected)]",
         className,
       )}
       {...props}
@@ -96,7 +96,7 @@ export function TH({
   return (
     <th
       className={cn(
-        "h-11 whitespace-nowrap bg-[#F8FAFD] px-2 align-middle text-base font-medium leading-none text-[var(--sp-muted)]",
+        "h-11 whitespace-nowrap bg-[var(--sp-table-header)] px-2 align-middle text-md font-medium leading-none text-[var(--sp-muted)]",
         sticky === "left" && "sticky z-40 shadow-[2px_0_8px_rgba(18,32,51,0.06)]",
         sticky === "right" && "sticky z-40 shadow-[-2px_0_8px_rgba(18,32,51,0.06)]",
         className,
@@ -121,7 +121,7 @@ export function TD({
   return (
     <td
       className={cn(
-        "h-14 whitespace-nowrap bg-white px-2 align-middle text-base font-regular text-[var(--sp-text)] transition-colors group-hover:bg-[#F8FAFD] group-data-[selected=true]:bg-[#F0F6FF] group-data-[selected=true]:group-hover:bg-[#E6F0FF]",
+        "h-14 whitespace-nowrap bg-[var(--sp-table-row)] px-2 align-middle text-md font-regular text-[var(--sp-text)] transition-colors group-hover:bg-[var(--sp-table-row-hover)] group-data-[selected=true]:bg-[var(--sp-table-selected)] group-data-[selected=true]:group-hover:bg-[var(--sp-table-selected)]",
         sticky === "left" && "sticky z-20 shadow-[2px_0_8px_rgba(18,32,51,0.04)]",
         sticky === "right" && "sticky z-20 shadow-[-2px_0_8px_rgba(18,32,51,0.04)]",
         className,
@@ -173,7 +173,7 @@ export function TablePagination({
   className?: string;
 }) {
   return (
-    <div className={cn("flex h-[54px] min-w-0 items-center justify-between gap-3 overflow-hidden bg-white px-3 text-base font-medium text-[var(--sp-muted)]", className)}>
+    <div className={cn("flex h-[54px] min-w-0 items-center justify-between gap-3 overflow-hidden bg-[var(--sp-table-footer)] px-3 text-md font-medium text-[var(--sp-muted)]", className)}>
       <span>{summary}</span>
       <div className="sp-table-scroll flex min-w-0 items-center gap-2 overflow-x-auto">
         <Button variant="outline" size="sm" className="size-[30px] p-0">
@@ -186,22 +186,22 @@ export function TablePagination({
             className={
               page === 1
                 ? "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-blue)] bg-[var(--sp-blue)] px-2 font-extrabold text-white"
-                : "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-border)] bg-white px-2 font-medium text-[#6C778A]"
+                : "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-2 font-medium text-[var(--sp-muted)]"
             }
           >
             {page}
           </button>
         ))}
-        <span className="grid h-[30px] min-w-[30px] place-items-center rounded-[5px] border border-[var(--sp-border)] bg-white text-xs font-extrabold text-[#6C778A]">
+        <span className="grid h-[30px] min-w-[30px] place-items-center rounded-[5px] border border-[var(--sp-border)] bg-[var(--sp-surface)] text-xs font-extrabold text-[var(--sp-muted)]">
           ...
         </span>
-        <button className="grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-border)] bg-white px-2 font-medium text-[#6C778A]">
+        <button className="grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-2 font-medium text-[var(--sp-muted)]">
           706
         </button>
         <Button variant="outline" size="sm" className="size-[30px] p-0">
           <ChevronRight />
         </Button>
-        <button className="ml-2 flex h-8 items-center gap-2 rounded-[5px] border border-[var(--sp-border)] bg-white px-2 font-bold text-[#6C778A]">
+        <button className="ml-2 flex h-8 items-center gap-2 rounded-[5px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-2 font-bold text-[var(--sp-muted)]">
           100 / page
           <ChevronDown className="size-4" />
         </button>

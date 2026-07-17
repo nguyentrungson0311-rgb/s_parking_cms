@@ -3,7 +3,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const cardStats = [
   { title: "Thẻ nội bộ", count: "300", value: 300, percent: "98%", color: "#844ee9" },
-  { title: "Thẻ cư dân", count: "986", value: 986, percent: "92%", color: "#14dd25" },
+  { title: "Thẻ cư dân", count: "986", value: 986, percent: "92%", color: "#08ca18" },
   { title: "Vé lượt", count: "5.822", value: 1900, percent: "76%", color: "#f885bb" },
 ];
 
@@ -29,7 +29,7 @@ export function AlertsPanel() {
                 outerRadius={94}
                 paddingAngle={2}
                 cornerRadius={8}
-                stroke="#FFFFFF"
+                stroke="var(--sp-surface)"
                 strokeWidth={7}
                 startAngle={105}
                 endAngle={-255}
@@ -60,7 +60,7 @@ export function AlertsPanel() {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="rounded-full bg-[#F3F5F8] px-2 py-1 text-xs font-bold text-[var(--sp-muted)]">
+                <span className="rounded-full bg-[var(--badge-neutral-bg)] px-2 py-1 text-xs font-bold text-[var(--sp-muted)]">
                   {item.percent}
                 </span>
                 <span className="min-w-[56px] text-right text-base font-semibold leading-none text-[var(--sp-text)]">

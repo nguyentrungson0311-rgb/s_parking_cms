@@ -126,20 +126,8 @@ export function Sidebar({
         </SidebarGroup>
       </nav>
 
-      {showUpgrade ? (
-        <div className="sp-sidebar-upgrade flex w-full shrink-0 flex-col gap-[14px] rounded-[22px] bg-[linear-gradient(117deg,#4D8CFF_12.3%,#0756D9_87.7%)] p-5 text-white shadow-[0_12px_24px_rgba(11,92,230,0.2)]">
-          <div className="text-base font-extrabold">Nâng cấp Thông minh</div>
-          <p className="m-0 text-sm leading-5 text-[#DDEBFF]">
-            Tăng cường cơ sở của bạn với nhận dạng biển số AI.
-          </p>
-          <button className="mt-1 flex h-[46px] items-center justify-center gap-2 rounded-lg bg-white text-base font-extrabold text-[var(--sp-blue)]">
-            Tìm hiểu thêm
-            <ArrowRight className="size-5" />
-          </button>
-        </div>
-      ) : null}
-
-      <div className="h-px w-full shrink-0 bg-[#D6DAE4]" />
+     
+      <div className="h-px w-full shrink-0 bg-[var(--sp-border)]" />
 
       <div
         className={cn(
@@ -151,8 +139,8 @@ export function Sidebar({
           className={cn(
             "sp-sidebar-parent-item",
             collapsed
-              ? "mx-auto grid size-12 flex-none place-items-center rounded-md p-0 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[#F8FAFD] hover:text-[var(--sp-blue)]"
-              : "flex h-12 min-w-0 flex-1 items-center gap-4 rounded-md px-4 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[#F8FAFD] hover:text-[var(--sp-strong)]",
+              ? "mx-auto grid size-12 flex-none place-items-center rounded-md p-0 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-blue)]"
+              : "flex h-12 min-w-0 flex-1 items-center gap-4 rounded-md px-4 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
           )}
           title={collapsed ? "Cài đặt" : undefined}
         >
@@ -161,8 +149,21 @@ export function Sidebar({
         </button>
         <button
           type="button"
+          onClick={() => onNavigate("ui-atoms")}
+          data-active={activePage === "ui-atoms" ? "true" : "false"}
+          className={cn(
+            "grid size-9 shrink-0 place-items-center rounded-md text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-blue)]",
+            activePage === "ui-atoms" && "bg-[var(--accent)] text-[var(--sp-blue)]",
+          )}
+          title="Atom components"
+          aria-label="Atom components"
+        >
+          <i className="bi bi-ui-checks-grid text-[18px] leading-none" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
           onClick={onToggleCollapsed}
-          className="flex size-9 shrink-0 items-center justify-center rounded-md bg-white text-[var(--sp-muted)] transition-all duration-150 ease-out hover:border-[var(--sp-blue)]/40 hover:bg-[var(--accent)] hover:text-[var(--sp-blue)]"
+          className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[var(--sp-sidebar-control)] text-[var(--sp-muted)] transition-all duration-150 ease-out hover:border-[var(--sp-blue)]/40 hover:bg-[var(--accent)] hover:text-[var(--sp-blue)]"
           title={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
           aria-label={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
           aria-pressed={collapsed}
@@ -200,7 +201,7 @@ function SidebarButton({
           ? "bg-[var(--accent)] text-[var(--sp-blue)]"
           : active
             ? "bg-[var(--accent)] text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-blue)]"
-            : "bg-white text-[var(--sp-muted)] hover:bg-[#F8FAFD] hover:text-[var(--sp-strong)]",
+            : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
       )}
     >
       <i className={cn("bi shrink-0 text-[22px] leading-none", iconClass)} aria-hidden="true" />
@@ -254,7 +255,7 @@ function SidebarGroup({
             ? "bg-[var(--accent)] text-[var(--sp-blue)]"
             : active
               ? "bg-[var(--accent)] text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-blue)]"
-              : "bg-white text-[var(--sp-muted)] hover:bg-[#F8FAFD] hover:text-[var(--sp-strong)]",
+              : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
         )}
       >
         <i className={cn("bi shrink-0 text-[22px] leading-none", iconClass)} aria-hidden="true" />
@@ -265,7 +266,7 @@ function SidebarGroup({
           role="button"
           tabIndex={0}
           className={cn(
-            "grid size-6 shrink-0 place-items-center rounded hover:bg-white/60",
+            "grid size-6 shrink-0 place-items-center rounded hover:bg-[var(--sp-sidebar-item-hover)]",
             collapsed && "hidden",
           )}
           onClick={(event) => {
@@ -309,7 +310,7 @@ function SidebarSubItem({
         "sp-sidebar-subitem relative flex h-9 w-full max-w-full items-center overflow-hidden rounded-sm px-1 py-2 text-left transition",
         active
           ? "bg-transparent text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-0.5 before:rounded-full before:bg-[var(--sp-blue)]"
-          : "text-[var(--sp-muted)] hover:bg-[#F8FAFD] hover:text-[var(--sp-strong)]",
+          : "text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
       )}
     >
       <span className="min-w-0 truncate pl-3">

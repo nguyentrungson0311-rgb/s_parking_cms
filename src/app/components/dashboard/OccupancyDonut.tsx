@@ -24,7 +24,7 @@ export function OccupancyDonut() {
                 outerRadius={94}
                 paddingAngle={1}
                 cornerRadius={8}
-                stroke="#FFFFFF"
+                stroke="var(--sp-surface)"
                 strokeWidth={7}
                 startAngle={105}
                 endAngle={-255}

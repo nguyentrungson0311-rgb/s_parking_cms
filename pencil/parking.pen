@@ -33856,7 +33856,7 @@
                               "id": "YRULU",
                               "name": "Nhãn tiến trình đồng bộ",
                               "fill": "$grid-ink",
-                              "content": "Đã đồng bộ 8/9 tài liệu",
+                              "content": "Đang tải 8/9 tài liệu",
                               "lineHeight": 1,
                               "fontFamily": "$font-inter",
                               "fontSize": 11,
@@ -62559,8 +62559,8 @@
                         {
                           "type": "text",
                           "id": "dptBS",
-                          "x": 85,
-                          "y": 270,
+                          "x": 94,
+                          "y": 293,
                           "name": "X Axis 00:00",
                           "fill": "#8EA0B8",
                           "textGrowth": "fixed-width-height",
@@ -62574,8 +62574,8 @@
                         {
                           "type": "text",
                           "id": "y66m2",
-                          "x": 266,
-                          "y": 270,
+                          "x": 275,
+                          "y": 293,
                           "name": "X Axis 04:00",
                           "fill": "#8EA0B8",
                           "textGrowth": "fixed-width-height",
@@ -72231,7 +72231,7 @@
                                           "fill": {
                                             "type": "image",
                                             "enabled": true,
-                                            "url": "./images/generated-1784200011956.png",
+                                            "url": "images/generated-1784200011956.png",
                                             "mode": "fill"
                                           },
                                           "width": 91,
@@ -72325,7 +72325,7 @@
                                           "fill": {
                                             "type": "image",
                                             "enabled": true,
-                                            "url": "./images/generated-1784200012066.png",
+                                            "url": "images/generated-1784200012066.png",
                                             "mode": "fill"
                                           },
                                           "width": 90,
@@ -72424,7 +72424,7 @@
                                       "fill": {
                                         "type": "image",
                                         "enabled": true,
-                                        "url": "./images/generated-1784200012254.png",
+                                        "url": "images/generated-1784200012254.png",
                                         "mode": "fill"
                                       },
                                       "width": "fill_container",
@@ -72707,7 +72707,7 @@
                                           "fill": {
                                             "type": "image",
                                             "enabled": true,
-                                            "url": "./images/generated-1784200011956.png",
+                                            "url": "images/generated-1784200011956.png",
                                             "mode": "fill"
                                           },
                                           "width": 91,
@@ -72801,7 +72801,7 @@
                                           "fill": {
                                             "type": "image",
                                             "enabled": true,
-                                            "url": "./images/generated-1784200012066.png",
+                                            "url": "images/generated-1784200012066.png",
                                             "mode": "fill"
                                           },
                                           "width": 90,
@@ -72900,7 +72900,7 @@
                                       "fill": {
                                         "type": "image",
                                         "enabled": true,
-                                        "url": "./images/generated-1784200012254.png",
+                                        "url": "images/generated-1784200012254.png",
                                         "mode": "fill"
                                       },
                                       "width": "fill_container",
@@ -74154,7 +74154,7 @@
                                       "fill": {
                                         "type": "image",
                                         "enabled": true,
-                                        "url": "./images/generated-1784200011956.png",
+                                        "url": "images/generated-1784200011956.png",
                                         "mode": "fill"
                                       },
                                       "width": 91,
@@ -74248,7 +74248,7 @@
                                       "fill": {
                                         "type": "image",
                                         "enabled": true,
-                                        "url": "./images/generated-1784200012066.png",
+                                        "url": "images/generated-1784200012066.png",
                                         "mode": "fill"
                                       },
                                       "width": 90,
@@ -74347,7 +74347,7 @@
                                   "fill": {
                                     "type": "image",
                                     "enabled": true,
-                                    "url": "./images/generated-1784200012254.png",
+                                    "url": "images/generated-1784200012254.png",
                                     "mode": "fill"
                                   },
                                   "width": "fill_container",
@@ -74538,7 +74538,8 @@
                                   "lineHeight": 1.35,
                                   "textAlign": "center",
                                   "fontFamily": "Inter",
-                                  "fontSize": 13
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
                                 }
                               ]
                             },
@@ -74580,6 +74581,1408 @@
                           ]
                         }
                       ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zWBwe",
+      "x": 26366,
+      "y": -5514,
+      "name": "Filter Dropdown / Bộ lọc",
+      "clip": true,
+      "width": 920,
+      "height": 640,
+      "fill": "$surface-canvas",
+      "gap": 28,
+      "padding": 32,
+      "children": [
+        {
+          "type": "frame",
+          "id": "ftFx7",
+          "name": "Filter Trigger Preview",
+          "width": 360,
+          "height": "fill_container",
+          "fill": "$sp-surface",
+          "cornerRadius": 12,
+          "stroke": "$sp-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 18,
+          "padding": 24,
+          "children": [
+            {
+              "type": "text",
+              "id": "q7OCXz",
+              "name": "Preview Title",
+              "fill": "$sp-text",
+              "content": "Dropdown bộ lọc",
+              "fontFamily": "$sp-font",
+              "fontSize": 22,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "Llz1S",
+              "name": "Preview Description",
+              "fill": "$sp-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Mẫu filter dùng cho toolbar: trạng thái, loại xe, ca, camera, làn.",
+              "lineHeight": 1.35,
+              "fontFamily": "$sp-font",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "BNWzW",
+              "name": "Filter Trigger / Active",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$surface-input",
+              "cornerRadius": 8,
+              "stroke": "$sp-blue",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ZDvmw",
+                  "name": "Trigger Label Group",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "tKB02",
+                      "name": "Filter Icon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "sliders-horizontal",
+                      "library": "lucide",
+                      "fill": "$sp-blue"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rxjc7",
+                      "name": "Trigger Label",
+                      "fill": "$sp-text",
+                      "content": "Bộ lọc",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 13,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Orto8",
+                  "name": "Active Filter Count",
+                  "width": 28,
+                  "height": 24,
+                  "fill": "$sp-blue",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PF7Oa",
+                      "name": "Active Filter Count Text",
+                      "fill": "#FFFFFF",
+                      "content": "3",
+                      "fontFamily": "$sp-data",
+                      "fontSize": 11,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "type": "icon",
+                  "id": "rHOe9",
+                  "name": "Trigger Chevron",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "chevron-down",
+                  "library": "lucide",
+                  "fill": "$sp-muted"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jQR3v",
+              "name": "Active Filter Chips",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YlwjG",
+                  "name": "Filter Chip / Trạng thái: Đã hoàn tất",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$sp-badge-info-bg",
+                  "cornerRadius": 17,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "qm8tp",
+                      "name": "Chip Label / Trạng thái: Đã hoàn tất",
+                      "fill": "$sp-badge-info-fg",
+                      "content": "Trạng thái: Đã hoàn tất",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "p5uFQ5",
+                      "name": "Chip Remove / Trạng thái: Đã hoàn tất",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$sp-badge-info-fg"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D8arFE",
+                  "name": "Filter Chip / Loại xe: Ô tô",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$sp-badge-info-bg",
+                  "cornerRadius": 17,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UA8kw",
+                      "name": "Chip Label / Loại xe: Ô tô",
+                      "fill": "$sp-badge-info-fg",
+                      "content": "Loại xe: Ô tô",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "MmiRC",
+                      "name": "Chip Remove / Loại xe: Ô tô",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$sp-badge-info-fg"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "r4QeSh",
+                  "name": "Filter Chip / Ca: Ca sáng",
+                  "width": "fill_container",
+                  "height": 34,
+                  "fill": "$sp-badge-info-bg",
+                  "cornerRadius": 17,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WTfaX",
+                      "name": "Chip Label / Ca: Ca sáng",
+                      "fill": "$sp-badge-info-fg",
+                      "content": "Ca: Ca sáng",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "UrmiL",
+                      "name": "Chip Remove / Ca: Ca sáng",
+                      "width": 13,
+                      "height": 13,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$sp-badge-info-fg"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "V2kBqU",
+              "name": "Filter State Note",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$sp-bg",
+              "cornerRadius": 8,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "saXnZ",
+                  "name": "Filter State Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "info",
+                  "library": "lucide",
+                  "fill": "$sp-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "XPEBJ",
+                  "name": "Filter State Text",
+                  "fill": "$sp-muted",
+                  "content": "Hiển thị số filter đang bật ngay trên trigger.",
+                  "fontFamily": "$sp-font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "e79FZ2",
+              "name": "Quick Preset Row",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "OesxR",
+                  "name": "Preset / Hôm nay",
+                  "height": 32,
+                  "fill": "$surface-input",
+                  "cornerRadius": 16,
+                  "stroke": "$sp-border",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    10
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "V8P34V",
+                      "name": "Preset Label / Hôm nay",
+                      "fill": "$sp-muted",
+                      "content": "Hôm nay",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TtwVW",
+                  "name": "Preset / Đang mở",
+                  "height": 32,
+                  "fill": "$sp-badge-pending-bg",
+                  "cornerRadius": 16,
+                  "stroke": "$sp-border",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    10
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kVGYD",
+                      "name": "Preset Label / Đang mở",
+                      "fill": "$sp-badge-pending-fg",
+                      "content": "Đang mở",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m3EZAw",
+                  "name": "Preset / Có ảnh",
+                  "height": 32,
+                  "fill": "$surface-input",
+                  "cornerRadius": 16,
+                  "stroke": "$sp-border",
+                  "strokeWidth": 1,
+                  "padding": [
+                    0,
+                    10
+                  ],
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bzGZ6",
+                      "name": "Preset Label / Có ảnh",
+                      "fill": "$sp-muted",
+                      "content": "Có ảnh",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AyBE0",
+              "name": "Collapsed Empty Filter Trigger",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$surface-input",
+              "cornerRadius": 8,
+              "stroke": "$sp-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "c4l95",
+                  "name": "Empty Trigger Label Group",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "gixGk",
+                      "name": "Empty Filter Icon",
+                      "width": 17,
+                      "height": 17,
+                      "icon": "sliders-horizontal",
+                      "library": "lucide",
+                      "fill": "$sp-muted"
+                    },
+                    {
+                      "type": "text",
+                      "id": "R3Vzol",
+                      "name": "Empty Trigger Label",
+                      "fill": "$sp-muted",
+                      "content": "Bộ lọc",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "icon",
+                  "id": "lz9Fh",
+                  "name": "Empty Trigger Chevron",
+                  "width": 17,
+                  "height": 17,
+                  "icon": "chevron-down",
+                  "library": "lucide",
+                  "fill": "$sp-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Y7wsVD",
+          "name": "Dropdown Panel",
+          "width": "fill_container",
+          "fill": "$sp-surface",
+          "cornerRadius": 12,
+          "stroke": "$sp-border",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#12203324",
+            "offset": {
+              "x": 0,
+              "y": 16
+            },
+            "blur": 34
+          },
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "CpO6P",
+              "name": "Dropdown Header",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JEYi0",
+                  "name": "Dropdown Header Text",
+                  "width": "fill_container",
+                  "stroke": "$sp-border",
+                  "strokeWidth": {
+                    "bottom": 1
+                  },
+                  "strokeAlignment": "inner",
+                  "gap": 3,
+                  "padding": [
+                    0,
+                    0,
+                    12,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "raUU2",
+                      "name": "Dropdown Title",
+                      "fill": "$sp-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bộ lọc",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "icon",
+                      "id": "EsbuI",
+                      "name": "Button Icon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "x",
+                      "library": "lucide",
+                      "fill": "$op-muted"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DvZHK",
+              "name": "Frame 16",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "YW12L",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z2kVF",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Loại thẻ",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TzMm1",
+                      "name": "Gói vé input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 10,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "A7bv36",
+                          "name": "Gói vé input value",
+                          "fill": "$sp-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tất cả",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "wNLSy",
+                          "name": "Gói vé input icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "w3fF4",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LjMPG",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Loại xe",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BOWIx",
+                      "name": "Gói vé input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 10,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GJi5o",
+                          "name": "Gói vé input value",
+                          "fill": "$sp-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tất cả",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "I751qh",
+                          "name": "Gói vé input icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "B9TXM",
+              "name": "Frame 16",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VM1L9",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ws9r9",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Vào/Ra",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CRqVZ",
+                      "name": "Gói vé input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 10,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mEGP7",
+                          "name": "Gói vé input value",
+                          "fill": "$sp-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tất cả",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "XFFJ3",
+                          "name": "Gói vé input icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "T7uuxq",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QRmPW",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Theo ca",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lDzr9",
+                      "name": "Gói vé input",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 10,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "C6a9Ka",
+                          "name": "Gói vé input value",
+                          "fill": "$sp-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tất cả",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "aQuzd",
+                          "name": "Gói vé input icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "chevron-down",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AhGFK",
+              "name": "Frame 16",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wyiZp",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ueAR6",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Mã thẻ",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "OP3It",
+                      "name": "Filter Search",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 8,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "ggAM9",
+                          "name": "Search Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "search",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GSydG",
+                          "name": "Search Placeholder",
+                          "fill": "$sp-muted",
+                          "content": "Mã thẻ",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Xs3Tr",
+                  "name": "Gói vé field",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "eV2Ln",
+                      "name": "Gói vé label",
+                      "fill": "$sp-text",
+                      "content": "Biển số",
+                      "fontFamily": "$sp-font",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KuQkh",
+                      "name": "Filter Search",
+                      "width": "fill_container",
+                      "height": 42,
+                      "fill": "$surface-input",
+                      "cornerRadius": 8,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "L36MZN",
+                          "name": "Search Icon",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "search",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Ch9wr",
+                          "name": "Search Placeholder",
+                          "fill": "$sp-muted",
+                          "content": "Mã thẻ",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 12,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RMsBT",
+              "name": "Trạng thái Group",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 8,
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "W2rkX",
+                  "name": "Trạng thái Title",
+                  "width": 84,
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "un51S",
+                      "name": "Checkbox",
+                      "width": 16,
+                      "height": 16,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 4,
+                      "stroke": "#D1D5DB",
+                      "strokeWidth": 1,
+                      "justifyContent": "center",
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "e9rj7v",
+                      "name": "Group Title",
+                      "fill": "#1A1A1A",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Thời gian",
+                      "lineHeight": 1.2,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "i8uaa",
+                  "name": "Frame 16",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tGKcO",
+                      "name": "Gói vé field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KCre7",
+                          "name": "Gói vé label",
+                          "fill": "$sp-text",
+                          "content": "Từ ngày",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bmfL7",
+                          "name": "Gói vé input",
+                          "width": "fill_container",
+                          "height": 42,
+                          "fill": "$surface-input",
+                          "cornerRadius": 10,
+                          "stroke": "$sp-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "lyJlw",
+                              "name": "Gói vé input value",
+                              "fill": "$sp-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Tất cả",
+                              "fontFamily": "$sp-font",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "D1OTc",
+                              "name": "Gói vé input icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$sp-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FdMpr",
+                      "name": "Gói vé field",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "P8z8q",
+                          "name": "Gói vé label",
+                          "fill": "$sp-text",
+                          "content": "Đến ngày",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Cj8v1",
+                          "name": "Gói vé input",
+                          "width": "fill_container",
+                          "height": 42,
+                          "fill": "$surface-input",
+                          "cornerRadius": 10,
+                          "stroke": "$sp-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZMj6C",
+                              "name": "Gói vé input value",
+                              "fill": "$sp-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Tất cả",
+                              "fontFamily": "$sp-font",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "STSeO",
+                              "name": "Gói vé input icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$sp-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WvMRX",
+              "name": "Trạng thái Group",
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 8,
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "i5O9vj",
+                  "name": "Trạng thái Title",
+                  "width": 84,
+                  "layout": "vertical",
+                  "gap": 2,
+                  "justifyContent": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "o1bcO",
+                      "name": "Group Title",
+                      "fill": "#1A1A1A",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Trạng thái",
+                      "lineHeight": 1.2,
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "q2wwgh",
+                  "name": "Trạng thái Options",
+                  "width": "fill_container",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SL3lK",
+                      "name": "Unchecked Tạm khóa",
+                      "width": 111,
+                      "height": 25,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 6,
+                      "gap": 8,
+                      "padding": [
+                        3,
+                        6
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "n0rh1",
+                          "name": "Checkbox",
+                          "width": 16,
+                          "height": 16,
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 4,
+                          "stroke": "#D1D5DB",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "text",
+                          "id": "eiXAe",
+                          "name": "Option Label",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tất cả",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "z60PW",
+                      "name": "Checked Đang hoạt động",
+                      "width": 133,
+                      "height": 25,
+                      "fill": "#F7F8FA",
+                      "cornerRadius": 6,
+                      "gap": 8,
+                      "padding": [
+                        3,
+                        6
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DswzO",
+                          "name": "Checkbox",
+                          "width": 16,
+                          "height": 16,
+                          "fill": "#635BFF",
+                          "cornerRadius": 4,
+                          "stroke": "#635BFF",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "q2V4ki",
+                              "name": "Check Icon",
+                              "width": 11,
+                              "height": 11,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "#FFFFFF"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "VLeFH",
+                          "name": "Option Label",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Đang hoạt động",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "e1PKQa",
+                      "name": "Unchecked Tạm khóa",
+                      "width": "fill_container",
+                      "height": 25,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 6,
+                      "gap": 8,
+                      "padding": [
+                        3,
+                        6
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ElJwI",
+                          "name": "Checkbox",
+                          "width": 16,
+                          "height": 16,
+                          "fill": "#FFFFFF",
+                          "cornerRadius": 4,
+                          "stroke": "#D1D5DB",
+                          "strokeWidth": 1,
+                          "justifyContent": "center",
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "text",
+                          "id": "iYkOG",
+                          "name": "Option Label",
+                          "fill": "#1A1A1A",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tạm khóa",
+                          "lineHeight": 1.2,
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "500"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F9FcL",
+              "name": "Dropdown Footer",
+              "width": "fill_container",
+              "height": 50,
+              "stroke": "$sp-border",
+              "strokeWidth": {
+                "top": 1
+              },
+              "padding": [
+                10,
+                0,
+                0,
+                0
+              ],
+              "justifyContent": "end",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bKncY",
+                  "name": "Dropdown Footer Actions",
+                  "gap": 8,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "cYhy3",
+                      "name": "Reset Filters Button",
+                      "height": 36,
+                      "fill": "$surface-input",
+                      "cornerRadius": 8,
+                      "stroke": "$sp-border",
+                      "strokeWidth": 1,
+                      "gap": 6,
+                      "padding": [
+                        0,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "NQ1As",
+                          "name": "Reset Icon",
+                          "width": 14,
+                          "height": 14,
+                          "icon": "rotate-ccw",
+                          "library": "lucide",
+                          "fill": "$sp-muted"
+                        },
+                        {
+                          "type": "text",
+                          "id": "YXay4",
+                          "name": "Reset Label",
+                          "fill": "$sp-muted",
+                          "content": "Đặt lại",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O1Q4q",
+                      "name": "Apply Filter Button",
+                      "height": 36,
+                      "fill": "$sp-blue",
+                      "cornerRadius": 8,
+                      "gap": 8,
+                      "padding": [
+                        0,
+                        14
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "bS04r",
+                          "name": "Apply Filter Icon",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "sliders-horizontal",
+                          "library": "lucide",
+                          "fill": "#FFFFFF"
+                        },
+                        {
+                          "type": "text",
+                          "id": "P5JbU",
+                          "name": "Apply Filter Label",
+                          "fill": "#FFFFFF",
+                          "content": "Áp dụng",
+                          "fontFamily": "$sp-font",
+                          "fontSize": 13,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "Psv38",
+                      "type": "ref",
+                      "ref": "mTL4F",
+                      "x": 204,
+                      "y": 0,
+                      "width": "fit_content",
+                      "descendants": {
+                        "BO8pD": {
+                          "library": "lucide",
+                          "icon": "x"
+                        },
+                        "foyS4": {
+                          "content": "Đóng"
+                        }
+                      }
                     }
                   ]
                 }
@@ -75746,6 +77149,9 @@
         }
       ]
     }
+  },
+  "imports": {
+    "2": "pencil:shadcn.lib.pen"
   },
   "fileToken": "531345a1-8516-46e4-822e-9a0a0b386b0a",
   "fonts": [

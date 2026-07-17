@@ -2,8 +2,15 @@ import { CommonDrawer } from "@/app/components/common/CommonDrawer";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { StatusBadge } from "@/app/components/ui/status-badge";
+import {
+  DataTable,
+  TBody,
+  TD,
+  TH,
+  THead,
+  TR,
+} from "@/app/components/ui/table";
 import type { ShiftAssign } from "@/app/types";
-import type { ReactNode } from "react";
 import {
   Check,
   CheckSquare,
@@ -15,6 +22,15 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+
+const SHIFT_DETAIL_IMAGES = {
+  plate:
+    "https://commons.wikimedia.org/wiki/Special:Redirect/file/White_BMW_car_seen_from_front.jpg",
+  face:
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&q=80",
+  overview:
+    "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=900&q=80",
+};
 
 export function ShiftAssignDetail({
   open,
@@ -70,14 +86,14 @@ function ShiftSummary({ item }: { item: ShiftAssign }) {
   const statusLabel = item.status === "inYard" ? "Đang trong bãi" : "Đã ra";
 
   return (
-    <div className="border-b border-[var(--sp-border)] bg-white px-3 py-4">
+    <div className="border-b border-[var(--sp-border)] bg-white px-5 py-4">
       <div className="flex flex-wrap items-center gap-3">
         <div className="grid size-12 shrink-0 place-items-center rounded-[12px] bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]">
           <i className="bi bi-car-front-fill text-[22px] leading-none" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">
-            <h3 className="mono truncate text-xl font-extrabold text-[var(--sp-strong)]">
+            <h3 className="mono truncate text-xl font-regular text-[var(--sp-strong)]">
               {item.ticketNumber}
             </h3>
             <StatusBadge tone={statusTone}>{statusLabel}</StatusBadge>
@@ -88,7 +104,7 @@ function ShiftSummary({ item }: { item: ShiftAssign }) {
         </div>
       </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-4">
+      <div className="mt-4 grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <SummaryMeta label="Khách hàng" value={item.customer} />
         <SummaryMeta label="Mã căn" value={item.apartmentCode} />
         <SummaryMeta label="Ca vào" value={item.shiftIn} />
@@ -101,119 +117,106 @@ function ShiftSummary({ item }: { item: ShiftAssign }) {
 function SummaryMeta({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-xs font-bold text-[var(--sp-muted)]">{label}</div>
-      <div className="mt-1 text-sm font-extrabold text-[var(--sp-strong)]">{value}</div>
+      <div className="text-sm font-regular text-[var(--sp-muted)]">{label}</div>
+      <div className="mt-1 text-base font-semibold text-[var(--sp-strong)]">{value}</div>
     </div>
   );
 }
 
 function BasicInfo({ item }: { item: ShiftAssign }) {
-  const exitTime = item.checkedOutAt === "-" ? "--" : item.checkedOutAt;
-  const amount = item.payment === "-" ? "--" : item.payment;
-  const duration = item.checkedOutAt === "-" ? "--" : "2h 33m";
-
   return (
-    <Card className="overflow-hidden">
+    <Card className="sp-card overflow-hidden">
       <div className="flex items-center gap-3 p-4">
         <CheckSquare className="size-6 text-[var(--sp-blue)]" />
-        <h3 className="text-lg font-extrabold text-[var(--sp-strong)]">Thông tin cơ bản</h3>
+        <h3 className="text-lg font-semibold text-[var(--sp-strong)]">Thông tin cơ bản</h3>
       </div>
-      <div className="overflow-x-auto px-4 pb-4">
-        <table className="w-full min-w-[920px] border-separate border-spacing-0 overflow-hidden rounded-lg border border-[var(--sp-border)] text-left text-sm">
-          <thead>
-            <tr className="bg-[#F4F7FB] text-[var(--sp-muted)]">
-              <InfoHead>Hướng</InfoHead>
-              <InfoHead>Thời gian</InfoHead>
-              <InfoHead>Cổng</InfoHead>
-              <InfoHead>Lần</InfoHead>
-              <InfoHead>Tổng thời gian</InfoHead>
-              <InfoHead>Số tiền</InfoHead>
-            </tr>
-          </thead>
-          <tbody>
-            <InfoRow
-              icon={<LogIn className="size-5 text-[var(--sp-green)]" />}
-              direction="Vào"
-              time={item.checkedInAt}
-              gate="Cổng A"
-              turn="Lần 02"
-              duration="--"
-              amount="--"
-            />
-            <InfoRow
-              icon={<LogOut className="size-5 text-[var(--sp-orange)]" />}
-              direction="Ra"
-              time={exitTime}
-              gate="Cổng B"
-              turn="Lần 04"
-              duration={duration}
-              amount={amount}
-              muted={item.checkedOutAt === "-"}
-            />
-          </tbody>
-        </table>
+      <div className="px-4 pb-4">
+        <BasicInfoTable item={item} />
       </div>
     </Card>
   );
 }
 
-function InfoHead({ children }: { children: string }) {
-  return (
-    <th className="border-r border-[var(--sp-border)] px-4 py-3 font-extrabold last:border-r-0">
-      {children}
-    </th>
-  );
-}
+function BasicInfoTable({ item }: { item: ShiftAssign }) {
+  const hasExit = item.checkedOutAt !== "-";
+  const exitTime = hasExit ? item.checkedOutAt : "--";
+  const amount = item.payment === "-" ? "--" : item.payment;
+  const duration = hasExit ? "2h 33m" : "--";
 
-function InfoRow({
-  icon,
-  direction,
-  time,
-  gate,
-  turn,
-  duration,
-  amount,
-  muted = false,
-}: {
-  icon: ReactNode;
-  direction: string;
-  time: string;
-  gate: string;
-  turn: string;
-  duration: string;
-  amount: string;
-  muted?: boolean;
-}) {
-  const valueClass = muted ? "text-[var(--sp-muted)]" : "text-[var(--sp-strong)]";
 
   return (
-    <tr className="odd:bg-white even:bg-[#F4F7FB]">
-      <td className="border-r border-[var(--sp-border)] px-4 py-4 font-extrabold">
-        <div className="flex items-center gap-3">
-          {icon}
-          {direction}
-        </div>
-      </td>
-      <InfoCell className={valueClass}>{time}</InfoCell>
-      <InfoCell className={valueClass}>{gate}</InfoCell>
-      <InfoCell className={valueClass}>{turn}</InfoCell>
-      <InfoCell className={valueClass}>{duration}</InfoCell>
-      <InfoCell className={valueClass}>{amount}</InfoCell>
-    </tr>
-  );
-}
-
-function InfoCell({
-  children,
-  className,
-}: {
-  children: string;
-  className?: string;
-}) {
-  return (
-    <td className={`border-r border-[var(--sp-border)] px-4 py-4 font-extrabold last:border-r-0 ${className ?? ""}`}>
-      {children}
-    </td>
+    <DataTable
+      minWidth={920}
+      containerClassName="h-auto flex-none rounded-md"
+      scrollClassName="max-h-none"
+    >
+      <THead className="static z-auto">
+        <TR className="hover:bg-transparent">
+          <TH className="w-[150px] border-r border-[var(--sp-border)] px-4">
+            Hướng
+          </TH>
+          <TH className="w-[250px] border-r border-[var(--sp-border)] px-4">
+            Thời gian
+          </TH>
+          <TH className="w-[140px] border-r border-[var(--sp-border)] px-4">
+            Cổng
+          </TH>
+          <TH className="w-[140px] border-r border-[var(--sp-border)] px-4">
+            Lần
+          </TH>
+          <TH className="w-[200px] border-r border-[var(--sp-border)] px-4">
+            Tổng thời gian
+          </TH>
+          <TH className="w-[160px] px-4">Số tiền</TH>
+        </TR>
+      </THead>
+      <TBody className="divide-y-0">
+        <TR className="hover:bg-white">
+          <TD className="border-r border-[var(--sp-border)] px-4">
+            <div className="flex items-center gap-3">
+              <LogIn className="size-5 text-[var(--sp-green)]" />
+              Vào
+            </div>
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] px-4">
+            {item.checkedInAt}
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] px-4">
+            Cổng A
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] px-4">
+            Lần 02
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] px-4">
+            --
+          </TD>
+          <TD className="px-4">--</TD>
+        </TR>
+        <TR className="bg-[#F4F7FB] hover:bg-[#F4F7FB]">
+          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+            <div className="flex items-center gap-3">
+              <LogOut className="size-5 text-[var(--sp-orange)]" />
+              Ra
+            </div>
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+            {exitTime}
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+            Cổng B
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+            Lần 04
+          </TD>
+          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+            {duration}
+          </TD>
+          <TD className="bg-[#F4F7FB] px-4">
+            {amount}
+          </TD>
+        </TR>
+      </TBody>
+    </DataTable>
   );
 }
 
@@ -227,6 +230,7 @@ function VehicleImageCard({
   item: ShiftAssign;
 }) {
   const isIn = direction === "in";
+  const hasImage = isIn || item.checkedOutAt !== "-";
   const code = `${isIn ? "IN" : "OUT"}-${item.ticketNumber.replace("VS-", "")}`;
 
   return (
@@ -238,49 +242,66 @@ function VehicleImageCard({
           ) : (
             <LogOut className="size-6 text-[var(--sp-orange)]" />
           )}
-          <h3 className="text-lg font-extrabold text-[var(--sp-strong)]">{title}</h3>
+          <h3 className="text-lg font-semibold text-[var(--sp-strong)]">{title}</h3>
         </div>
         {isIn ? <StatusBadge tone="green">Hợp lệ</StatusBadge> : null}
       </div>
 
-      <div className="grid grid-cols-3 overflow-hidden rounded-lg bg-[var(--sp-blue)] text-white">
-        <BlueMeta label={isIn ? "Mã lượt vào" : "Mã lượt ra"} value={code} />
-        <BlueMeta label="Camera" value="Cổng A / Lane 02" />
-        <BlueMeta label="Kiểm tra" value="Không có cảnh báo" />
-      </div>
-
-      <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(210px,0.95fr)_minmax(260px,1.55fr)]">
-        <div className="grid gap-3">
-          <EvidenceMiniCard
-            type="plate"
-            title="Biển số xe"
-            value={item.plate === "-" ? "98A-468.27" : item.plate}
-          />
-          <EvidenceMiniCard
-            type="face"
-            title="Khuôn mặt"
-            value={item.customer === "-" ? "Nguyễn Minh T." : item.customer}
-          />
-        </div>
-
-        <div className="overflow-hidden rounded-lg border border-[var(--sp-border)] bg-white">
-          <div className="relative aspect-[16/10] overflow-hidden bg-[#DCE3ED]">
-            <div className="absolute inset-0 bg-[linear-gradient(150deg,#C8D1DA_0%,#EEF2F7_42%,#9BA8B8_43%,#D8DEE7_44%,#F7FAFD_100%)]" />
-            <div className="absolute bottom-[18%] left-[8%] h-[44%] w-[76%] rounded-t-[42px] rounded-b-[16px] bg-[linear-gradient(160deg,#B8C3CF,#F7F9FC_52%,#8895A5)] shadow-[0_18px_30px_rgba(18,32,51,0.25)]" />
-            <div className="absolute bottom-[13%] left-[20%] size-12 rounded-full bg-[#202A35] ring-8 ring-[#6D7885]" />
-            <div className="absolute bottom-[13%] right-[16%] size-12 rounded-full bg-[#202A35] ring-8 ring-[#6D7885]" />
-            <div className="absolute right-[12%] top-[12%] h-[70%] w-3 rotate-45 rounded-full bg-white shadow-md">
-              <div className="mt-2 h-8 rounded-full bg-[#F05252]" />
+      {!hasImage ? (
+        <div className="grid min-h-[360px] place-items-center rounded-md border border-dashed border-[var(--sp-border)] bg-[#F8FAFD] p-6 text-center">
+          <div className="max-w-[260px]">
+            <div className="mx-auto grid size-14 place-items-center rounded-full bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]">
+              <LogOut className="size-7" />
             </div>
-          </div>
-          <div className="p-4">
-            <div className="text-lg font-extrabold text-[var(--sp-strong)]">Ảnh tổng quan</div>
-            <div className="mt-1 text-base text-[var(--sp-muted)]">
-              Cổng B2 · {isIn ? item.checkedInAt : item.checkedOutAt} · {isIn ? "Lần vào 02" : "Lần ra 04"}
+            <div className="mt-4 text-base font-extrabold text-[var(--sp-strong)]">
+              Chưa có hình ảnh xe ra
             </div>
+            <p className="mt-2 text-sm leading-5 text-[var(--sp-muted)]">
+              Xe đang trong bãi, dữ liệu hình ảnh xe ra sẽ được cập nhật sau khi hoàn tất lượt ra.
+            </p>
           </div>
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-3 overflow-hidden rounded-md bg-[#164c8a] text-white">
+            <BlueMeta label={isIn ? "Mã lượt vào" : "Mã lượt ra"} value={code} />
+            <BlueMeta label="Camera" value="Cổng A / Lane 02" />
+            <BlueMeta label="Kiểm tra" value="Không có cảnh báo" />
+          </div>
+
+          <div className="mt-4 grid items-stretch gap-4 lg:grid-cols-[minmax(190px,0.82fr)_minmax(260px,1.55fr)]">
+            <div className="grid h-full grid-rows-2 gap-3">
+              <EvidenceMiniCard
+                type="plate"
+                title="Biển số xe"
+                value={item.plate === "-" ? "98A-468.27" : item.plate}
+              />
+              <EvidenceMiniCard
+                type="face"
+                title="Khuôn mặt"
+                value={item.customer === "-" ? "Nguyễn Minh T." : item.customer}
+              />
+            </div>
+
+            <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md border border-[var(--sp-border)] bg-white">
+              <div className="relative min-h-0 flex-1 overflow-hidden bg-[#DCE3ED]">
+                <img
+                  src={SHIFT_DETAIL_IMAGES.overview}
+                  alt={isIn ? "Ảnh tổng quan xe vào" : "Ảnh tổng quan xe ra"}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div className="shrink-0 p-4">
+                <div className="text-lg font-semibold text-[var(--sp-strong)]">Ảnh tổng quan</div>
+                <div className="mt-1 text-md text-[var(--sp-muted)]">
+                  Cổng B2 · {isIn ? item.checkedInAt : item.checkedOutAt} 
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </Card>
   );
 }
@@ -288,8 +309,8 @@ function VehicleImageCard({
 function BlueMeta({ label, value }: { label: string; value: string }) {
   return (
     <div className="border-r border-white/25 px-4 py-3 last:border-r-0">
-      <div className="text-xs text-white/75">{label}</div>
-      <div className="mt-1 text-base font-extrabold">{value}</div>
+      <div className="text-sm font-regular text-white/75">{label}</div>
+      <div className="mt-1 text-md font-medium">{value}</div>
     </div>
   );
 }
@@ -306,44 +327,38 @@ function EvidenceMiniCard({
   const isPlate = type === "plate";
 
   return (
-    <div className="grid grid-cols-[112px_minmax(0,1fr)] overflow-hidden rounded-lg border border-[var(--sp-border)] bg-white">
-      <div
-        className={
-          isPlate
-            ? "grid min-h-[118px] place-items-center bg-[#EEF2F7] p-3"
-            : "relative min-h-[118px] overflow-hidden bg-[linear-gradient(160deg,#566579,#D7DFE8)]"
-        }
-      >
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-[var(--sp-border)] bg-white">
+      <div className="relative h-[108px] shrink-0 overflow-hidden bg-[#EEF2F7]">
         {isPlate ? (
-          <div className="rounded border-2 border-[#CDD6E2] bg-white px-2 py-3 text-center shadow-sm">
-            <div className="text-[10px] font-bold text-[var(--sp-blue)]">VN</div>
-            <div className="mono text-xl font-extrabold leading-tight text-[var(--sp-strong)]">
-              98A
-              <br />
-              468.27
-            </div>
-          </div>
+          <img
+            src={SHIFT_DETAIL_IMAGES.plate}
+            alt="Ảnh biển số xe"
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
         ) : (
-          <>
-            <div className="absolute bottom-0 left-1/2 h-[78px] w-[82px] -translate-x-1/2 rounded-t-full bg-[#1F2937]" />
-            <div className="absolute left-1/2 top-8 size-[54px] -translate-x-1/2 rounded-full bg-[#D5A27E]" />
-          </>
+          <img
+            src={SHIFT_DETAIL_IMAGES.face}
+            alt="Ảnh khuôn mặt"
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
         )}
       </div>
-      <div className="flex min-w-0 flex-col justify-center p-3">
-        <div className="flex items-center gap-2 text-sm font-extrabold text-[var(--sp-strong)]">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center p-2.5">
+        <div className="flex items-center gap-2 text-sm font-medium leading-5 text-[var(--sp-strong)]">
           {isPlate ? (
-            <ShieldCheck className="size-5 text-[var(--sp-purple)]" />
+            <ShieldCheck className="size-4 text-[var(--sp-purple)]" />
           ) : (
-            <UserRound className="size-5 text-[var(--sp-purple)]" />
+            <UserRound className="size-4 text-[var(--sp-purple)]" />
           )}
           {title}
         </div>
-        <div className="mt-2 truncate text-sm font-extrabold text-[var(--sp-strong)]">
+        <div className="mt-1 truncate text-md font-semibold leading-5 text-[var(--sp-strong)]">
           {value}
-          {!isPlate ? " - 96%" : null}
+          
         </div>
-        <div className="mt-1 text-sm text-[var(--sp-muted)]">18:42:11</div>
+        
       </div>
     </div>
   );

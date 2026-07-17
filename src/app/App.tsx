@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { AppShell } from "@/app/components/layout/AppShell";
+import { Atoms } from "@/app/pages/Atoms";
 import { DailyCard } from "@/app/pages/DailyCard";
 import { Dashboard } from "@/app/pages/Dashboard";
 import { ExternalCard } from "@/app/pages/ExternalCard";
 import { MonthlyCardDetail } from "@/app/pages/MonthlyCardDetail";
+import { MonthlyReport } from "@/app/pages/MonthlyReport";
 import { MonthlyVehicle } from "@/app/pages/MonthlyVehicle";
 import { PlaceholderPage } from "@/app/pages/PlaceholderPage";
 import { ShiftAssign } from "@/app/pages/ShiftAssign";
@@ -21,6 +23,7 @@ const pageTitles: Partial<Record<PageId, string>> = {
   "overdue-vehicles": "Xe để quá ngày",
   "gate-management": "Quản lý mở cổng",
   reminders: "Nhắc nhở",
+  "ui-atoms": "Atom components",
   "summary-vehicles": "Quản lý xe",
   "monthly-report": "Báo cáo tháng",
 };
@@ -51,11 +54,12 @@ export default function App() {
       {activePage === "reminders" && (
         <PlaceholderPage title={pageTitles[activePage] ?? ""} parent="Quản lý phương tiện" />
       )}
+      {activePage === "ui-atoms" && <Atoms />}
       {activePage === "summary-vehicles" && (
         <PlaceholderPage title="Quản lý xe" parent="Tổng hợp" />
       )}
       {activePage === "monthly-report" && (
-        <PlaceholderPage title="Báo cáo tháng" parent="Tổng hợp" />
+        <MonthlyReport />
       )}
       <MonthlyCardDetail open={detailOpen} onClose={() => setDetailOpen(false)} />
     </AppShell>

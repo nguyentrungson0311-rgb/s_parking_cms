@@ -7,6 +7,7 @@ export type PageId =
   | "overdue-vehicles"
   | "gate-management"
   | "reminders"
+  | "ui-atoms"
   | "summary-vehicles"
   | "monthly-report";
 

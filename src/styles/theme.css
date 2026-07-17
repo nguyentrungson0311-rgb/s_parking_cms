@@ -1,31 +1,11 @@
 :root {
-  --background: #f6f8fc;
-  --foreground: #1f2937;
-  --card: #ffffff;
-  --card-foreground: #1f2937;
-  --popover: #ffffff;
-  --popover-foreground: #1f2937;
-  --primary: #0b5ce6;
-  --primary-strong: #0048c9;
-  --primary-foreground: #ffffff;
-  --secondary: #4e9dff;
-  --secondary-foreground: #122033;
-  --muted: #f3f5f8;
-  --muted-foreground: #7b8494;
-  --accent: #eaf0ff;
-  --accent-foreground: #0b5ce6;
-  --destructive: #f05252;
-  --destructive-foreground: #ffffff;
-  --border: #e7eaf1;
-  --input: #d2d7e2;
-  --ring: #0b5ce6;
   --radius: 16px;
   --sp-page-padding: 1rem;
   --sp-sidebar-width:18.2rem;
   --sp-sidebar-collapsed-width: 4.5rem;
   --sp-shell-gap: 0.75rem;
   --sp-content-gap: 1rem;
-  --sp-ui-scale: 0.9;
+  --sp-ui-scale: 1;
 
   --font-sans: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-display: "SF Pro Display", "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
@@ -36,7 +16,7 @@
   --font-size-base: 16px;
   --font-size-lg: 18px;
   --font-size-xl: 24px;
-  --font-size-2xl: 36px;
+  --font-size-2xl: 32px;
   --line-height-xs: 14px;
   --line-height-sm: 16px;
   --line-height-md: 20px;
@@ -44,52 +24,6 @@
   --line-height-lg: 26px;
   --line-height-xl: 32px;
   --line-height-2xl: 44px;
-
-  --sp-bg: #f6f8fc;
-  --sp-surface: #ffffff;
-  --sp-text: #3a4555;
-  --sp-strong: #122033;
-  --sp-muted: #7b8494;
-  --sp-subtle: #87909f;
-  --sp-border: #e7eaf1;
-  --sp-border-strong: #dde7f4;
-  --sp-blue: #0b5ce6;
-  --sp-blue-strong: #0048c9;
-  --sp-blue-soft: #e9f1ff;
-  --sp-electric-cobalt: #0062ff;
-  --sp-secondary: #4e9dff;
-  --sp-green: #16ad78;
-  --sp-green-soft: #e8f8f1;
-  --sp-orange: #ff7a2f;
-  --sp-orange-soft: #fff0e4;
-  --sp-warning: #ffb445;
-  --sp-yellow: #986a00;
-  --sp-yellow-soft: #fff4d8;
-  --sp-red: #ff8782;
-  --sp-red-soft: #fdecec;
-  --sp-purple: #7b66f6;
-  --sp-purple-soft: #f0edff;
-  --sp-cyan: #3bc0d5;
-  --sp-grey: #787b80;
-  --sp-grey-soft: #eef1f5;
-
-  --badge-success-bg: #e8f8f1;
-  --badge-success-fg: #0c7a4b;
-  --badge-warning-bg: #fff4d8;
-  --badge-warning-fg: #986a00;
-  --badge-danger-bg: #fdecec;
-  --badge-danger-fg: #e62929;
-  --badge-info-bg: #eaf1ff;
-  --badge-info-fg: #0062ff;
-  --badge-neutral-bg: #f3f5f8;
-  --badge-neutral-fg: #4b5563;
-  --badge-disabled-bg: #eef1f5;
-  --badge-disabled-fg: #8b95a4;
-
-  --shadow-sidebar: 8px 0 28px rgba(216, 221, 232, 0.25);
-  --shadow-panel: 0 10px 24px rgba(203, 210, 227, 0.25);
-  --shadow-header: 0 12px 24px rgba(203, 210, 227, 0.25);
-  --shadow-soft: 0 8px 24px rgba(18, 32, 51, 0.08);
 }
 
 *,
@@ -142,6 +76,37 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+.sp-ui-control,
+.sp-control-popover,
+.sp-control-popover button {
+  color-scheme: inherit;
+}
+
+.sp-ui-control {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.sp-ui-control:focus,
+.sp-ui-control:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+
+.sp-ui-control[type="search"]::-webkit-search-decoration,
+.sp-ui-control[type="search"]::-webkit-search-cancel-button,
+.sp-ui-control[type="search"]::-webkit-search-results-button,
+.sp-ui-control[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+}
+
+.sp-ui-control:-webkit-autofill,
+.sp-ui-control:-webkit-autofill:hover,
+.sp-ui-control:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px var(--sp-surface) inset;
+  -webkit-text-fill-color: var(--sp-text);
 }
 
 button {
@@ -258,7 +223,7 @@ button {
 }
 
 .sp-sidebar-parent-item {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   font-weight: 400;
   line-height: var(--line-height-lg);
 }
@@ -270,7 +235,7 @@ button {
 }
 
 .sp-sidebar-subitem {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-md);
   font-weight: 400;
   line-height: var(--line-height-base);
 }
@@ -342,7 +307,7 @@ button {
 
 .sp-card {
   border: 1px solid var(--sp-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--sp-surface);
   box-shadow: var(--shadow-panel);
 }

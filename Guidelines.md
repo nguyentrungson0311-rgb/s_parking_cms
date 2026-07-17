@@ -5,7 +5,7 @@
 - Page con phải có breadcrumb khi có ngữ cảnh điều hướng.
 - Spacing không dùng quá lớn; ưu tiên `gap-3`, `p-3`, `pt-3`, `space-y-3`, `mb-3`. Chỉ dùng spacing lớn hơn khi layout thật sự cần.
 - Input có label và field dùng `space-y-2`.
-- Page có table data tham khảo `EmployeeList.tsx` / `CommonTable.tsx`: sticky header, search, filter, advanced filter, pagination.
+- Page có table data tham khảo `MonthlyVehicleTable.tsx`: sticky header, search, filter, advanced filter, pagination.
 - Các mục select dùng `select.tsx`, không dùng select mặc định của browser.
 - Sử dụng icon dạng fill hoặc icon component rõ ràng, không dùng emoji.
 - Ưu tiên class Tailwind và token theme, tránh inline style.

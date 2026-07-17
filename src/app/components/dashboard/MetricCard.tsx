@@ -4,10 +4,10 @@ import { cn } from "@/lib/utils";
 
 const toneMap = {
   blue: "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]",
-  green: "bg-[#E9FFF5] text-[var(--sp-green)]",
-  orange: "bg-[#FFF4D8] text-[var(--sp-orange)]",
-  red: "bg-[#FDECEC] text-[#D93838]",
-  purple: "bg-[#F3EFFF] text-[var(--sp-purple)]",
+  green: "bg-[var(--sp-green-soft)] text-[var(--sp-green)]",
+  orange: "bg-[var(--sp-orange-soft)] text-[var(--sp-orange)]",
+  red: "bg-[var(--sp-red-soft)] text-[var(--destructive)]",
+  purple: "bg-[var(--sp-purple-soft)] text-[var(--sp-purple)]",
 };
 
 export function MetricCard({

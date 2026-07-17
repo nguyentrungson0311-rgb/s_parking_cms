@@ -35,12 +35,12 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-[8px] px-2.5 py-1.5 text-md font-medium leading-none",
+        "inline-flex items-center gap-1 whitespace-nowrap rounded-[8px] px-2 py-1 text-sm font-medium leading-none sm:gap-1.5 sm:px-2.5 sm:py-1.5 sm:text-md",
         statusToneClass[tone],
         className,
       )}
     >
-      <span className="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true" />
+      <span className="size-1 shrink-0 rounded-full bg-current sm:size-1.5" aria-hidden="true" />
       {children}
     </span>
   );
