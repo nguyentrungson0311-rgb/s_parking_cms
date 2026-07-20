@@ -42,19 +42,24 @@ export function OccupancyDonut() {
             </div>
           </div>
         </div>
-        <div className="mt-2 space-y-3">
+        <div className="mt-2 space-y-2.5">
           {occupancy.map((item, index) => (
-            <div key={item.name} className="flex h-7 items-center justify-between gap-4">
+            <div
+              key={item.name}
+              className="grid min-h-8 grid-cols-[minmax(0,1fr)_auto] items-center gap-4"
+            >
               <div className="flex min-w-0 items-center gap-3">
                 <span
                   className="size-4 shrink-0 rounded-full"
                   style={{ backgroundColor: htmlPalette[index] ?? item.color }}
                 />
-                <span className="truncate text-base font-regular leading-none text-[var(--sp-text)]">
+                <span className="min-w-0 truncate text-base font-regular leading-6 text-[var(--sp-text)]">
                   {item.name} ({item.value}%)
                 </span>
               </div>
-              <div className="text-base font-semibold leading-none text-[var(--sp-text)]">{item.count}</div>
+              <div className="shrink-0 text-right text-base font-semibold leading-6 text-[var(--sp-text)]">
+                {item.count}
+              </div>
             </div>
           ))}
         </div>

@@ -10,11 +10,26 @@ import {
   THead,
   TR,
 } from "@/app/components/ui/table";
+import {
+  TableActionDropdown,
+  type TableActionDropdownItem,
+} from "@/app/components/common/TableActionDropdown";
 import { shiftAssigns } from "@/app/data/shiftassign";
 import type { ShiftAssign, ShiftAssignStatus } from "@/app/types";
-import { ChevronDown } from "lucide-react";
+import { AlertTriangle, LogOut, Pencil } from "lucide-react";
 
-const ACTION_COLUMN_WIDTH = 84;
+const ACTION_COLUMN_WIDTH = 56;
+
+const SHIFT_ASSIGN_ACTIONS: TableActionDropdownItem[] = [
+  { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
+  {
+    id: "report-lost-card",
+    label: "Báo mất thẻ",
+    icon: <AlertTriangle className="size-4" />,
+    tone: "danger",
+  },
+  { id: "release-vehicle", label: "Cho xe ra khỏi bãi", icon: <LogOut className="size-4" /> },
+];
 
 export const SHIFT_ASSIGN_STATUS: Record<ShiftAssignStatus, StatusBadgeConfig> = {
   inYard: { label: "Đang trong bãi", tone: "orange" },
@@ -82,7 +97,7 @@ export function ShiftAssignTable({
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[150px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[84px] text-center" />
+          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center" />
         </TR>
       </THead>
       <TBody>
@@ -121,16 +136,11 @@ export function ShiftAssignTable({
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0}>
-                <button
-                  type="button"
-                  onClick={() => onOpenDetail(item)}
-                  className="mx-auto flex items-center justify-center gap-2 text-[var(--sp-muted)] hover:text-[var(--sp-blue)]"
-                  aria-label="Xem chi tiết"
-                >
-                  <i className="bi bi-eye-fill text-[18px] leading-none" aria-hidden="true" />
-                  <ChevronDown className="size-5" />
-                </button>
+              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+                <TableActionDropdown
+                  onViewDetail={() => onOpenDetail(item)}
+                  actions={SHIFT_ASSIGN_ACTIONS}
+                />
               </TD>
             </TR>
           );

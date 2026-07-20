@@ -8,27 +8,12 @@ export type { DropdownOption };
 export { CalendarBox, DropdownBox };
 
 const fieldShellClass =
-  "sp-ui-control h-9 w-full rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 text-base font-medium text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] focus:border-[var(--sp-blue)] focus:bg-[var(--input-active)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]";
-const activeFieldClass = "bg-[var(--input-active)]";
+  "sp-ui-control h-9 w-full rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 text-base font-medium text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] enabled:hover:border-[var(--sp-theme)] focus:border-[var(--sp-theme)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]";
 
-function hasFieldValue(value: unknown) {
-  return value !== undefined && value !== null && value.toString().trim().length > 0;
-}
-
-function useInputActiveState({
-  value,
-  defaultValue,
-}: {
-  value?: string | number | readonly string[];
-  defaultValue?: string | number | readonly string[];
-}) {
-  const [hasValue, setHasValue] = React.useState(hasFieldValue(value ?? defaultValue));
-
-  React.useEffect(() => {
-    if (value !== undefined) setHasValue(hasFieldValue(value));
-  }, [value]);
-
-  return [hasValue, setHasValue] as const;
+function getInputPlaceholder(placeholder?: string, label?: string) {
+  if (placeholder !== undefined) return placeholder;
+  if (label?.trim()) return `Nhập ${label.trim().toLowerCase()}`;
+  return "Nhập thông tin";
 }
 
 function useControllableValue({
@@ -101,24 +86,27 @@ function FieldLabel({
 
 export function Input({
   className,
+  placeholder,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cn(fieldShellClass, className)} {...props} />;
+  return (
+    <input
+      className={cn(fieldShellClass, className)}
+      placeholder={getInputPlaceholder(placeholder)}
+      {...props}
+    />
+  );
 }
 
 export function SearchInput({
   className,
   inputClassName,
   disabled = false,
-  value,
-  defaultValue,
-  onChange,
+  placeholder,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   inputClassName?: string;
 }) {
-  const [hasValue, setHasValue] = useInputActiveState({ value, defaultValue });
-
   return (
     <div className={cn("relative", className)}>
       <Search
@@ -131,16 +119,10 @@ export function SearchInput({
         type="search"
         className={cn(
           "h-full bg-[var(--sp-surface)] pl-10 font-normal",
-          hasValue && !disabled && activeFieldClass,
           inputClassName,
         )}
         disabled={disabled}
-        value={value}
-        defaultValue={defaultValue}
-        onChange={(event) => {
-          setHasValue(hasFieldValue(event.target.value));
-          onChange?.(event);
-        }}
+        placeholder={placeholder ?? "Tìm kiếm..."}
         {...props}
       />
     </div>
@@ -157,9 +139,7 @@ export function InputField({
   className,
   id,
   disabled = false,
-  value,
-  defaultValue,
-  onChange,
+  placeholder,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -171,7 +151,6 @@ export function InputField({
 }) {
   const generatedId = React.useId();
   const inputId = id ?? generatedId;
-  const [hasValue, setHasValue] = useInputActiveState({ value, defaultValue });
 
   return (
     <div className={cn("min-w-0", wrapperClassName)}>
@@ -197,16 +176,10 @@ export function InputField({
           id={inputId}
           required={required}
           disabled={disabled}
-          value={value}
-          defaultValue={defaultValue}
-          onChange={(event) => {
-            setHasValue(hasFieldValue(event.target.value));
-            onChange?.(event);
-          }}
+          placeholder={getInputPlaceholder(placeholder, label)}
           className={cn(
             leftIcon && "pl-10",
             rightIcon && "pr-10",
-            hasValue && !disabled && activeFieldClass,
             className,
           )}
           {...props}
@@ -285,7 +258,6 @@ export function InputSelect({
         className={cn(
           fieldShellClass,
           "flex items-center justify-between gap-3 text-left",
-          selectedOption && !disabled && activeFieldClass,
           !selectedOption && "text-[var(--sp-subtle)]",
         )}
       >
@@ -367,12 +339,12 @@ export function InputDate({
             if (!disabled) setOpen(true);
           }}
           onChange={(event) => setCurrentValue(parseDisplayDate(event.target.value))}
-          className={cn("pr-10", currentValue && !disabled && activeFieldClass)}
+          className="pr-10"
         />
         <button
           type="button"
           disabled={disabled}
-          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-[var(--sp-muted)] hover:bg-[var(--sp-blue-soft)] hover:text-[var(--sp-blue)] disabled:cursor-not-allowed disabled:text-[var(--sp-subtle)]"
+          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-[var(--sp-muted)] disabled:cursor-not-allowed disabled:text-[var(--sp-subtle)]"
           onClick={() => {
             if (!disabled) setOpen((current) => !current);
           }}
@@ -420,6 +392,7 @@ export function TextAreaField({
   onChange,
   maxLength,
   disabled = false,
+  placeholder,
   ...props
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label?: string;
@@ -452,6 +425,7 @@ export function TextAreaField({
         disabled={disabled}
         maxLength={maxWords ? undefined : maxLength}
         value={value !== undefined ? value : internalValue}
+        placeholder={getInputPlaceholder(placeholder, label)}
         onChange={(event) => {
           const nextValue = limitWords(event.target.value, maxWords);
           if (nextValue !== event.target.value) event.target.value = nextValue;
@@ -459,8 +433,7 @@ export function TextAreaField({
           onChange?.(event);
         }}
         className={cn(
-          "sp-ui-control min-h-[112px] w-full resize-y rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 py-3 text-base font-medium leading-6 text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] focus:border-[var(--sp-blue)] focus:bg-[var(--input-active)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]",
-          currentValue.trim().length > 0 && !disabled && activeFieldClass,
+          "sp-ui-control min-h-[112px] w-full resize-y rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 py-3 text-base font-medium leading-6 text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] enabled:hover:border-[var(--sp-theme)] focus:border-[var(--sp-theme)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]",
           className,
         )}
         {...props}

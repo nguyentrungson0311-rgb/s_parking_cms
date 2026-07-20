@@ -86,9 +86,9 @@ function ShiftSummary({ item }: { item: ShiftAssign }) {
   const statusLabel = item.status === "inYard" ? "Đang trong bãi" : "Đã ra";
 
   return (
-    <div className="border-b border-[var(--sp-border)] bg-white px-5 py-4">
+    <div className="border-b border-[var(--sp-border)] bg-[var(--sp-surface)] px-5 py-4">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="grid size-12 shrink-0 place-items-center rounded-[12px] bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]">
+        <div className="grid size-12 shrink-0 place-items-center rounded-[12px] bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]">
           <i className="bi bi-car-front-fill text-[22px] leading-none" aria-hidden="true" />
         </div>
         <div className="min-w-0 flex-1">
@@ -127,7 +127,7 @@ function BasicInfo({ item }: { item: ShiftAssign }) {
   return (
     <Card className="sp-card overflow-hidden">
       <div className="flex items-center gap-3 p-4">
-        <CheckSquare className="size-6 text-[var(--sp-blue)]" />
+        <CheckSquare className="size-6 text-[var(--sp-theme)]" />
         <h3 className="text-lg font-semibold text-[var(--sp-strong)]">Thông tin cơ bản</h3>
       </div>
       <div className="px-4 pb-4">
@@ -171,7 +171,7 @@ function BasicInfoTable({ item }: { item: ShiftAssign }) {
         </TR>
       </THead>
       <TBody className="divide-y-0">
-        <TR className="hover:bg-white">
+        <TR className="hover:bg-[var(--sp-table-row)]">
           <TD className="border-r border-[var(--sp-border)] px-4">
             <div className="flex items-center gap-3">
               <LogIn className="size-5 text-[var(--sp-green)]" />
@@ -192,26 +192,26 @@ function BasicInfoTable({ item }: { item: ShiftAssign }) {
           </TD>
           <TD className="px-4">--</TD>
         </TR>
-        <TR className="bg-[#F4F7FB] hover:bg-[#F4F7FB]">
-          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+        <TR className="bg-[var(--sp-table-row-hover)] hover:bg-[var(--sp-table-row-hover)]">
+          <TD className="border-r border-[var(--sp-border)] bg-[var(--sp-table-row-hover)] px-4">
             <div className="flex items-center gap-3">
               <LogOut className="size-5 text-[var(--sp-orange)]" />
               Ra
             </div>
           </TD>
-          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+          <TD className="border-r border-[var(--sp-border)] bg-[var(--sp-table-row-hover)] px-4">
             {exitTime}
           </TD>
-          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+          <TD className="border-r border-[var(--sp-border)] bg-[var(--sp-table-row-hover)] px-4">
             Cổng B
           </TD>
-          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+          <TD className="border-r border-[var(--sp-border)] bg-[var(--sp-table-row-hover)] px-4">
             Lần 04
           </TD>
-          <TD className="border-r border-[var(--sp-border)] bg-[#F4F7FB] px-4">
+          <TD className="border-r border-[var(--sp-border)] bg-[var(--sp-table-row-hover)] px-4">
             {duration}
           </TD>
-          <TD className="bg-[#F4F7FB] px-4">
+          <TD className="bg-[var(--sp-table-row-hover)] px-4">
             {amount}
           </TD>
         </TR>
@@ -248,9 +248,9 @@ function VehicleImageCard({
       </div>
 
       {!hasImage ? (
-        <div className="grid min-h-[360px] place-items-center rounded-md border border-dashed border-[var(--sp-border)] bg-[#F8FAFD] p-6 text-center">
+        <div className="grid min-h-[360px] place-items-center rounded-md border border-dashed border-[var(--sp-border)] bg-[var(--badge-neutral-bg)] p-6 text-center">
           <div className="max-w-[260px]">
-            <div className="mx-auto grid size-14 place-items-center rounded-full bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]">
+            <div className="mx-auto grid size-14 place-items-center rounded-full bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]">
               <LogOut className="size-7" />
             </div>
             <div className="mt-4 text-base font-extrabold text-[var(--sp-strong)]">
@@ -283,8 +283,8 @@ function VehicleImageCard({
               />
             </div>
 
-            <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md border border-[var(--sp-border)] bg-white">
-              <div className="relative min-h-0 flex-1 overflow-hidden bg-[#DCE3ED]">
+            <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-md border border-[var(--sp-border)] bg-[var(--sp-surface)]">
+              <div className="relative min-h-0 flex-1 overflow-hidden bg-[var(--sp-grey-soft)]">
                 <img
                   src={SHIFT_DETAIL_IMAGES.overview}
                   alt={isIn ? "Ảnh tổng quan xe vào" : "Ảnh tổng quan xe ra"}
@@ -327,8 +327,8 @@ function EvidenceMiniCard({
   const isPlate = type === "plate";
 
   return (
-    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-[var(--sp-border)] bg-white">
-      <div className="relative h-[108px] shrink-0 overflow-hidden bg-[#EEF2F7]">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden rounded-lg border border-[var(--sp-border)] bg-[var(--sp-surface)]">
+      <div className="relative h-[108px] shrink-0 overflow-hidden bg-[var(--sp-grey-soft)]">
         {isPlate ? (
           <img
             src={SHIFT_DETAIL_IMAGES.plate}

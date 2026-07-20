@@ -24,6 +24,10 @@ export type ShiftAssignStatus = "inYard" | "exited";
 
 export type ShiftCode = "Ca 1" | "Ca 2" | "Ca 3";
 
+export type VehicleDisplayType = "Ô tô" | "Xe máy" | "Xe máy điện" | "Xe đạp";
+
+export type TicketDisplayType = "Vé tháng" | "Vé lượt" | "Vé ngoài";
+
 export interface Vehicle {
   id: string;
   lotCardNumber: string;
@@ -94,4 +98,22 @@ export interface ShiftAssign {
   shiftOut: ShiftCode | "-";
   statusFlag: boolean;
   status: ShiftAssignStatus;
+}
+
+export interface OverdueVehicle {
+  id: string;
+  lotCardNumber: string;
+  ticketNumber: string;
+  cardCode: string;
+  vehicleType: VehicleDisplayType;
+  ticketType: TicketDisplayType;
+  checkedInAt: string;
+  plateImageLabel: string;
+  overviewImageLabel: string;
+  recognitionText: string;
+  customerName: string;
+  apartment: string;
+  vehicleName: string;
+  plate: string;
+  overdueDays: number;
 }

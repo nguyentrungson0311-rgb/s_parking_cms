@@ -47,8 +47,8 @@ export function VehicleFilters() {
             type="button"
             className={
               index === 0
-                ? "h-8 rounded-lg border border-[var(--sp-blue)] bg-[var(--sp-blue)] px-4 text-sm font-extrabold text-white"
-                : "h-8 rounded-lg border border-[var(--sp-border)] bg-white px-4 text-sm font-bold text-[#6C778A] hover:border-[var(--sp-blue)]/40"
+                ? "h-8 rounded-lg border border-[var(--sp-theme)] bg-[var(--sp-theme)] px-4 text-sm font-extrabold text-white"
+                : "h-8 rounded-lg border border-[var(--sp-border)] bg-white px-4 text-sm font-bold text-[#6C778A] hover:border-[var(--sp-theme)]/40"
             }
           >
             {filter}

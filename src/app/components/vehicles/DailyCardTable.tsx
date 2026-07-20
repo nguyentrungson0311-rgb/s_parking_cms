@@ -10,11 +10,21 @@ import {
   THead,
   TR,
 } from "@/app/components/ui/table";
+import {
+  TableActionDropdown,
+  type TableActionDropdownItem,
+} from "@/app/components/common/TableActionDropdown";
 import { dailyCards } from "@/app/data/dailycard";
 import type { DailyCardStatus } from "@/app/types";
-import { ChevronDown } from "lucide-react";
+import { Lock, Pencil, Unlock } from "lucide-react";
 
-const ACTION_COLUMN_WIDTH = 84;
+const ACTION_COLUMN_WIDTH = 56;
+
+const DAILY_CARD_ACTIONS: TableActionDropdownItem[] = [
+  { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
+  { id: "lock-card", label: "Khóa thẻ", icon: <Lock className="size-4" />, tone: "danger" },
+  { id: "unlock-card", label: "Mở thẻ", icon: <Unlock className="size-4" /> },
+];
 
 export const DAILY_CARD_STATUS: Record<DailyCardStatus, StatusBadgeConfig> = {
   active: { label: "Đang hoạt động", tone: "green" },
@@ -73,7 +83,7 @@ export function DailyCardTable() {
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[110px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[84px] text-center" />
+          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center" />
         </TR>
       </THead>
       <TBody>
@@ -110,15 +120,8 @@ export function DailyCardTable() {
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0}>
-                <button
-                  type="button"
-                  className="mx-auto flex items-center justify-center gap-2 text-[var(--sp-muted)] hover:text-[var(--sp-blue)]"
-                  aria-label="Xem chi tiết"
-                >
-                  <i className="bi bi-eye-fill text-[18px] leading-none" aria-hidden="true" />
-                  <ChevronDown className="size-5" />
-                </button>
+              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+                <TableActionDropdown actions={DAILY_CARD_ACTIONS} />
               </TD>
             </TR>
           );

@@ -54,12 +54,12 @@ export function Sidebar({
           collapsed && "w-full justify-center",
         )}
       >
-        <div className="sp-sidebar-logo grid size-12 place-items-center rounded-full bg-[linear-gradient(140deg,#16D1CE_14.51%,#0B5CE6_85.49%)] text-xl font-extrabold leading-none text-white">
+        <div className="sp-sidebar-logo grid size-12 place-items-center rounded-full text-xl font-extrabold leading-none text-white">
           P
         </div>
         <div
           className={cn(
-            "sp-sidebar-brand-text overflow-hidden text-xl font-extrabold leading-none text-[var(--sp-blue)]",
+            "sp-sidebar-brand-text overflow-hidden text-xl font-extrabold leading-none text-[var(--sp-theme)]",
           )}
         >
           S-PARKING
@@ -139,31 +139,18 @@ export function Sidebar({
           className={cn(
             "sp-sidebar-parent-item",
             collapsed
-              ? "mx-auto grid size-12 flex-none place-items-center rounded-md p-0 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-blue)]"
+              ? "mx-auto grid size-10 flex-none place-items-center rounded-md p-0 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-theme)]"
               : "flex h-12 min-w-0 flex-1 items-center gap-4 rounded-md px-4 text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
           )}
           title={collapsed ? "Cài đặt" : undefined}
         >
-          <i className="bi bi-gear-fill shrink-0 text-[22px] leading-none" aria-hidden="true" />
+          <i className="bi bi-gear-fill shrink-0 text-[20px] leading-none" aria-hidden="true" />
           {!collapsed ? <span className="sp-sidebar-label overflow-hidden">Cài đặt</span> : null}
         </button>
         <button
           type="button"
-          onClick={() => onNavigate("ui-atoms")}
-          data-active={activePage === "ui-atoms" ? "true" : "false"}
-          className={cn(
-            "grid size-9 shrink-0 place-items-center rounded-md text-[var(--sp-muted)] transition-all duration-150 ease-out hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-blue)]",
-            activePage === "ui-atoms" && "bg-[var(--accent)] text-[var(--sp-blue)]",
-          )}
-          title="Atom components"
-          aria-label="Atom components"
-        >
-          <i className="bi bi-ui-checks-grid text-[18px] leading-none" aria-hidden="true" />
-        </button>
-        <button
-          type="button"
           onClick={onToggleCollapsed}
-          className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[var(--sp-sidebar-control)] text-[var(--sp-muted)] transition-all duration-150 ease-out hover:border-[var(--sp-blue)]/40 hover:bg-[var(--accent)] hover:text-[var(--sp-blue)]"
+          className="flex size-9 shrink-0 items-center justify-center rounded-md bg-[var(--sp-sidebar-control)] text-[var(--sp-muted)] transition-all duration-150 ease-out hover:border-[var(--sp-theme)]/40 hover:bg-[var(--accent)] hover:text-[var(--sp-theme)]"
           title={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
           aria-label={collapsed ? "Mở rộng sidebar" : "Thu gọn sidebar"}
           aria-pressed={collapsed}
@@ -198,9 +185,9 @@ function SidebarButton({
         "sp-sidebar-parent-item relative flex h-10 w-full max-w-full items-center gap-4 overflow-hidden rounded-md px-4 text-left transition-all duration-150 ease-out",
         collapsed && "mx-auto w-10 justify-center gap-0 px-0",
         active && collapsed
-          ? "bg-[var(--accent)] text-[var(--sp-blue)]"
+          ? "bg-[var(--accent)] text-[var(--sp-theme)]"
           : active
-            ? "bg-[var(--accent)] text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-blue)]"
+            ? "bg-[var(--accent)] text-[var(--sp-theme)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-theme)]"
             : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
       )}
     >
@@ -252,13 +239,13 @@ function SidebarGroup({
           "sp-sidebar-parent-item relative flex h-10 w-full max-w-full items-center gap-2 overflow-hidden rounded-md px-4 text-left transition-all duration-150 ease-out",
           collapsed && "mx-auto w-10 justify-center gap-0 px-0",
           active && collapsed
-            ? "bg-[var(--accent)] text-[var(--sp-blue)]"
+            ? "bg-[var(--accent)] text-[var(--sp-theme)] hover:bg-[var(--accent)] hover:text-[var(--sp-theme)]"
             : active
-              ? "bg-[var(--accent)] text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-blue)]"
-              : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
+              ? "bg-[var(--sp-sidebar-item)] text-[var(--sp-theme)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-theme)]"
+            : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
         )}
       >
-        <i className={cn("bi shrink-0 text-[22px] leading-none", iconClass)} aria-hidden="true" />
+        <i className={cn("bi shrink-0 text-[20px] leading-none", iconClass)} aria-hidden="true" />
         <span className="sp-sidebar-label min-w-0 flex-1 overflow-hidden truncate">
           {label}
         </span>
@@ -307,13 +294,13 @@ function SidebarSubItem({
       onClick={onClick}
       data-active={active ? "true" : "false"}
       className={cn(
-        "sp-sidebar-subitem relative flex h-9 w-full max-w-full items-center overflow-hidden rounded-sm px-1 py-2 text-left transition",
+        "sp-sidebar-subitem relative flex h-10 w-full max-w-full items-center overflow-hidden rounded-md px-4 py-2 text-left transition-all duration-150 ease-out",
         active
-          ? "bg-transparent text-[var(--sp-blue)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-0.5 before:rounded-full before:bg-[var(--sp-blue)]"
-          : "text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
+          ? "bg-[var(--accent)] text-[var(--sp-theme)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-1 before:rounded-full before:bg-[var(--sp-theme)]"
+          : "bg-[var(--sp-sidebar-item)] text-[var(--sp-muted)] hover:bg-[var(--sp-sidebar-item-hover)] hover:text-[var(--sp-strong)]",
       )}
     >
-      <span className="min-w-0 truncate pl-3">
+      <span className="min-w-0 truncate">
         {label}
       </span>
     </button>

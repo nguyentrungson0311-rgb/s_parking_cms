@@ -7,6 +7,7 @@ import { ExternalCard } from "@/app/pages/ExternalCard";
 import { MonthlyCardDetail } from "@/app/pages/MonthlyCardDetail";
 import { MonthlyReport } from "@/app/pages/MonthlyReport";
 import { MonthlyVehicle } from "@/app/pages/MonthlyVehicle";
+import { OverdueVehicle } from "@/app/pages/OverdueVehicle";
 import { PlaceholderPage } from "@/app/pages/PlaceholderPage";
 import { ShiftAssign } from "@/app/pages/ShiftAssign";
 import type { PageId } from "@/app/types";
@@ -45,9 +46,7 @@ export default function App() {
           onOpenDetail={() => setDetailOpen(true)}
         />
       )}
-      {activePage === "overdue-vehicles" && (
-        <PlaceholderPage title={pageTitles[activePage] ?? ""} parent="Quản lý phương tiện" />
-      )}
+      {activePage === "overdue-vehicles" && <OverdueVehicle />}
       {activePage === "gate-management" && (
         <PlaceholderPage title={pageTitles[activePage] ?? ""} parent="Quản lý phương tiện" />
       )}

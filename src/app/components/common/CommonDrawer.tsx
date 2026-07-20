@@ -1,8 +1,25 @@
 import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import * as React from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 import { createPortal } from "react-dom";
+
+const CommonDrawerOverlayContext =
+  React.createContext<Dispatch<SetStateAction<ReactNode | null>> | null>(null);
+
+export function useCommonDrawerOverlay(overlay: ReactNode | null) {
+  const setOverlay = React.useContext(CommonDrawerOverlayContext);
+
+  React.useEffect(() => {
+    if (!setOverlay) return;
+
+    setOverlay(overlay);
+    return () => setOverlay(null);
+  }, [overlay, setOverlay]);
+
+  return Boolean(setOverlay);
+}
 
 export function CommonDrawer({
   open,
@@ -23,31 +40,36 @@ export function CommonDrawer({
   children: ReactNode;
   className?: string;
 }) {
+  const [overlay, setOverlay] = React.useState<ReactNode | null>(null);
+
   if (!open) return null;
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-[100] flex justify-end bg-[#111827]/20 backdrop-blur-[3px]"
-      onMouseDown={(event) => {
-        if (event.target === event.currentTarget) onClose();
-      }}
-    >
-      <section
-        className={cn(
-          "flex h-full w-full min-w-0 flex-col bg-white shadow-lg lg:w-[66.666vw]",
-          className,
-        )}
-        role="dialog"
-        aria-modal="true"
-        aria-label={title}
+    <CommonDrawerOverlayContext.Provider value={setOverlay}>
+      <div
+        className="fixed inset-0 z-[100] flex justify-end bg-[var(--sp-bg)]/20 backdrop-blur-[3px]"
+        onMouseDown={(event) => {
+          if (event.target === event.currentTarget) onClose();
+        }}
       >
-        <CommonDrawerHeader title={title} onClose={onClose}>
-          {headerContent}
-        </CommonDrawerHeader>
-        <CommonDrawerMain>{children}</CommonDrawerMain>
-        {footer ? <CommonDrawerFooter>{footer}</CommonDrawerFooter> : null}
-      </section>
-    </div>,
+        <section
+          className={cn(
+            "relative flex h-full w-full min-w-0 flex-col overflow-hidden bg-[var(--sp-surface)] shadow-lg lg:w-[66.666vw]",
+            className,
+          )}
+          role="dialog"
+          aria-modal="true"
+          aria-label={title}
+        >
+          <CommonDrawerHeader title={title} onClose={onClose}>
+            {headerContent}
+          </CommonDrawerHeader>
+          <CommonDrawerMain>{children}</CommonDrawerMain>
+          {footer ? <CommonDrawerFooter>{footer}</CommonDrawerFooter> : null}
+          {overlay}
+        </section>
+      </div>
+    </CommonDrawerOverlayContext.Provider>,
     document.body,
   );
 }
@@ -62,7 +84,7 @@ export function CommonDrawerHeader({
   children?: ReactNode;
 }) {
   return (
-    <header className="shrink-0 bg-white">
+    <header className="shrink-0 bg-[var(--sp-surface)]">
       <div className="flex items-center justify-between gap-3 border-b border-[var(--sp-border)] px-3 py-3 sm:gap-6 sm:px-5 sm:py-3">
         <div className="min-w-0">
           <h2 className="text-base font-semibold text-[var(--sp-strong)] sm:text-lg">{title}</h2>
@@ -86,7 +108,7 @@ export function CommonDrawerMain({ children }: { children: ReactNode }) {
 
 export function CommonDrawerFooter({ children }: { children: ReactNode }) {
   return (
-    <footer className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-[var(--sp-border)] bg-white px-4 py-3 sm:px-6 sm:py-4">
+    <footer className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-[var(--sp-border)] bg-[var(--sp-surface)] px-4 py-3 sm:px-6 sm:py-4">
       {children}
     </footer>
   );

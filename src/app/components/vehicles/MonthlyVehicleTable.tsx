@@ -10,11 +10,21 @@ import {
   THead,
   TR,
 } from "@/app/components/ui/table";
+import {
+  TableActionDropdown,
+  type TableActionDropdownItem,
+} from "@/app/components/common/TableActionDropdown";
 import { vehicleMonthVehicles as vehicles } from "@/app/data/vehiclemonth";
 import type { MonthlyVehicleStatus } from "@/app/types";
-import { ChevronDown } from "lucide-react";
+import { Lock, Pencil, Unlock } from "lucide-react";
 
-const ACTION_COLUMN_WIDTH = 84;
+const ACTION_COLUMN_WIDTH = 56;
+
+const MONTHLY_VEHICLE_ACTIONS: TableActionDropdownItem[] = [
+  { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
+  { id: "lock-card", label: "Khóa thẻ", icon: <Lock className="size-4" />, tone: "danger" },
+  { id: "unlock-card", label: "Mở thẻ", icon: <Unlock className="size-4" /> },
+];
 
 export const MONTHLY_VEHICLE_STATUS: Record<MonthlyVehicleStatus, StatusBadgeConfig> = {
   active: { label: "Đang hoạt động", tone: "green" },
@@ -80,7 +90,7 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[150px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[84px] text-center">
+          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
             
           </TH>
         </TR>
@@ -124,16 +134,8 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0}>
-                <button
-                  type="button"
-                  onClick={onOpenDetail}
-                  className="mx-auto flex items-center justify-center gap-2 text-[var(--sp-muted)] hover:text-[var(--sp-blue)]"
-                  aria-label="Xem chi tiết"
-                >
-                  <i className="bi bi-eye-fill text-[18px] leading-none" aria-hidden="true" />
-                  <ChevronDown className="size-5" />
-                </button>
+              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+                <TableActionDropdown onViewDetail={onOpenDetail} actions={MONTHLY_VEHICLE_ACTIONS} />
               </TD>
             </TR>
           );

@@ -146,8 +146,8 @@ export function MonthlyCardDetail({
 
 function TicketSummary() {
   return (
-    <div className="flex items-center gap-6 border-b border-[var(--sp-border)] bg-white p-4 sm:p-4">
-      <div className="relative h-[100px] w-[226px] shrink-0 overflow-hidden rounded-[14px] bg-[linear-gradient(135deg,#25B7D7,#0B5CE6)] p-4 text-white shadow-[0_5px_30px_rgba(11,92,230,0.18)]">
+    <div className="flex items-center gap-6 border-b border-[var(--sp-border)] bg-[var(--sp-surface)] p-4 sm:p-4">
+      <div className="relative h-[100px] w-[226px] shrink-0 overflow-hidden rounded-[14px] bg-[linear-gradient(135deg,var(--color-brand-gradient-start),var(--color-brand-gradient-end))] p-4 text-white shadow-[var(--shadow-brand)]">
         <Ticket className="absolute right-4 top-4 size-5" />
       </div>
 

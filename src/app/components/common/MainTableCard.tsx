@@ -64,7 +64,7 @@ export function MainTableCard({
       <Button
         variant={filtersApplied ? "outline-primary" : "outline"}
         size="md"
-        className={cn(filtersApplied && "bg-[var(--sp-blue-soft)]")}
+        className={cn(filtersApplied && "bg-[var(--sp-theme-soft)]")}
         onClick={() => setFilterOpen((current) => !current)}
       >
         <ListFilter />

@@ -29,7 +29,7 @@ export function VehicleSidePanel() {
 
       <Card className="overflow-hidden">
         <div className="data-grid p-[22px]">
-          <div className="grid size-14 place-items-center rounded-[18px] bg-[var(--sp-blue)] text-white">
+          <div className="grid size-14 place-items-center rounded-[18px] bg-[var(--sp-theme)] text-white">
             <CreditCard className="size-7" />
           </div>
           <div className="font-sf mt-6 text-2xl font-bold text-[var(--sp-strong)]">986</div>
@@ -39,7 +39,7 @@ export function VehicleSidePanel() {
 
       <div className="grid grid-cols-2 gap-4">
         <Card className="p-4">
-          <CircleParking className="size-6 text-[var(--sp-blue)]" />
+          <CircleParking className="size-6 text-[var(--sp-theme)]" />
           <div className="font-sf mt-4 text-xl font-bold">328</div>
           <div className="text-xs text-[var(--sp-muted)]">Chỗ trống</div>
         </Card>

@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const toneMap = {
-  blue: "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]",
+  blue: "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
   green: "bg-[var(--sp-green-soft)] text-[var(--sp-green)]",
   orange: "bg-[var(--sp-orange-soft)] text-[var(--sp-orange)]",
   red: "bg-[var(--sp-red-soft)] text-[var(--destructive)]",

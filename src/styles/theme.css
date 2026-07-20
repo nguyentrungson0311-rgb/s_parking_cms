@@ -1,7 +1,7 @@
 :root {
   --radius: 16px;
   --sp-page-padding: 1rem;
-  --sp-sidebar-width:18.2rem;
+  --sp-sidebar-width:16.4rem;
   --sp-sidebar-collapsed-width: 4.5rem;
   --sp-shell-gap: 0.75rem;
   --sp-content-gap: 1rem;
@@ -182,10 +182,18 @@ button {
   overflow: hidden;
   border-radius: 16px;
   background: var(--sp-surface);
-  padding: 20px;
-  box-shadow: var(--shadow-sidebar);
+  padding: 16px;
+ 
   transition: padding 140ms cubic-bezier(0.2, 0, 0, 1);
   will-change: padding;
+}
+
+.sp-sidebar-logo {
+  background: linear-gradient(
+    140deg,
+    var(--color-brand-gradient-start) 14.51%,
+    var(--color-brand-gradient-end) 85.49%
+  );
 }
 
 .sp-sidebar-desktop {
@@ -302,7 +310,7 @@ button {
   border-radius: 12px;
   background: var(--sp-surface);
   padding: 0 20px;
-  box-shadow: var(--shadow-header);
+ 
 }
 
 .sp-card {
@@ -332,7 +340,7 @@ button {
 }
 
 .sp-table-scroll {
-  scrollbar-color: #9aa3af #edf2f8;
+  scrollbar-color: var(--sp-subtle) var(--badge-disabled-bg);
   scrollbar-width: thin;
 }
 
@@ -342,18 +350,18 @@ button {
 }
 
 .sp-table-scroll::-webkit-scrollbar-track {
-  background: #edf2f8;
+  background: var(--badge-disabled-bg);
   border-radius: 999px;
 }
 
 .sp-table-scroll::-webkit-scrollbar-thumb {
-  border: 2px solid #edf2f8;
+  border: 2px solid var(--sp-subtle);
   border-radius: 999px;
-  background: #9aa3af;
+  background: var(--badge-disabled-fg);
 }
 
 .sp-table-scroll::-webkit-scrollbar-thumb:hover {
-  background: #7f8996;
+  background: var(--sp-muted);
 }
 
 .sp-section-title {
@@ -530,8 +538,8 @@ button {
     place-items: center;
     border: 0;
     border-radius: 10px;
-    background: var(--sp-blue-soft);
-    color: var(--sp-blue);
+    background: var(--sp-theme-soft);
+    color: var(--sp-theme);
   }
 
   .sp-topbar-heading {

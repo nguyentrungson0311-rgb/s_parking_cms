@@ -3,7 +3,7 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const cardStats = [
   { title: "Thẻ nội bộ", count: "300", value: 300, percent: "98%", color: "#844ee9" },
-  { title: "Thẻ cư dân", count: "986", value: 986, percent: "92%", color: "#08ca18" },
+  { title: "Thẻ cư dân", count: "986", value: 986, percent: "92%", color: "#01b862" },
   { title: "Vé lượt", count: "5.822", value: 1900, percent: "76%", color: "#f885bb" },
 ];
 
@@ -50,20 +50,23 @@ export function AlertsPanel() {
           </div>
         </div>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 space-y-2.5">
           {cardStats.map((item) => (
-            <div key={item.title} className="flex h-8 items-center justify-between gap-4">
+            <div
+              key={item.title}
+              className="grid min-h-8 grid-cols-[minmax(0,1fr)_auto] items-center gap-4"
+            >
               <div className="flex min-w-0 items-center gap-3">
                 <span className="size-4 shrink-0 rounded-md" style={{ backgroundColor: item.color }} />
-                <span className="truncate text-base font-regular leading-none text-[var(--sp-text)]">
+                <span className="min-w-0 truncate text-base font-regular leading-6 text-[var(--sp-text)]">
                   {item.title}
                 </span>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="rounded-full bg-[var(--badge-neutral-bg)] px-2 py-1 text-xs font-bold text-[var(--sp-muted)]">
+              <div className="flex shrink-0 items-center gap-3">
+                <span className="rounded-full bg-[var(--badge-neutral-bg)] px-2 py-1 text-xs font-bold leading-4 text-[var(--sp-muted)]">
                   {item.percent}
                 </span>
-                <span className="min-w-[56px] text-right text-base font-semibold leading-none text-[var(--sp-text)]">
+                <span className="min-w-[56px] text-right text-base font-semibold leading-6 text-[var(--sp-text)]">
                   {item.count}
                 </span>
               </div>

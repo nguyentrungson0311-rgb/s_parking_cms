@@ -148,7 +148,7 @@ export function FilterPanel({
   return (
     <section
       ref={panelRef}
-      className="fixed z-50 max-h-[calc(100vh-100px)] overflow-visible rounded-[10px] border border-[var(--sp-border)] bg-white p-4 shadow-[0_18px_44px_rgba(18,32,51,0.16)]"
+      className="fixed z-50 max-h-[calc(100vh-100px)] overflow-visible rounded-[10px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-4 shadow-[var(--shadow-soft)]"
       style={{
         top: position.top,
         left: position.left,

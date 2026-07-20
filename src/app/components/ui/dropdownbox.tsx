@@ -46,7 +46,7 @@ export function DropdownBox({
             onClick={() => onSelect(option.value)}
             className={cn(
               "flex min-h-9 w-full items-center gap-2 rounded-[7px] px-3 text-left text-base font-medium text-[var(--sp-text)] transition hover:bg-[var(--badge-neutral-bg)] disabled:cursor-not-allowed disabled:text-[var(--sp-subtle)]",
-              selected && "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]",
+              selected && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
             )}
           >
             <span className="min-w-0 flex-1 truncate">{option.label}</span>

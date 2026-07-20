@@ -207,7 +207,7 @@ export function MonthlyReport() {
                     className={cn(
                       "relative flex w-full gap-3 rounded-md border-l-4 px-3 py-3 text-left transition-colors",
                       active
-                        ? "border-l-[var(--sp-blue)] bg-[var(--accent)]"
+                        ? "border-l-[var(--sp-theme)] bg-[var(--accent)]"
                         : "border-l-transparent hover:bg-[var(--accent)]",
                     )}
                   >
@@ -218,7 +218,7 @@ export function MonthlyReport() {
                       <span
                         className={cn(
                           "block truncate text-base font-medium",
-                          active ? "text-[var(--sp-blue)]" : "text-[var(--sp-strong)]",
+                          active ? "text-[var(--sp-theme)]" : "text-[var(--sp-strong)]",
                         )}
                       >
                         {report.title}
@@ -330,7 +330,7 @@ export function MonthlyReport() {
                           className={cn(
                             "inline-flex h-7 items-center rounded-md px-2 text-sm font-semibold",
                             row.shift === "Ca 1"
-                              ? "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]"
+                              ? "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]"
                               : "bg-[var(--sp-green-soft)] text-[var(--sp-green)]",
                           )}
                         >

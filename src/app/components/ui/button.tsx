@@ -9,33 +9,33 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "border-transparent bg-[var(--sp-blue)] text-white hover:shadow-[0_10px_18px_rgba(11,92,230,0.16)] hover:bg-[var(--sp-blue-strong)]",
+          "border-transparent bg-[var(--sp-theme)] text-[var(--primary-foreground)] hover:shadow-[var(--shadow-brand)] hover:bg-[var(--sp-theme-strong)]",
         "outline-primary":
-          "border-[var(--sp-blue)] bg-[var(--sp-surface)] text-[var(--sp-blue)] hover:bg-[var(--sp-blue-soft)]",
+          "border-[var(--sp-theme)] bg-[var(--sp-surface)] text-[var(--sp-theme)] hover:bg-[var(--sp-theme-soft)]",
         plain:
-          "border-transparent bg-transparent text-[var(--sp-strong)] hover:bg-[var(--sp-blue-soft)]",
+          "border-transparent bg-transparent text-[var(--sp-strong)] hover:bg-[var(--sp-theme-soft)]",
         "outline-plain":
-          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-blue-soft)]",
+          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-theme-soft)]",
         secondary:
-          "border-transparent bg-[var(--sp-blue-soft)] text-[var(--sp-blue)] hover:bg-[var(--accent)]",
+          "border-transparent bg-[var(--sp-theme-soft)] text-[var(--sp-theme)] hover:bg-[var(--accent)]",
         "outline-secondary":
-          "border-[var(--sp-secondary)] bg-[var(--sp-blue-soft)] text-[var(--sp-blue)] hover:bg-[var(--accent)]",
+          "border-[var(--sp-secondary)] bg-[var(--sp-theme-soft)] text-[var(--sp-theme)] hover:bg-[var(--accent)]",
         "fill-secondary":
-          "border-transparent bg-[var(--sp-secondary)] text-white hover:shadow-[0_10px_18px_rgba(78,157,255,0.18)] hover:bg-[#2D85F5]",
+          "border-transparent bg-[var(--sp-secondary)] text-[var(--primary-foreground)] hover:shadow-[var(--shadow-brand)] hover:bg-[var(--sp-theme-strong)]",
         "success-outline":
           "border-[var(--sp-green)] bg-[var(--sp-green-soft)] text-[var(--sp-green)] hover:bg-[var(--sp-green-soft)]",
         "success-fill":
-          "border-transparent bg-[var(--sp-green)] text-white hover:shadow-[0_10px_18px_rgba(36,199,142,0.18)] hover:bg-[var(--sp-green-strong)]",
+          "border-transparent bg-[var(--sp-green)] text-[var(--sp-success-fill-foreground,var(--primary-foreground))] hover:shadow-[0_10px_18px_rgba(36,199,142,0.18)] hover:bg-[var(--sp-green-strong)]",
         "danger-outline":
           "border-[var(--destructive)] bg-[var(--sp-red-soft)] text-[var(--destructive)] hover:bg-[var(--sp-red-soft)]",
         "danger-fill":
-          "border-transparent bg-[var(--destructive)] text-white hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
+          "border-transparent bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
         outline:
-          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-blue-soft)]",
+          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-theme-soft)]",
         ghost:
           "border-transparent bg-transparent text-[var(--sp-muted)] hover:bg-[var(--muted)] hover:text-[var(--sp-strong)]",
         danger:
-          "border-transparent bg-[var(--destructive)] text-white hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
+          "border-transparent bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
         disable:
           "border-transparent bg-[var(--sp-grey-soft)] text-[var(--badge-disabled-fg)] shadow-none",
       },
@@ -44,7 +44,7 @@ const buttonVariants = cva(
         md: "h-9 gap-1.5 rounded-[8px] px-3.5 text-sm [&_svg]:size-4",
         lg: "h-10 gap-2 rounded-[9px] px-4 py-2 text-base [&_svg]:size-[18px]",
         icon: "size-9 rounded-[8px] p-0 [&_svg]:size-4",
-        "icon-sm": "size-8 rounded-[8px] p-0 [&_svg]:size-4",
+        "icon-sm": "size-8 rounded-[10px] p-0 [&_svg]:size-4",
         "icon-lg": "size-12 rounded-[8px] p-0 [&_svg]:size-[18px]",
       },
     },

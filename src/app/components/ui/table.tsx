@@ -185,7 +185,7 @@ export function TablePagination({
             type="button"
             className={
               page === 1
-                ? "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-blue)] bg-[var(--sp-blue)] px-2 font-extrabold text-white"
+                ? "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-theme)] bg-[var(--sp-theme)] px-2 font-extrabold text-white"
                 : "grid h-[30px] min-w-9 place-items-center rounded-[5px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-2 font-medium text-[var(--sp-muted)]"
             }
           >

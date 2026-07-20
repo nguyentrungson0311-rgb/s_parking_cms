@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useCommonDrawerOverlay } from "@/app/components/common/CommonDrawer";
+import { LoadingOverlay } from "@/app/components/common/LoadingOverlay";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -9,7 +11,6 @@ import {
   Grid2X2,
   Image as ImageIcon,
   List,
-  Loader2,
   RefreshCcw,
   Trash2,
   UploadCloud,
@@ -92,6 +93,11 @@ export function DocumentUploadPanel({
   const [viewMode, setViewMode] = React.useState<DocumentViewMode>("grid");
   const [dragActive, setDragActive] = React.useState(false);
   const [uploading, setUploading] = React.useState(false);
+  const loadingOverlay = React.useMemo(
+    () => (uploading ? <LoadingOverlay /> : null),
+    [uploading],
+  );
+  const hasDrawerOverlay = useCommonDrawerOverlay(loadingOverlay);
 
   React.useEffect(() => {
     return () => {
@@ -145,7 +151,7 @@ export function DocumentUploadPanel({
   };
 
   return (
-    <Card className="sp-card p-4">
+    <Card className="sp-card relative p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h3 className="text-lg font-bold text-[var(--sp-strong)]">{title}</h3>
        
@@ -155,8 +161,8 @@ export function DocumentUploadPanel({
 
       <div
         className={cn(
-          "rounded-lg border border-dashed border-[#C9D3E4] bg-white p-5 transition-colors",
-          dragActive && "border-[var(--sp-blue)] bg-[var(--sp-blue-soft)]",
+          "rounded-lg border border-dashed border-[var(--sp-border)] bg-[var(--sp-surface)] p-5 transition-colors",
+          dragActive && "border-[var(--sp-theme)] bg-[var(--sp-theme-soft)]",
         )}
         onDragEnter={(event) => {
           event.preventDefault();
@@ -190,12 +196,12 @@ export function DocumentUploadPanel({
 
         <button
           type="button"
-          className="flex min-h-10 w-full items-center justify-center gap-1 rounded-md text-base text-[var(--sp-muted)] transition hover:bg-[#F8FAFD]"
+          className="flex min-h-10 w-full items-center justify-center gap-1 rounded-md text-base text-[var(--sp-muted)] transition hover:bg-[var(--badge-neutral-bg)]"
           onClick={() => inputRef.current?.click()}
         >
-          <UploadCloud className="size-5 text-[var(--sp-blue)]" />
+          <UploadCloud className="size-5 text-[var(--sp-theme)]" />
           Kéo thả file vào đây hoặc
-          <span className="font-bold text-[var(--sp-blue)]">chọn file</span>
+          <span className="font-bold text-[var(--sp-theme)]">chọn file</span>
           <span className="text-[var(--sp-muted)]">· PDF, JPG, PNG, DOC, DOCX, XLSX (Tối đa 5MB)</span>
         </button>
 
@@ -226,7 +232,7 @@ export function DocumentUploadPanel({
         ) : null}
       </div>
 
-      {uploading ? <UploadLoadingOverlay /> : null}
+      {uploading && !hasDrawerOverlay ? loadingOverlay : null}
     </Card>
   );
 }
@@ -239,12 +245,12 @@ function ViewToggle({
   onChange: (value: DocumentViewMode) => void;
 }) {
   return (
-    <div className="flex items-center rounded-md  bg-white p-1">
+    <div className="flex items-center rounded-md bg-[var(--sp-surface)] p-1">
       <button
         type="button"
         className={cn(
           "grid size-8 place-items-center rounded-[6px] text-[var(--sp-muted)] transition",
-          value === "grid" && "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]",
+          value === "grid" && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
         )}
         onClick={() => onChange("grid")}
         aria-label="Xem dạng thumbnail"
@@ -255,7 +261,7 @@ function ViewToggle({
         type="button"
         className={cn(
           "grid size-8 place-items-center rounded-[6px] text-[var(--sp-muted)] transition",
-          value === "list" && "bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]",
+          value === "list" && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
         )}
         onClick={() => onChange("list")}
         aria-label="Xem dạng danh sách"
@@ -278,12 +284,12 @@ function DocumentThumb({
   const Icon = getDocumentIcon(document);
 
   return (
-    <article className="group overflow-hidden rounded-md border border-[var(--sp-border)] bg-white">
-      <div className="relative h-32 bg-[#F6F8FB]">
+    <article className="group overflow-hidden rounded-md border border-[var(--sp-border)] bg-[var(--sp-surface)]">
+      <div className="relative h-32 bg-[var(--badge-neutral-bg)]">
         {isImage(document) ? (
           <img src={document.url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <div className="grid h-full place-items-center text-[var(--sp-blue)]">
+          <div className="grid h-full place-items-center text-[var(--sp-theme)]">
             <Icon className="size-10" />
           </div>
         )}
@@ -318,8 +324,8 @@ function DocumentRow({
   const Icon = getDocumentIcon(document);
 
   return (
-    <article className="flex min-h-[68px] items-center gap-3 bg-white px-4 py-3">
-      <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-md bg-[var(--sp-blue-soft)] text-[var(--sp-blue)]">
+    <article className="flex min-h-[68px] items-center gap-3 bg-[var(--sp-surface)] px-4 py-3">
+      <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-md bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]">
         {isImage(document) ? (
           <img src={document.url} alt="" className="h-full w-full object-cover" />
         ) : (
@@ -362,7 +368,7 @@ function IconButton({
       type="button"
       disabled={disabled}
       className={cn(
-        "grid size-8 place-items-center rounded-md bg-white text-[var(--sp-muted)] shadow-sm transition hover:bg-[var(--sp-blue-soft)] hover:text-[var(--sp-blue)] disabled:cursor-not-allowed disabled:opacity-40",
+        "grid size-8 place-items-center rounded-md bg-[var(--sp-surface)] text-[var(--sp-muted)] shadow-sm transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)] disabled:cursor-not-allowed disabled:opacity-40",
         tone === "danger" && "hover:bg-[#FDECEC] hover:text-[var(--destructive)]",
       )}
       onClick={onClick}
@@ -374,13 +380,3 @@ function IconButton({
   );
 }
 
-function UploadLoadingOverlay() {
-  return (
-    <div className="fixed inset-0 z-[160] grid place-items-center bg-white/78 backdrop-blur-[2px]">
-      <div className="flex items-center gap-3 rounded-lg border border-[var(--sp-border)] bg-white px-5 py-4 text-base font-medium text-[var(--sp-strong)] shadow-[0_18px_50px_rgba(18,32,51,0.18)]">
-        <Loader2 className="size-5 animate-spin text-[var(--sp-blue)]" />
-        Đang xử lý...
-      </div>
-    </div>
-  );
-}

@@ -16,7 +16,7 @@ import type { CSSProperties } from "react";
 
 export function Dashboard() {
   return (
-    <div className="sp-page sp-page-dashboard">
+    <div className="sp-page ">
       <Topbar title="Tổng quan" />
 
       <div className="sp-page-scroll">
