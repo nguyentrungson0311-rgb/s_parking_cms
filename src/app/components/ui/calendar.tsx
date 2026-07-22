@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -140,7 +140,7 @@ export function CalendarBox({
     <div
       ref={popoverRef}
       className={cn(
-        "sp-control-popover absolute left-0 z-50 w-[292px] rounded-[12px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-3 shadow-[var(--shadow-soft)]",
+        "sp-control-popover absolute left-0 z-50 w-[292px] rounded-[12px] border border-border bg-surface p-3 shadow-sp-soft",
         placement === "top" ? "bottom-[calc(100%+6px)]" : "top-[calc(100%+6px)]",
         className,
       )}
@@ -148,7 +148,7 @@ export function CalendarBox({
       <div className="mb-3 flex items-center justify-between">
         <button
           type="button"
-          className="grid size-8 place-items-center rounded-md text-[var(--sp-muted)] hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]"
+          className="grid size-8 place-items-center rounded-md text-muted hover:bg-theme-soft hover:text-theme"
           onClick={goPrevious}
           aria-label={viewMode === "years" ? "Nhóm năm trước" : viewMode === "months" ? "Năm trước" : "Tháng trước"}
         >
@@ -156,13 +156,13 @@ export function CalendarBox({
         </button>
 
         {viewMode === "years" ? (
-          <div className="text-base font-bold text-[var(--sp-strong)]">
+          <div className="text-base font-bold text-strong">
             {yearPageStart} - {yearPageStart + 11}
           </div>
         ) : (
           <button
             type="button"
-            className="rounded-md px-3 py-1 text-base font-bold text-[var(--sp-strong)] transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]"
+            className="rounded-md px-3 py-1 text-base font-bold text-strong transition hover:bg-theme-soft hover:text-theme"
             onClick={openMonthYearPicker}
             aria-label={viewMode === "days" ? "Chọn tháng và năm" : "Chọn năm"}
           >
@@ -172,7 +172,7 @@ export function CalendarBox({
 
         <button
           type="button"
-          className="grid size-8 place-items-center rounded-md text-[var(--sp-muted)] hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]"
+          className="grid size-8 place-items-center rounded-md text-muted hover:bg-theme-soft hover:text-theme"
           onClick={goNext}
           aria-label={viewMode === "years" ? "Nhóm năm sau" : viewMode === "months" ? "Năm sau" : "Tháng sau"}
         >
@@ -194,8 +194,8 @@ export function CalendarBox({
                   setViewMode("days");
                 }}
                 className={cn(
-                  "h-10 rounded-md px-2 text-sm font-medium text-[var(--sp-text)] transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]",
-                  selected && "bg-[var(--sp-theme)] text-white hover:bg-[var(--sp-theme)] hover:text-white",
+                  "h-10 rounded-md px-2 text-sm font-medium text-text transition hover:bg-theme-soft hover:text-theme",
+                  selected && "bg-theme text-white hover:bg-theme hover:text-white",
                 )}
               >
                 {label}
@@ -219,8 +219,8 @@ export function CalendarBox({
                   setViewMode("months");
                 }}
                 className={cn(
-                  "h-10 rounded-md px-2 text-sm font-medium text-[var(--sp-text)] transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]",
-                  selected && "bg-[var(--sp-theme)] text-white hover:bg-[var(--sp-theme)] hover:text-white",
+                  "h-10 rounded-md px-2 text-sm font-medium text-text transition hover:bg-theme-soft hover:text-theme",
+                  selected && "bg-theme text-white hover:bg-theme hover:text-white",
                 )}
               >
                 {item}
@@ -232,7 +232,7 @@ export function CalendarBox({
 
       {viewMode === "days" ? (
         <>
-          <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium text-[var(--sp-muted)]">
+          <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium text-muted">
             {weekdayLabels.map((day) => (
               <div key={day} className="py-1">
                 {day}
@@ -252,9 +252,9 @@ export function CalendarBox({
                   type="button"
                   onClick={() => onSelect(isoDate)}
                   className={cn(
-                    "grid size-9 place-items-center rounded-md text-sm font-medium text-[var(--sp-text)] transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]",
-                    outside && "text-[var(--sp-subtle)]",
-                    selected && "bg-[var(--sp-theme)] text-white hover:bg-[var(--sp-theme)] hover:text-white",
+                    "grid size-9 place-items-center rounded-md text-sm font-medium text-text transition hover:bg-theme-soft hover:text-theme",
+                    outside && "text-subtle",
+                    selected && "bg-theme text-white hover:bg-theme hover:text-white",
                   )}
                 >
                   {date.getDate()}

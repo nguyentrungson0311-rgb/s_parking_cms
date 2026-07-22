@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { Button } from "@/app/components/ui/button";
 import { Checkbox } from "@/app/components/ui/checkbox";
 import {
@@ -29,6 +29,11 @@ export type FilterPanelField =
   | (FilterFieldBase & {
       type: "text";
       placeholder?: string;
+      inputType?: React.HTMLInputTypeAttribute;
+      inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+      pattern?: string;
+      normalizeValue?: (value: string) => string;
+      leftIcon?: React.ReactNode | false;
     })
   | (FilterFieldBase & {
       type: "date";
@@ -148,7 +153,7 @@ export function FilterPanel({
   return (
     <section
       ref={panelRef}
-      className="fixed z-50 max-h-[calc(100vh-100px)] overflow-visible rounded-[10px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-4 shadow-[var(--shadow-soft)]"
+      className="fixed z-50 max-h-[calc(100vh-100px)] overflow-visible rounded-[10px] border border-border bg-surface p-4 shadow-sp-soft"
       style={{
         top: position.top,
         left: position.left,
@@ -157,11 +162,11 @@ export function FilterPanel({
       role="dialog"
       aria-label={title}
     >
-      <header className="flex items-center justify-between gap-4 border-b border-[var(--sp-border)] pb-3">
-        <h2 className="text-lg font-semibold leading-7 text-[var(--sp-strong)]">{title}</h2>
+      <header className="flex items-center justify-between gap-4 border-b border-border pb-3">
+        <h2 className="text-lg font-semibold leading-7 text-strong">{title}</h2>
         <button
           type="button"
-          className="grid size-8 place-items-center rounded-md text-[var(--sp-muted)] transition hover:bg-[var(--muted)] hover:text-[var(--sp-strong)]"
+          className="grid size-8 place-items-center rounded-md text-muted transition hover:bg-badge-neutral-bg hover:text-strong"
           onClick={onClose}
           aria-label="Đóng bộ lọc"
         >
@@ -209,7 +214,7 @@ export function FilterPanel({
 
             return (
               <fieldset key={field.name} className={cn("min-w-0", fieldClassName)}>
-                <label className="mb-2 flex min-h-9 items-center gap-2 text-base font-semibold text-[var(--sp-strong)]">
+                <label className="mb-2 flex min-h-9 items-center gap-2 text-base font-semibold text-strong">
                   <Checkbox
                     checked={checked}
                     onCheckedChange={(nextChecked) => setValue(field.name, nextChecked)}
@@ -244,7 +249,7 @@ export function FilterPanel({
               <label
                 key={field.name}
                 className={cn(
-                  "flex min-h-9 items-center gap-2 text-base font-semibold text-[var(--sp-strong)]",
+                  "flex min-h-9 items-center gap-2 text-base font-semibold text-strong",
                   fieldClassName,
                 )}
               >
@@ -265,7 +270,7 @@ export function FilterPanel({
 
             return (
               <fieldset key={field.name} className={cn("min-w-0", fieldClassName)}>
-                <legend className="mb-2 text-base font-semibold text-[var(--sp-strong)]">
+                <legend className="mb-2 text-base font-semibold text-strong">
                   {field.label}
                 </legend>
                 <div className="flex flex-wrap gap-2">
@@ -276,8 +281,8 @@ export function FilterPanel({
                       <label
                         key={option.value}
                         className={cn(
-                          "flex min-h-9 items-center gap-2 rounded-[8px] px-2 text-base font-medium text-[var(--sp-strong)]",
-                          selected && "bg-[var(--accent)]",
+                          "flex min-h-9 items-center gap-2 rounded-[8px] px-2 text-base font-medium text-strong",
+                          selected && "bg-accent",
                         )}
                       >
                         <Checkbox
@@ -298,17 +303,25 @@ export function FilterPanel({
             <InputField
               key={field.name}
               label={field.label}
+              type={field.inputType}
+              inputMode={field.inputMode}
+              pattern={field.pattern}
               placeholder={field.placeholder}
               value={(draftValues[field.name] as string | undefined) ?? ""}
-              onChange={(event) => setValue(field.name, event.target.value)}
+              onChange={(event) => {
+                const nextValue = field.normalizeValue
+                  ? field.normalizeValue(event.target.value)
+                  : event.target.value;
+                setValue(field.name, nextValue);
+              }}
               wrapperClassName={fieldClassName}
-              leftIcon={<Search className="size-4" />}
+              leftIcon={field.leftIcon === false ? undefined : field.leftIcon ?? <Search className="size-4" />}
             />
           );
         })}
       </div>
 
-      <footer className="flex justify-end gap-2 border-t border-[var(--sp-border)] pt-3">
+      <footer className="flex justify-end gap-2 border-t border-border pt-3">
         <Button variant="outline" size="md" onClick={handleReset}>
           <RotateCcw />
           Đặt lại

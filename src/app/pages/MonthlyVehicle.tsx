@@ -3,7 +3,7 @@ import type { FilterPanelField } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { MonthlyVehicleTable } from "@/app/components/vehicles/MonthlyVehicleTable";
-import { FileDown, MoreVertical, Plus } from "lucide-react";
+import { MoreVertical, Plus } from "lucide-react";
 
 const monthlyVehicleFilterFields: FilterPanelField[] = [
   {
@@ -75,7 +75,7 @@ export function MonthlyVehicle({
   onOpenDetail,
 }: {
   title: string;
-  onOpenDetail: () => void;
+  onOpenDetail: (mode?: "view" | "edit") => void;
 }) {
   return (
     <div className="sp-page">
@@ -93,16 +93,12 @@ export function MonthlyVehicle({
             defaultFilterValues={monthlyVehicleDefaultFilters}
             actions={({ filterButton }) => (
               <>
-                <Button variant="outline" size="md">
-                  <FileDown />
-                  Xuất file
-                </Button>
                 {filterButton}
                 <Button size="md">
                   <Plus />
                   Thêm mới
                 </Button>
-                <Button variant="outline" size="icon-sm" className="size-10">
+                <Button variant="outline" size="icon-sm" className="size-9.5">
                   <MoreVertical />
                 </Button>
               </>

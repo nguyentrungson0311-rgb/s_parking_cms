@@ -3,7 +3,7 @@ import type { FilterPanelField } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { OverdueVehicleTable } from "@/app/components/vehicles/OverdueVehicleTable";
-import { FileDown, MoreVertical } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 
 const overdueVehicleFilterFields: FilterPanelField[] = [
   {
@@ -20,7 +20,7 @@ const overdueVehicleFilterFields: FilterPanelField[] = [
   {
     type: "select",
     name: "vehicleType",
-    label: "Loại phương tiện",
+    label: "Phương tiện",
     options: [
       { value: "all", label: "Tất cả" },
       { value: "car", label: "Ô tô" },
@@ -31,33 +31,14 @@ const overdueVehicleFilterFields: FilterPanelField[] = [
   },
   {
     type: "text",
-    name: "cardCode",
-    label: "Mã thẻ",
-    placeholder: "Mã thẻ",
-  },
-  {
-    type: "text",
-    name: "plate",
-    label: "Biển số",
-    placeholder: "Biển số",
-  },
-  {
-    type: "text",
-    name: "apartment",
-    label: "Căn hộ",
-    placeholder: "Căn hộ",
-  },
-  {
-    type: "date-range",
-    name: "enableTime",
-    label: "Ngày vào",
-    fromName: "fromDate",
-    toName: "toDate",
-    fromLabel: "Từ ngày",
-    toLabel: "Đến ngày",
-    fromPlaceholder: "Tất cả",
-    toPlaceholder: "Tất cả",
-    colSpan: 3,
+    name: "overdueDays",
+    label: "Số ngày",
+    inputType: "text",
+    inputMode: "numeric",
+    pattern: "[0-9]*",
+    normalizeValue: (value) => value.replace(/\D/g, ""),
+    leftIcon: false,
+    placeholder: "Nhập số ngày",
   },
 ];
 
@@ -83,12 +64,8 @@ export function OverdueVehicle() {
             defaultFilterValues={overdueVehicleDefaultFilters}
             actions={({ filterButton }) => (
               <>
-                <Button variant="outline" size="md">
-                  <FileDown />
-                  Xuất file
-                </Button>
                 {filterButton}
-                <Button variant="outline" size="icon-sm" className="size-10">
+                <Button variant="outline" size="icon-sm" className="size-9.5">
                   <MoreVertical />
                 </Button>
               </>

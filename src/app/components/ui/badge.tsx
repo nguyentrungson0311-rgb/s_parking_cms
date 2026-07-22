@@ -7,12 +7,12 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        success: "bg-[var(--badge-success-bg)] text-[var(--badge-success-fg)]",
-        warning: "bg-[var(--badge-warning-bg)] text-[var(--badge-warning-fg)]",
-        danger: "bg-[var(--badge-danger-bg)] text-[var(--badge-danger-fg)]",
-        info: "bg-[var(--badge-info-bg)] text-[var(--badge-info-fg)]",
-        neutral: "bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-fg)]",
-        disabled: "bg-[var(--badge-disabled-bg)] text-[var(--badge-disabled-fg)]",
+        success: "bg-badge-success-bg text-badge-success-fg",
+        warning: "bg-badge-warning-bg text-badge-warning-fg",
+        danger: "bg-badge-danger-bg text-badge-danger-fg",
+        info: "bg-badge-info-bg text-badge-info-fg",
+        neutral: "bg-badge-neutral-bg text-badge-neutral-fg",
+        disabled: "bg-badge-disabled-bg text-badge-disabled-fg",
       },
     },
     defaultVariants: {

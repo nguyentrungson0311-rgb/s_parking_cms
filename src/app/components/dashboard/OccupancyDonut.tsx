@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { occupancy } from "@/app/data";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
@@ -10,7 +10,7 @@ export function OccupancyDonut() {
       <CardHeader>
         <div>
           <CardTitle>Sử dụng chỗ đỗ</CardTitle>
-          <p className="mt-1 text-md text-[var(--sp-muted)]"> Theo loại phương tiện </p>
+          <p className="mt-1 text-md text-muted"> Theo loại phương tiện </p>
         </div>
       </CardHeader>
       <CardContent className="pt-0">
@@ -37,8 +37,8 @@ export function OccupancyDonut() {
           </ResponsiveContainer>
           <div className="absolute inset-0 grid place-items-center text-center">
             <div>
-              <div className="font-sf text-xl font-semibold text-[var(--sp-strong)]">76%</div>
-              <div className="text-md font-medium text-[var(--sp-muted)]"> Sử dụng </div>
+              <div className="font-sf text-xl font-semibold text-strong">76%</div>
+              <div className="text-md font-medium text-muted"> Sử dụng </div>
             </div>
           </div>
         </div>
@@ -53,11 +53,11 @@ export function OccupancyDonut() {
                   className="size-4 shrink-0 rounded-full"
                   style={{ backgroundColor: htmlPalette[index] ?? item.color }}
                 />
-                <span className="min-w-0 truncate text-base font-regular leading-6 text-[var(--sp-text)]">
+                <span className="min-w-0 truncate text-base font-regular leading-6 text-text">
                   {item.name} ({item.value}%)
                 </span>
               </div>
-              <div className="shrink-0 text-right text-base font-semibold leading-6 text-[var(--sp-text)]">
+              <div className="shrink-0 text-right text-base font-semibold leading-6 text-text">
                 {item.count}
               </div>
             </div>

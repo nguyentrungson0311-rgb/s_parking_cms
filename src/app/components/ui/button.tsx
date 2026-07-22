@@ -1,43 +1,43 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap border font-bold outline-none transition-all focus-visible:ring-4 focus-visible:ring-primary/15 disabled:pointer-events-none disabled:border-transparent disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--badge-disabled-fg)] disabled:shadow-none [&_svg]:shrink-0",
+  "inline-flex items-center justify-center whitespace-nowrap border font-bold outline-none transition-all focus-visible:ring-4 focus-visible:ring-primary/15 disabled:pointer-events-none disabled:border-transparent disabled:bg-grey-soft disabled:text-badge-disabled-fg disabled:shadow-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "border-transparent bg-[var(--sp-theme)] text-[var(--primary-foreground)] hover:shadow-[var(--shadow-brand)] hover:bg-[var(--sp-theme-strong)]",
+          "border-transparent bg-theme text-primary-foreground hover:bg-theme-strong hover:shadow-sp-brand",
         "outline-primary":
-          "border-[var(--sp-theme)] bg-[var(--sp-surface)] text-[var(--sp-theme)] hover:bg-[var(--sp-theme-soft)]",
+          "border-theme bg-surface text-theme hover:bg-theme-soft",
         plain:
-          "border-transparent bg-transparent text-[var(--sp-strong)] hover:bg-[var(--sp-theme-soft)]",
+          "border-transparent bg-transparent text-strong hover:bg-theme-soft",
         "outline-plain":
-          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-theme-soft)]",
+          "border-border bg-surface text-strong hover:bg-theme-soft hover:shadow-sp-soft",
         secondary:
-          "border-transparent bg-[var(--sp-theme-soft)] text-[var(--sp-theme)] hover:bg-[var(--accent)]",
+          "border-transparent bg-theme-soft text-theme hover:bg-accent",
         "outline-secondary":
-          "border-[var(--sp-secondary)] bg-[var(--sp-theme-soft)] text-[var(--sp-theme)] hover:bg-[var(--accent)]",
+          "border-secondary bg-theme-soft text-theme hover:bg-accent",
         "fill-secondary":
-          "border-transparent bg-[var(--sp-secondary)] text-[var(--primary-foreground)] hover:shadow-[var(--shadow-brand)] hover:bg-[var(--sp-theme-strong)]",
+          "border-transparent bg-secondary text-primary-foreground hover:bg-theme-strong hover:shadow-sp-brand",
         "success-outline":
-          "border-[var(--sp-green)] bg-[var(--sp-green-soft)] text-[var(--sp-green)] hover:bg-[var(--sp-green-soft)]",
+          "border-green bg-green-soft text-green hover:bg-green-soft",
         "success-fill":
-          "border-transparent bg-[var(--sp-green)] text-[var(--sp-success-fill-foreground,var(--primary-foreground))] hover:shadow-[0_10px_18px_rgba(36,199,142,0.18)] hover:bg-[var(--sp-green-strong)]",
+          "border-transparent bg-green text-[var(--sp-success-fill-foreground,var(--primary-foreground))] hover:bg-green-strong hover:shadow-[0_10px_18px_rgba(36,199,142,0.18)]",
         "danger-outline":
-          "border-[var(--destructive)] bg-[var(--sp-red-soft)] text-[var(--destructive)] hover:bg-[var(--sp-red-soft)]",
+          "border-destructive bg-red-soft text-destructive hover:bg-red hover:text-destructive-foreground",
         "danger-fill":
-          "border-transparent bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-[#D93838] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)]",
         outline:
-          "border-[var(--sp-border)] bg-[var(--sp-surface)] text-[var(--sp-strong)] hover:shadow-[var(--shadow-soft)] hover:bg-[var(--sp-theme-soft)]",
+          "border-border bg-surface text-strong hover:bg-theme-soft hover:shadow-sp-soft",
         ghost:
-          "border-transparent bg-transparent text-[var(--sp-muted)] hover:bg-[var(--muted)] hover:text-[var(--sp-strong)]",
+          "border-transparent bg-transparent text-muted hover:bg-badge-neutral-bg hover:text-strong",
         danger:
-          "border-transparent bg-[var(--destructive)] text-[var(--destructive-foreground)] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)] hover:bg-[#D93838]",
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-[#D93838] hover:shadow-[0_10px_18px_rgba(240,82,82,0.18)]",
         disable:
-          "border-transparent bg-[var(--sp-grey-soft)] text-[var(--badge-disabled-fg)] shadow-none",
+          "border-transparent bg-grey-soft text-badge-disabled-fg shadow-none",
       },
       size: {
         sm: "h-8 gap-1.5 rounded-md px-3 text-xs [&_svg]:size-4",

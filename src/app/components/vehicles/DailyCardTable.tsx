@@ -9,6 +9,7 @@ import {
   TH,
   THead,
   TR,
+  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
@@ -34,14 +35,21 @@ export const DAILY_CARD_STATUS: Record<DailyCardStatus, StatusBadgeConfig> = {
 
 export function DailyCardTable() {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const pagination = useTablePagination({ data: dailyCards, defaultPageSize: 10 });
+  const visibleCards = pagination.paginatedData;
   const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
   const isAllSelected =
-    dailyCards.length > 0 && dailyCards.every((card) => selectedSet.has(card.id));
+    visibleCards.length > 0 && visibleCards.every((card) => selectedSet.has(card.id));
   const isSomeSelected =
-    dailyCards.some((card) => selectedSet.has(card.id)) && !isAllSelected;
+    visibleCards.some((card) => selectedSet.has(card.id)) && !isAllSelected;
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedRows(checked ? dailyCards.map((card) => card.id) : []);
+    const visibleIds = visibleCards.map((card) => card.id);
+    setSelectedRows((current) =>
+      checked
+        ? Array.from(new Set([...current, ...visibleIds]))
+        : current.filter((rowId) => !visibleIds.includes(rowId)),
+    );
   };
 
   const handleSelectRow = (id: string, checked: boolean) => {
@@ -54,7 +62,15 @@ export function DailyCardTable() {
     <DataTable
       className="daily-card-table"
       minWidth="var(--daily-card-table-min-width, 1620px)"
-      footer={<TablePagination summary="1-10 of 1,248 results" />}
+      footer={
+        <TablePagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          totalItems={pagination.totalItems}
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.setPageSize}
+        />
+      }
     >
       <THead>
         <TR>
@@ -83,11 +99,11 @@ export function DailyCardTable() {
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[110px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center" />
+          <TH sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center" />
         </TR>
       </THead>
       <TBody>
-        {dailyCards.map((card) => {
+        {visibleCards.map((card) => {
           const selected = selectedSet.has(card.id);
           const status = DAILY_CARD_STATUS[card.status];
           return (
@@ -120,7 +136,7 @@ export function DailyCardTable() {
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+              <TD sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center">
                 <TableActionDropdown actions={DAILY_CARD_ACTIONS} />
               </TD>
             </TR>

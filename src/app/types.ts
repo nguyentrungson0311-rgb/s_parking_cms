@@ -9,7 +9,9 @@ export type PageId =
   | "reminders"
   | "ui-atoms"
   | "summary-vehicles"
-  | "monthly-report";
+  | "monthly-report"
+  | "settings"
+  | "settings-pricing";
 
 export type MonthlyVehicleStatus =
   | "active"
@@ -21,6 +23,12 @@ export type DailyCardStatus = "active" | "locked" | "expired";
 export type ExternalCardStatus = "active" | "locked" | "paymentOverdue";
 
 export type ShiftAssignStatus = "inYard" | "exited";
+
+export type ShiftHandoverStatus =
+  | "new"
+  | "profitCalculated"
+  | "reportPublished"
+  | "locked";
 
 export type ShiftCode = "Ca 1" | "Ca 2" | "Ca 3";
 
@@ -98,6 +106,20 @@ export interface ShiftAssign {
   shiftOut: ShiftCode | "-";
   statusFlag: boolean;
   status: ShiftAssignStatus;
+}
+
+export interface ShiftHandoverBatch {
+  id: string;
+  code: string;
+  name: string;
+  shift: "Ca 1" | "Ca 2";
+  date: string;
+  fromTime: string;
+  toTime: string;
+  createdAt: string;
+  updatedBy: string;
+  updatedAt: string;
+  status: ShiftHandoverStatus;
 }
 
 export interface OverdueVehicle {

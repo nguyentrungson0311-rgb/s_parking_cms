@@ -3,6 +3,9 @@ import {
   CalendarDays,
   ChevronDown,
   Download,
+  Edit3,
+  Eye,
+  Info,
   MapPin,
   MoreVertical,
   Plus,
@@ -18,6 +21,12 @@ import { Button, type ButtonProps } from "@/app/components/ui/button";
 import { CalendarBox } from "@/app/components/ui/calendar";
 import { Card } from "@/app/components/ui/card";
 import { Checkbox } from "@/app/components/ui/checkbox";
+import {
+  DynamicFormCard,
+  type DynamicFormField,
+  type DynamicFormMode,
+  type DynamicFormValues,
+} from "@/app/components/ui/dynamic-form";
 import { DropdownBox } from "@/app/components/ui/dropdownbox";
 import {
   InputDate,
@@ -39,7 +48,10 @@ import {
   THead,
   TR,
 } from "@/app/components/ui/table";
+import { toastMessage } from "@/app/components/ui/toast";
 import { cn } from "@/lib/utils";
+
+// UI catalog rule: every new component added in src/app/components/ui should get a matching AtomCard here.
 
 const ticketTypeOptions: DropdownOption[] = [
   { value: "month", label: "Vé tháng" },
@@ -51,6 +63,71 @@ const statusOptions: DropdownOption[] = [
   { value: "active", label: "Còn hiệu lực" },
   { value: "locked", label: "Tạm khóa" },
   { value: "expired", label: "Hết hạn" },
+];
+
+const dynamicFormFields: DynamicFormField[] = [
+  {
+    name: "cardCode",
+    label: "Mã thẻ / vé",
+    required: true,
+  },
+  {
+    name: "ticketType",
+    label: "Loại vé",
+    type: "select",
+    required: true,
+    options: ticketTypeOptions,
+  },
+  {
+    name: "status",
+    label: "Trạng thái",
+    type: "select",
+    options: statusOptions,
+  },
+  {
+    name: "ticketPackage",
+    label: "Gói vé",
+  },
+  {
+    name: "price",
+    label: "Giá vé",
+  },
+  {
+    name: "billingCycle",
+    label: "Chu kỳ thanh toán",
+  },
+  {
+    name: "owner",
+    label: "Chủ thẻ",
+    required: true,
+    leftIcon: <UserRound className="size-4" />,
+  },
+  {
+    name: "linkedVehicle",
+    label: "Liên kết xe",
+  },
+  {
+    name: "apartment",
+    label: "Căn hộ",
+  },
+  {
+    name: "issuedAt",
+    label: "Ngày phát hành",
+    type: "date",
+  },
+  {
+    name: "expiredAt",
+    label: "Ngày hết hạn",
+    type: "date",
+    required: true,
+  },
+  {
+    name: "usageTerms",
+    label: "Điều kiện sử dụng",
+    type: "textarea",
+    colSpan: 4,
+    maxWords: 80,
+  },
 ];
 
 const buttonVariants: Array<{
@@ -95,10 +172,12 @@ type AtomCardId =
   | "card"
   | "checkbox"
   | "dropdown"
+  | "dynamic-form"
   | "input"
   | "progress"
   | "status-badge"
-  | "table";
+  | "table"
+  | "toast";
 
 const badgeVariants = ["success", "warning", "danger", "info", "neutral", "disabled"] as const;
 
@@ -120,6 +199,22 @@ export function Atoms() {
   const [calendarValue, setCalendarValue] = useState("2026-07-20");
   const [dropdownValue, setDropdownValue] = useState("month");
   const [checked, setChecked] = useState(true);
+  const [dynamicFormMode, setDynamicFormMode] = useState<DynamicFormMode>("view");
+  const [dynamicFormValues, setDynamicFormValues] = useState<DynamicFormValues>({
+    cardCode: "TKT-2407-089",
+    ticketType: "month",
+    status: "active",
+    ticketPackage: "Ô tô cư dân - tháng",
+    price: "1.200.000đ",
+    billingCycle: "Tháng 07/2026",
+    owner: "Nguyễn Minh An",
+    linkedVehicle: "51F-728.36",
+    apartment: "---",
+    issuedAt: "2026-07-01",
+    expiredAt: "2026-07-31",
+    usageTerms:
+      "Vé chỉ dùng cho xe đã liên kết, quét QR hoặc RFID tại cổng B2/B3.",
+  });
   const [expandedCards, setExpandedCards] = useState<Record<AtomCardId, boolean>>({
     badge: false,
     button: false,
@@ -127,10 +222,12 @@ export function Atoms() {
     card: false,
     checkbox: false,
     dropdown: false,
+    "dynamic-form": false,
     input: false,
     progress: false,
     "status-badge": false,
     table: false,
+    toast: false,
   });
 
   const toggleCard = (id: AtomCardId) => {
@@ -315,6 +412,110 @@ export function Atoms() {
             </AtomCard>
 
             <AtomCard
+              id="dynamic-form"
+              title="DynamicForm"
+              description="Form dựng bằng schema, dùng chung cho xem chi tiết, thêm mới và chỉnh sửa."
+              open={expandedCards["dynamic-form"]}
+              onToggle={toggleCard}
+            >
+              <div className="grid gap-5">
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    variant={dynamicFormMode === "view" ? "primary" : "outline"}
+                    size="md"
+                    onClick={() => setDynamicFormMode("view")}
+                  >
+                    <Eye />
+                    Xem chi tiết
+                  </Button>
+                  <Button
+                    variant={dynamicFormMode === "edit" ? "primary" : "outline"}
+                    size="md"
+                    onClick={() => setDynamicFormMode("edit")}
+                  >
+                    <Edit3 />
+                    Sửa
+                  </Button>
+                  <Button
+                    variant={dynamicFormMode === "create" ? "primary" : "outline"}
+                    size="md"
+                    onClick={() => {
+                      setDynamicFormMode("create");
+                      setDynamicFormValues({
+                        cardCode: "",
+                        ticketType: "month",
+                        status: "active",
+                        ticketPackage: "",
+                        price: "",
+                        billingCycle: "",
+                        owner: "",
+                        linkedVehicle: "",
+                        apartment: "",
+                        issuedAt: "2026-07-22",
+                        expiredAt: "",
+                        usageTerms: "",
+                      });
+                    }}
+                  >
+                    <Plus />
+                    Thêm mới
+                  </Button>
+                </div>
+
+                <DynamicFormCard
+                  title="Thông tin thẻ / vé"
+                  fields={dynamicFormFields}
+                  values={dynamicFormValues}
+                  mode={dynamicFormMode}
+                  columns={4}
+                  onValuesChange={(values) => setDynamicFormValues(values)}
+                  action={
+                    <Button variant="secondary" size="sm">
+                      <RefreshCw />
+                      Đồng bộ cổng
+                    </Button>
+                  }
+                  notice={{
+                    tone: "warning",
+                    content:
+                      "Vé sắp hết hạn trong 16 ngày. Cần xác nhận gia hạn hoặc hủy trước cuối kỳ.",
+                  }}
+                />
+
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={() =>
+                      toastMessage.info(
+                        "DynamicForm",
+                        dynamicFormMode === "view"
+                          ? "Các trường đang ở chế độ chỉ đọc."
+                          : "Các trường đang cho phép chỉnh sửa.",
+                      )
+                    }
+                  >
+                    <Info />
+                    Trạng thái
+                  </Button>
+                  <Button
+                    size="md"
+                    disabled={dynamicFormMode === "view"}
+                    onClick={() =>
+                      toastMessage.success(
+                        dynamicFormMode === "create" ? "Đã tạo dữ liệu" : "Đã cập nhật dữ liệu",
+                        String(dynamicFormValues.cardCode ?? "Bản ghi mới"),
+                      )
+                    }
+                  >
+                    <Save />
+                    Lưu
+                  </Button>
+                </div>
+              </div>
+            </AtomCard>
+
+            <AtomCard
               id="badge"
               title="Badge"
               description="Badge trạng thái ngắn theo semantic variant."
@@ -435,6 +636,50 @@ export function Atoms() {
                   Nội dung nằm trong Card component với nền, radius và shadow của hệ thống.
                 </p>
               </Card>
+            </AtomCard>
+
+            <AtomCard
+              id="toast"
+              title="ToastMessage"
+              description="Wrapper sonner cho thông báo success, error và info của hệ thống."
+              open={expandedCards.toast}
+              onToggle={toggleCard}
+            >
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  variant="success-fill"
+                  size="md"
+                  onClick={() =>
+                    toastMessage.success("Lưu thành công", "Dữ liệu đã được ghi nhận.")
+                  }
+                >
+                  <Save />
+                  Success
+                </Button>
+                <Button
+                  variant="danger-outline"
+                  size="md"
+                  onClick={() =>
+                    toastMessage.error("Không thể lưu", "Vui lòng kiểm tra dữ liệu bắt buộc.")
+                  }
+                >
+                  <Trash2 />
+                  Error
+                </Button>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() =>
+                    toastMessage.info(
+                      "UI catalog",
+                      "Component mới trong ui cần được bổ sung vào Atoms.tsx.",
+                    )
+                  }
+                >
+                  <Info />
+                  Info
+                </Button>
+              </div>
             </AtomCard>
 
             <AtomCard

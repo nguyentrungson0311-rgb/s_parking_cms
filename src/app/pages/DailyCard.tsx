@@ -3,7 +3,7 @@ import type { FilterPanelField } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { DailyCardTable } from "@/app/components/vehicles/DailyCardTable";
-import { FileDown, MoreVertical, Plus } from "lucide-react";
+import { MoreVertical, Plus } from "lucide-react";
 
 const dailyCardFilterFields: FilterPanelField[] = [
   {
@@ -87,16 +87,12 @@ export function DailyCard() {
             defaultFilterValues={dailyCardDefaultFilters}
             actions={({ filterButton }) => (
               <>
-                <Button variant="outline" size="md">
-                  <FileDown />
-                  Xuất file
-                </Button>
                 {filterButton}
                 <Button size="md">
                   <Plus />
                   Thêm mới
                 </Button>
-                <Button variant="outline" size="icon-sm" className="size-10">
+                <Button variant="outline" size="icon-sm" className="size-9.5">
                   <MoreVertical />
                 </Button>
               </>

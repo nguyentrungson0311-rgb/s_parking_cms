@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CommonDrawer } from "@/app/components/common/CommonDrawer";
 import { DocumentUploadPanel } from "@/app/components/common/DocumentUploadPanel";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
-import { Card } from "@/app/components/ui/card";
 import {
-  InputDate,
-  InputField,
-  InputSelect,
-  TextAreaField,
-  type DropdownOption,
-} from "@/app/components/ui/input";
+  DynamicFormCard,
+  type DynamicFormField,
+  type DynamicFormMode,
+  type DynamicFormValues,
+} from "@/app/components/ui/dynamic-form";
+import { toastMessage } from "@/app/components/ui/toast";
 import {
   Check,
+  Edit3,
   RefreshCcw,
   Save,
   Ticket,
@@ -21,29 +21,126 @@ import {
   X,
 } from "lucide-react";
 
-const ticketTypeOptions: DropdownOption[] = [
+const ticketTypeOptions = [
   { value: "month", label: "Vé tháng" },
   { value: "day", label: "Vé ngày" },
   { value: "outside", label: "Vé ngoài" },
 ];
 
-const statusOptions: DropdownOption[] = [
+const statusOptions = [
   { value: "active", label: "Còn hiệu lực" },
   { value: "locked", label: "Tạm khóa" },
   { value: "expired", label: "Hết hạn" },
 ];
 
+const ticketInfoFields: DynamicFormField[] = [
+  {
+    name: "cardCode",
+    label: "Mã thẻ / vé",
+    required: true,
+  },
+  {
+    name: "ticketType",
+    label: "Loại vé",
+    type: "select",
+    required: true,
+    options: ticketTypeOptions,
+  },
+  {
+    name: "status",
+    label: "Trạng thái",
+    type: "select",
+    options: statusOptions,
+  },
+  {
+    name: "ticketPackage",
+    label: "Gói vé",
+  },
+  {
+    name: "price",
+    label: "Giá vé",
+  },
+  {
+    name: "billingCycle",
+    label: "Chu kỳ thanh toán",
+  },
+  {
+    name: "owner",
+    label: "Chủ thẻ",
+    required: true,
+    leftIcon: <UserRound className="size-4" />,
+  },
+  {
+    name: "linkedVehicle",
+    label: "Liên kết xe",
+  },
+  {
+    name: "apartment",
+    label: "Căn hộ",
+  },
+  {
+    name: "issuedAt",
+    label: "Ngày phát hành",
+    type: "date",
+  },
+  {
+    name: "expiredAt",
+    label: "Ngày hết hạn",
+    type: "date",
+    required: true,
+  },
+  {
+    name: "usageTerms",
+    label: "Điều kiện sử dụng",
+    type: "textarea",
+    colSpan: 4,
+    maxWords: 80,
+  },
+];
+
+const defaultTicketInfoValues: DynamicFormValues = {
+  cardCode: "TKT-2407-089",
+  ticketType: "month",
+  status: "active",
+  ticketPackage: "Ô tô cư dân - tháng",
+  price: "1.200.000đ",
+  billingCycle: "Tháng 07/2026",
+  owner: "Nguyễn Minh An",
+  linkedVehicle: "51F-728.36",
+  apartment: "---",
+  issuedAt: "2026-07-01",
+  expiredAt: "2026-07-31",
+  usageTerms:
+    "Vé chỉ dùng cho xe đã liên kết, quét QR hoặc RFID tại cổng B2/B3. Tự động khóa khi quá hạn thanh toán.",
+};
+
 export function MonthlyCardDetail({
   open,
   onClose,
+  initialMode = "view",
 }: {
   open: boolean;
   onClose: () => void;
+  initialMode?: DynamicFormMode;
 }) {
-  const [ticketType, setTicketType] = useState("month");
-  const [status, setStatus] = useState("active");
-  const [issuedAt, setIssuedAt] = useState("2026-07-01");
-  const [expiredAt, setExpiredAt] = useState("2026-07-31");
+  const [ticketInfoValues, setTicketInfoValues] = useState<DynamicFormValues>(
+    defaultTicketInfoValues,
+  );
+  const [formMode, setFormMode] = useState<DynamicFormMode>("view");
+
+  useEffect(() => {
+    if (open) setFormMode(initialMode);
+  }, [initialMode, open]);
+
+  const handleEdit = () => {
+    setFormMode("edit");
+    toastMessage.info("Đang chuyển sang chế độ sửa", "Bạn có thể cập nhật thông tin thẻ / vé.");
+  };
+
+  const handleSave = () => {
+    setFormMode("view");
+    toastMessage.success("Đã lưu thông tin thẻ / vé", String(ticketInfoValues.cardCode ?? ""));
+  };
 
   return (
     <CommonDrawer
@@ -58,10 +155,17 @@ export function MonthlyCardDetail({
             <Trash2 />
             Xóa thẻ
           </Button>
-          <Button variant="success-fill" size="lg">
-            <Save />
-            Lưu
-          </Button>
+          {formMode === "view" ? (
+            <Button variant="primary" size="lg" onClick={handleEdit}>
+              <Edit3 />
+              Sửa
+            </Button>
+          ) : (
+            <Button variant="success-fill" size="lg" onClick={handleSave}>
+              <Save />
+              Lưu
+            </Button>
+          )}
           <Button variant="primary" size="lg">
             <Check />
             Xác nhận
@@ -74,69 +178,24 @@ export function MonthlyCardDetail({
       }
     >
       <div className="space-y-5">
-        <Card className="sp-card p-4">
-          <div className="mb-3 flex items-center justify-between gap-4">
-            <h3 className="text-lg font-bold text-[var(--sp-strong)]">Thông tin thẻ / vé</h3>
+        <DynamicFormCard
+          title="Thông tin thẻ / vé"
+          fields={ticketInfoFields}
+          values={ticketInfoValues}
+          mode={formMode}
+          columns={4}
+          onValuesChange={setTicketInfoValues}
+          action={
             <Button variant="secondary" size="sm">
               <RefreshCcw />
               Đồng bộ cổng
             </Button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <InputField label="Mã thẻ / vé" required defaultValue="TKT-2407-089" />
-            <InputSelect
-              label="Loại vé"
-              required
-              options={ticketTypeOptions}
-              value={ticketType}
-              onValueChange={setTicketType}
-            />
-            <InputSelect
-              label="Trạng thái"
-              options={statusOptions}
-              value={status}
-              onValueChange={setStatus}
-            />
-
-            <InputField label="Gói vé" defaultValue="Ô tô cư dân - tháng" />
-            <InputField label="Giá vé" type="text" inputMode="numeric" defaultValue="1.200.000đ" />
-            <InputField label="Chu kỳ thanh toán" defaultValue="Tháng 07/2026" />
-
-            <InputField
-              label="Chủ thẻ"
-              required
-              defaultValue="Nguyễn Minh An"
-              leftIcon={<UserRound className="size-4" />}
-            />
-            <InputField label="Liên kết xe" defaultValue="51F-728.36" />
-            <InputField label="Căn hộ" defaultValue="---" />
-
-            <InputDate
-              label="Ngày phát hành"
-              value={issuedAt}
-              onValueChange={setIssuedAt}
-            />
-            <InputDate
-              label="Ngày hết hạn"
-              required
-              value={expiredAt}
-              onValueChange={setExpiredAt}
-            />
-          </div>
-
-          <TextAreaField
-            wrapperClassName="mt-4"
-            label="Điều kiện sử dụng"
-            defaultValue="Vé chỉ dùng cho xe đã liên kết, quét QR hoặc RFID tại cổng B2/B3. Tự động khóa khi quá hạn thanh toán."
-            maxWords={80}
-            
-          />
-
-          <div className="mt-4 rounded-md bg-[#FFF4D8] px-4 py-3 text-base font-medium text-[#986A00]">
-            Vé sắp hết hạn trong 16 ngày. Cần xác nhận gia hạn hoặc hủy trước cuối kỳ.
-          </div>
-        </Card>
+          }
+          notice={{
+            tone: "warning",
+            content: "Vé sắp hết hạn trong 16 ngày. Cần xác nhận gia hạn hoặc hủy trước cuối kỳ.",
+          }}
+        />
 
         <DocumentUploadPanel />
       </div>

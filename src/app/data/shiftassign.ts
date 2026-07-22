@@ -1,9 +1,77 @@
-import type { ShiftAssign } from "@/app/types";
+import type { ShiftAssign, ShiftHandoverBatch } from "@/app/types";
+
+export const shiftHandoverBatches: ShiftHandoverBatch[] = [
+  {
+    id: "handover-001",
+    code: "GC-20260722-01",
+    name: "Giao ca sáng 22/07/2026",
+    shift: "Ca 1",
+    date: "22/07/2026",
+    fromTime: "06:00",
+    toTime: "14:00",
+    createdAt: "22/07/2026 05:52",
+    updatedBy: "admin.cms",
+    updatedAt: "22/07/2026 05:52",
+    status: "new",
+  },
+  {
+    id: "handover-002",
+    code: "GC-20260721-02",
+    name: "Giao ca chiều 21/07/2026",
+    shift: "Ca 2",
+    date: "21/07/2026",
+    fromTime: "14:00",
+    toTime: "22:00",
+    createdAt: "21/07/2026 13:55",
+    updatedBy: "ngocanh.cms",
+    updatedAt: "21/07/2026 22:18",
+    status: "profitCalculated",
+  },
+  {
+    id: "handover-003",
+    code: "GC-20260721-01",
+    name: "Giao ca sáng 21/07/2026",
+    shift: "Ca 1",
+    date: "21/07/2026",
+    fromTime: "06:00",
+    toTime: "14:00",
+    createdAt: "21/07/2026 05:54",
+    updatedBy: "minhquan.cms",
+    updatedAt: "21/07/2026 15:20",
+    status: "reportPublished",
+  },
+  {
+    id: "handover-004",
+    code: "GC-20260720-02",
+    name: "Giao ca chiều 20/07/2026",
+    shift: "Ca 2",
+    date: "20/07/2026",
+    fromTime: "14:00",
+    toTime: "22:00",
+    createdAt: "20/07/2026 13:50",
+    updatedBy: "admin.cms",
+    updatedAt: "20/07/2026 22:30",
+    status: "locked",
+  },
+  {
+    id: "handover-005",
+    code: "GC-20260720-01",
+    name: "Giao ca sáng 20/07/2026",
+    shift: "Ca 1",
+    date: "20/07/2026",
+    fromTime: "06:00",
+    toTime: "14:00",
+    createdAt: "20/07/2026 05:50",
+    updatedBy: "admin.cms",
+    updatedAt: "20/07/2026 15:02",
+    status: "locked",
+  },
+];
 
 export const shiftAssigns: ShiftAssign[] = [
   {
     id: "SA-240716-001",
-    lotCardNumber: "LOT-SA-2407-001",
+    lotCardNumber: "2407-001",
     ticketNumber: "VS-100245",
     cardCode: "RFID-7A92",
     vehicleType: "Ô tô",
@@ -22,7 +90,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-002",
-    lotCardNumber: "LOT-SA-2407-002",
+    lotCardNumber: "2407-002",
     ticketNumber: "VS-100246",
     cardCode: "RFID-8B11",
     vehicleType: "Xe máy",
@@ -41,7 +109,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-003",
-    lotCardNumber: "LOT-SA-2407-003",
+    lotCardNumber: "2407-003",
     ticketNumber: "VS-100247",
     cardCode: "RFID-3C67",
     vehicleType: "Xe máy điện",
@@ -60,7 +128,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-004",
-    lotCardNumber: "LOT-SA-2407-004",
+    lotCardNumber: "2407-004",
     ticketNumber: "VS-100248",
     cardCode: "RFID-6D20",
     vehicleType: "Xe đạp",
@@ -79,7 +147,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-005",
-    lotCardNumber: "LOT-SA-2407-005",
+    lotCardNumber: "2407-005",
     ticketNumber: "VS-100249",
     cardCode: "RFID-2E58",
     vehicleType: "Ô tô",
@@ -98,7 +166,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-006",
-    lotCardNumber: "LOT-SA-2407-006",
+    lotCardNumber: "2407-006",
     ticketNumber: "VS-100250",
     cardCode: "RFID-9F43",
     vehicleType: "Xe máy",
@@ -117,7 +185,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-007",
-    lotCardNumber: "LOT-SA-2407-007",
+    lotCardNumber: "2407-007",
     ticketNumber: "VS-100251",
     cardCode: "RFID-4G76",
     vehicleType: "Ô tô",
@@ -136,7 +204,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-008",
-    lotCardNumber: "LOT-SA-2407-008",
+    lotCardNumber: "2407-008",
     ticketNumber: "VS-100252",
     cardCode: "RFID-1H35",
     vehicleType: "Xe máy điện",
@@ -155,7 +223,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-009",
-    lotCardNumber: "LOT-SA-2407-009",
+    lotCardNumber: "2407-009",
     ticketNumber: "VS-100253",
     cardCode: "RFID-5K29",
     vehicleType: "Xe máy",
@@ -174,7 +242,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-010",
-    lotCardNumber: "LOT-SA-2407-010",
+    lotCardNumber: "2407-010",
     ticketNumber: "VS-100254",
     cardCode: "RFID-0L64",
     vehicleType: "Ô tô",
@@ -193,7 +261,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-011",
-    lotCardNumber: "LOT-SA-2407-011",
+    lotCardNumber: "2407-011",
     ticketNumber: "VS-100255",
     cardCode: "RFID-7M02",
     vehicleType: "Xe đạp",
@@ -212,7 +280,7 @@ export const shiftAssigns: ShiftAssign[] = [
   },
   {
     id: "SA-240716-012",
-    lotCardNumber: "LOT-SA-2407-012",
+    lotCardNumber: "2407-012",
     ticketNumber: "VS-100256",
     cardCode: "RFID-8N71",
     vehicleType: "Xe máy",

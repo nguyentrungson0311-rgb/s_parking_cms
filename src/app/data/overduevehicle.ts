@@ -3,7 +3,7 @@ import type { OverdueVehicle } from "@/app/types";
 export const overdueVehicles: OverdueVehicle[] = [
   {
     id: "OD-240720-001",
-    lotCardNumber: "LOT-OD-2407-001",
+    lotCardNumber: "2407-001",
     ticketNumber: "VS-100245",
     cardCode: "RFID-7A92",
     vehicleType: "Ô tô",
@@ -20,7 +20,7 @@ export const overdueVehicles: OverdueVehicle[] = [
   },
   {
     id: "OD-240720-002",
-    lotCardNumber: "LOT-OD-2407-002",
+    lotCardNumber: "2407-002",
     ticketNumber: "VS-100249",
     cardCode: "RFID-2E58",
     vehicleType: "Ô tô",
@@ -37,7 +37,7 @@ export const overdueVehicles: OverdueVehicle[] = [
   },
   {
     id: "OD-240720-003",
-    lotCardNumber: "LOT-OD-2407-003",
+    lotCardNumber: "2407-003",
     ticketNumber: "VS-100250",
     cardCode: "RFID-9F43",
     vehicleType: "Xe máy",
@@ -54,7 +54,7 @@ export const overdueVehicles: OverdueVehicle[] = [
   },
   {
     id: "OD-240720-004",
-    lotCardNumber: "LOT-OD-2407-004",
+    lotCardNumber: "2407-004",
     ticketNumber: "VS-100252",
     cardCode: "RFID-1H35",
     vehicleType: "Xe máy điện",
@@ -71,7 +71,7 @@ export const overdueVehicles: OverdueVehicle[] = [
   },
   {
     id: "OD-240720-005",
-    lotCardNumber: "LOT-OD-2407-005",
+    lotCardNumber: "2407-005",
     ticketNumber: "VS-100254",
     cardCode: "RFID-0L64",
     vehicleType: "Ô tô",
@@ -88,7 +88,7 @@ export const overdueVehicles: OverdueVehicle[] = [
   },
   {
     id: "OD-240720-006",
-    lotCardNumber: "LOT-OD-2407-006",
+    lotCardNumber: "2407-006",
     ticketNumber: "VS-100256",
     cardCode: "RFID-8N71",
     vehicleType: "Xe máy",

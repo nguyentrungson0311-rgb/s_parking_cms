@@ -9,6 +9,7 @@ import {
   TH,
   THead,
   TR,
+  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
@@ -42,14 +43,21 @@ export function ShiftAssignTable({
   onOpenDetail: (item: ShiftAssign) => void;
 }) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const pagination = useTablePagination({ data: shiftAssigns, defaultPageSize: 10 });
+  const visibleShiftAssigns = pagination.paginatedData;
   const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
   const isAllSelected =
-    shiftAssigns.length > 0 && shiftAssigns.every((item) => selectedSet.has(item.id));
+    visibleShiftAssigns.length > 0 && visibleShiftAssigns.every((item) => selectedSet.has(item.id));
   const isSomeSelected =
-    shiftAssigns.some((item) => selectedSet.has(item.id)) && !isAllSelected;
+    visibleShiftAssigns.some((item) => selectedSet.has(item.id)) && !isAllSelected;
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedRows(checked ? shiftAssigns.map((item) => item.id) : []);
+    const visibleIds = visibleShiftAssigns.map((item) => item.id);
+    setSelectedRows((current) =>
+      checked
+        ? Array.from(new Set([...current, ...visibleIds]))
+        : current.filter((rowId) => !visibleIds.includes(rowId)),
+    );
   };
 
   const handleSelectRow = (id: string, checked: boolean) => {
@@ -62,7 +70,15 @@ export function ShiftAssignTable({
     <DataTable
       className="shift-assign-table"
       minWidth="var(--shift-assign-table-min-width, 2520px)"
-      footer={<TablePagination summary="1-10 of 2,416 results" />}
+      footer={
+        <TablePagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          totalItems={pagination.totalItems}
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.setPageSize}
+        />
+      }
     >
       <THead>
         <TR>
@@ -79,7 +95,7 @@ export function ShiftAssignTable({
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[160px]">Số thẻ (LOT)</TH>
+          <TH className="w-[60px]">Mã(#)</TH>
           <TH className="w-[130px]">Vé số</TH>
           <TH className="w-[130px]">Mã số thẻ</TH>
           <TH className="w-[170px]">Loại phương tiện</TH>
@@ -97,19 +113,25 @@ export function ShiftAssignTable({
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[150px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center" />
+          <TH sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center" />
         </TR>
       </THead>
       <TBody>
-        {shiftAssigns.map((item) => {
+        {visibleShiftAssigns.map((item) => {
           const selected = selectedSet.has(item.id);
           const status = SHIFT_ASSIGN_STATUS[item.status];
           return (
-            <TR key={item.id} selected={selected}>
+            <TR
+              key={item.id}
+              selected={selected}
+              onRowDetail={() => onOpenDetail(item)}
+              rowDetailLabel={`Xem chi tiết ${item.lotCardNumber}`}
+            >
               <TD
                 sticky="left"
                 stickyOffset={0}
                 className="w-10 cursor-pointer"
+                data-no-row-detail
                 onClick={() => handleSelectRow(item.id, !selected)}
               >
                 <TableCheckbox
@@ -136,7 +158,13 @@ export function ShiftAssignTable({
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+              <TD
+                sticky="right"
+                stickyOffset={0}
+                stickyOnCompact
+                className="w-[56px] px-1 text-center"
+                data-no-row-detail
+              >
                 <TableActionDropdown
                   onViewDetail={() => onOpenDetail(item)}
                   actions={SHIFT_ASSIGN_ACTIONS}

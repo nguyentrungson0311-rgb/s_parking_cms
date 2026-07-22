@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 const cardStats = [
@@ -15,7 +15,7 @@ export function AlertsPanel() {
       <CardHeader>
         <div>
           <CardTitle>Thống kê thẻ xe</CardTitle>
-          <p className="mt-1 text-md text-[var(--sp-muted)]">13/07/2026</p>
+          <p className="mt-1 text-md text-muted">13/07/2026</p>
         </div>
       </CardHeader>
       <CardContent className="pt-0">
@@ -42,10 +42,10 @@ export function AlertsPanel() {
           </ResponsiveContainer>
           <div className="absolute inset-0 grid place-items-center text-center">
             <div>
-              <div className="text-xl font-semibold text-[var(--sp-strong)]">
+              <div className="text-xl font-semibold text-strong">
                 {totalCards.toLocaleString("vi-VN")}
               </div>
-              <div className="text-md font-medium text-[var(--sp-muted)]">thẻ</div>
+              <div className="text-md font-medium text-muted">thẻ</div>
             </div>
           </div>
         </div>
@@ -58,15 +58,15 @@ export function AlertsPanel() {
             >
               <div className="flex min-w-0 items-center gap-3">
                 <span className="size-4 shrink-0 rounded-md" style={{ backgroundColor: item.color }} />
-                <span className="min-w-0 truncate text-base font-regular leading-6 text-[var(--sp-text)]">
+                <span className="min-w-0 truncate text-base font-regular leading-6 text-text">
                   {item.title}
                 </span>
               </div>
               <div className="flex shrink-0 items-center gap-3">
-                <span className="rounded-full bg-[var(--badge-neutral-bg)] px-2 py-1 text-xs font-bold leading-4 text-[var(--sp-muted)]">
+                <span className="rounded-full bg-badge-neutral-bg px-2 py-1 text-xs font-bold leading-4 text-muted">
                   {item.percent}
                 </span>
-                <span className="min-w-[56px] text-right text-base font-semibold leading-6 text-[var(--sp-text)]">
+                <span className="min-w-[56px] text-right text-base font-semibold leading-6 text-text">
                   {item.count}
                 </span>
               </div>

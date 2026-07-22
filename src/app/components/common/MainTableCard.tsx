@@ -1,4 +1,4 @@
-import { useRef, useState, type ReactNode } from "react";
+﻿import { useRef, useState, type ReactNode } from "react";
 import {
   FilterPanel,
   type FilterPanelField,
@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { SearchInput } from "@/app/components/ui/input";
 import { cn } from "@/lib/utils";
-import { ListFilter, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 type MainTableCardActionContext = {
   filterButton: ReactNode;
@@ -24,21 +24,24 @@ export function MainTableCard({
   title,
   description,
   refreshLabel = "Làm mới",
-  searchPlaceholder,
+  showRefresh = true,
+  searchPlaceholder = "Tìm kiếm...",
   actions,
   filterFields,
   filterValues,
   defaultFilterValues,
   filterTitle = "Bộ lọc",
-  filterButtonLabel = "Lọc",
+  filterButtonLabel = "",
   onFilterApply,
   onFilterReset,
   children,
   className,
+  titleClassName,
 }: {
   title: string;
   description?: string;
   refreshLabel?: string;
+  showRefresh?: boolean;
   searchPlaceholder?: string;
   actions?: MainTableCardActions;
   filterFields?: FilterPanelField[];
@@ -50,6 +53,7 @@ export function MainTableCard({
   onFilterReset?: (values: FilterPanelValues) => void;
   children: ReactNode;
   className?: string;
+  titleClassName?: string;
 }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [internalFilterValues, setInternalFilterValues] = useState<FilterPanelValues>(
@@ -63,12 +67,13 @@ export function MainTableCard({
     <span ref={filterAnchorRef} className="inline-flex">
       <Button
         variant={filtersApplied ? "outline-primary" : "outline"}
-        size="md"
-        className={cn(filtersApplied && "bg-[var(--sp-theme-soft)]")}
+        size="icon-sm"
+        className={cn("size-9.5", filtersApplied && "bg-theme-soft")}
+        aria-label={filterButtonLabel}
+        title={filterButtonLabel}
         onClick={() => setFilterOpen((current) => !current)}
       >
-        <ListFilter />
-        {filterButtonLabel}
+        <i className="bi bi-funnel-fill text-base leading-none" aria-hidden="true" />
       </Button>
     </span>
   ) : null;
@@ -107,34 +112,31 @@ export function MainTableCard({
           className,
         )}
       >
-        <div className="grid min-w-0 shrink-0 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
+        <div className="sp-table-card-header grid min-w-0 shrink-0 gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-start">
           <div className="min-w-0">
             <div className="sp-table-card-title-row flex min-w-0 items-center justify-between gap-3">
-              <h2 className="font-sf min-w-0 truncate text-xl font-semibold leading-7 text-[var(--sp-strong)]">
+              <h2 className={cn("font-sf min-w-0 truncate text-xl font-semibold leading-7 text-strong", titleClassName)}>
                 {title}
               </h2>
-              <Button variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs font-bold">
-                <RefreshCw />
-                {refreshLabel}
-              </Button>
+              {showRefresh ? (
+                <Button variant="ghost" size="sm" className="h-7 shrink-0 px-2 text-xs font-bold">
+                  <RefreshCw />
+                  {refreshLabel}
+                </Button>
+              ) : null}
             </div>
             {description ? (
-              <p className="mt-1 text-base leading-6 text-[var(--sp-muted)]">{description}</p>
+              <p className="mt-1 text-base leading-6 text-muted">{description}</p>
             ) : null}
           </div>
 
-          {searchPlaceholder ? (
+          <div className="sp-table-card-actions flex min-w-0 shrink-0 flex-wrap items-center gap-2 md:col-start-2 md:row-start-1 md:justify-end">
             <SearchInput
-              className="sp-table-card-search h-9 w-full rounded-lg md:max-w-[420px]"
+              className="sp-table-card-search !block h-9 min-w-40 flex-1 rounded-lg md:w-65 md:flex-none"
               placeholder={searchPlaceholder}
             />
-          ) : null}
-
-          {hasFilter || actions ? (
-            <div className="sp-table-card-actions flex min-w-0 shrink-0 flex-wrap items-center gap-2 md:col-start-2 md:row-start-1 md:justify-end">
-              {actionContent}
-            </div>
-          ) : null}
+            {hasFilter || actions ? actionContent : null}
+          </div>
         </div>
 
         <div className="min-h-0 min-w-0 flex-1 overflow-hidden">{children}</div>

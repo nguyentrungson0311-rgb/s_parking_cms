@@ -9,8 +9,12 @@ import { MonthlyReport } from "@/app/pages/MonthlyReport";
 import { MonthlyVehicle } from "@/app/pages/MonthlyVehicle";
 import { OverdueVehicle } from "@/app/pages/OverdueVehicle";
 import { PlaceholderPage } from "@/app/pages/PlaceholderPage";
+import { PricingSettings } from "@/app/pages/PricingSettings";
+import { Settings } from "@/app/pages/Settings";
 import { ShiftAssign } from "@/app/pages/ShiftAssign";
+import { Toaster } from "@/app/components/ui/toast";
 import type { PageId } from "@/app/types";
+import type { DynamicFormMode } from "@/app/components/ui/dynamic-form";
 
 const vehiclePages: PageId[] = [
   "vehicle-month",
@@ -27,12 +31,20 @@ const pageTitles: Partial<Record<PageId, string>> = {
   "ui-atoms": "Atom components",
   "summary-vehicles": "Quản lý xe",
   "monthly-report": "Báo cáo tháng",
+  settings: "Cài đặt",
+  "settings-pricing": "Cài đặt bảng giá",
 };
 
 export default function App() {
   const [activePage, setActivePage] = useState<PageId>("dashboard");
   const [detailOpen, setDetailOpen] = useState(false);
+  const [detailMode, setDetailMode] = useState<DynamicFormMode>("view");
   const isVehiclePage = vehiclePages.includes(activePage);
+
+  const openMonthlyCardDetail = (mode: DynamicFormMode = "view") => {
+    setDetailMode(mode);
+    setDetailOpen(true);
+  };
 
   return (
     <AppShell activePage={activePage} onNavigate={setActivePage}>
@@ -43,7 +55,7 @@ export default function App() {
       {isVehiclePage && (
         <MonthlyVehicle
           title={pageTitles[activePage] ?? "Quản lý phương tiện"}
-          onOpenDetail={() => setDetailOpen(true)}
+          onOpenDetail={openMonthlyCardDetail}
         />
       )}
       {activePage === "overdue-vehicles" && <OverdueVehicle />}
@@ -60,7 +72,14 @@ export default function App() {
       {activePage === "monthly-report" && (
         <MonthlyReport />
       )}
-      <MonthlyCardDetail open={detailOpen} onClose={() => setDetailOpen(false)} />
+      {activePage === "settings" && <Settings />}
+      {activePage === "settings-pricing" && <PricingSettings />}
+      <MonthlyCardDetail
+        open={detailOpen}
+        initialMode={detailMode}
+        onClose={() => setDetailOpen(false)}
+      />
+      <Toaster />
     </AppShell>
   );
 }

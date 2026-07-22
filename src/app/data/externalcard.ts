@@ -3,7 +3,7 @@
 export const externalCards: ExternalCard[] = [
   {
     id: "EXT-1001",
-    lotCardNumber: "LOT-2407-001",
+    lotCardNumber: "E123-001",
     issuedAt: "16/07/2026",
     owner: "Nguyễn Hoàng Nam",
     phone: "0903 118 228",
@@ -19,7 +19,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1002",
-    lotCardNumber: "LOT-2407-002",
+    lotCardNumber: "E123-002",
     issuedAt: "16/07/2026",
     owner: "Lê Quốc Bảo",
     phone: "0916 882 190",
@@ -35,7 +35,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1003",
-    lotCardNumber: "LOT-2407-003",
+    lotCardNumber: "E123-003",
     issuedAt: "15/07/2026",
     owner: "Trần Mai Phương",
     phone: "0981 773 420",
@@ -51,7 +51,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1004",
-    lotCardNumber: "LOT-2407-004",
+    lotCardNumber: "E123-004",
     issuedAt: "15/07/2026",
     owner: "Phạm Tùng Lâm",
     phone: "0934 888 114",
@@ -67,7 +67,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1005",
-    lotCardNumber: "LOT-2407-005",
+    lotCardNumber: "E123-005",
     issuedAt: "14/07/2026",
     owner: "Vũ Hải Yến",
     phone: "0972 002 316",
@@ -83,7 +83,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1006",
-    lotCardNumber: "LOT-2407-006",
+    lotCardNumber: "E123-006",
     issuedAt: "14/07/2026",
     owner: "Công ty vận tải Tín Phát",
     phone: "024 3888 012",
@@ -99,7 +99,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1007",
-    lotCardNumber: "LOT-2407-007",
+    lotCardNumber: "E123-007",
     issuedAt: "13/07/2026",
     owner: "Đỗ Khánh Linh",
     phone: "0908 441 209",
@@ -115,7 +115,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1008",
-    lotCardNumber: "LOT-2407-008",
+    lotCardNumber: "E123-008",
     issuedAt: "13/07/2026",
     owner: "Mai Thanh Tú",
     phone: "0988 221 673",
@@ -131,7 +131,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1009",
-    lotCardNumber: "LOT-2407-009",
+    lotCardNumber: "E123-009",
     issuedAt: "12/07/2026",
     owner: "Hoàng Long",
     phone: "0912 009 118",
@@ -147,7 +147,7 @@ export const externalCards: ExternalCard[] = [
   },
   {
     id: "EXT-1010",
-    lotCardNumber: "LOT-2407-010",
+    lotCardNumber: "E123-010",
     issuedAt: "12/07/2026",
     owner: "Phan Ngọc Hà",
     phone: "0936 771 442",

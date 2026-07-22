@@ -1,11 +1,14 @@
+import { useMemo, useState } from "react";
 import {
   DataTable,
+  TableCheckbox,
   TablePagination,
   TBody,
   TD,
   TH,
   THead,
   TR,
+  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
@@ -21,15 +24,60 @@ const OVERDUE_VEHICLE_ACTIONS: TableActionDropdownItem[] = [
 ];
 
 export function OverdueVehicleTable() {
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const pagination = useTablePagination({ data: overdueVehicles, defaultPageSize: 10 });
+  const visibleOverdueVehicles = pagination.paginatedData;
+  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
+  const isAllSelected =
+    visibleOverdueVehicles.length > 0 && visibleOverdueVehicles.every((item) => selectedSet.has(item.id));
+  const isSomeSelected =
+    visibleOverdueVehicles.some((item) => selectedSet.has(item.id)) && !isAllSelected;
+
+  const handleSelectAll = (checked: boolean) => {
+    const visibleIds = visibleOverdueVehicles.map((item) => item.id);
+    setSelectedRows((current) =>
+      checked
+        ? Array.from(new Set([...current, ...visibleIds]))
+        : current.filter((rowId) => !visibleIds.includes(rowId)),
+    );
+  };
+
+  const handleSelectRow = (id: string, checked: boolean) => {
+    setSelectedRows((current) =>
+      checked ? [...current, id] : current.filter((rowId) => rowId !== id),
+    );
+  };
+
   return (
     <DataTable
       className="overdue-vehicle-table"
-      minWidth="var(--overdue-vehicle-table-min-width, 2320px)"
-      footer={<TablePagination summary="1-10 of 286 results" />}
+      minWidth="var(--overdue-vehicle-table-min-width, 2360px)"
+      footer={
+        <TablePagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          totalItems={pagination.totalItems}
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.setPageSize}
+        />
+      }
     >
       <THead>
         <TR>
-          <TH className="w-[150px]">Số thẻ (Lot)</TH>
+          <TH
+            sticky="left"
+            stickyOffset={0}
+            className="w-10 cursor-pointer"
+            onClick={() => handleSelectAll(!isAllSelected)}
+          >
+            <TableCheckbox
+              checked={isAllSelected}
+              indeterminate={isSomeSelected}
+              onCheckedChange={handleSelectAll}
+              aria-label="Chọn tất cả"
+            />
+          </TH>
+          <TH className="w-[60px]">Mã(#)</TH>
           <TH className="w-[130px]">Số vé</TH>
           <TH className="w-[130px]">Mã thẻ</TH>
           <TH className="w-[160px]">Loại phương tiện</TH>
@@ -43,39 +91,55 @@ export function OverdueVehicleTable() {
           <TH className="w-[180px]">Tên phương tiện</TH>
           <TH className="w-[140px]">Biển số</TH>
           <TH className="w-[110px] text-center">Số ngày</TH>
-          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center" />
+          <TH sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center" />
         </TR>
       </THead>
       <TBody>
-        {overdueVehicles.map((item) => (
-          <TR key={item.id}>
-            <TD className="font-medium">{item.lotCardNumber}</TD>
-            <TD>{item.ticketNumber}</TD>
-            <TD>{item.cardCode}</TD>
-            <TD>{item.vehicleType}</TD>
-            <TD>{item.ticketType}</TD>
-            <TD>{item.checkedInAt}</TD>
-            <TD>
-              <VehicleImageThumb label={item.plateImageLabel} variant="plate" />
-            </TD>
-            <TD>
-              <VehicleImageThumb label={item.overviewImageLabel} variant="overview" />
-            </TD>
-            <TD>{item.recognitionText}</TD>
-            <TD>{item.customerName}</TD>
-            <TD>{item.apartment}</TD>
-            <TD>{item.vehicleName}</TD>
-            <TD className="font-medium">{item.plate}</TD>
-            <TD className="text-center">
-              <span className="inline-flex min-w-12 justify-center rounded-[8px] bg-[var(--sp-orange-soft)] px-2 py-1 font-semibold text-[var(--sp-orange)]">
-                {item.overdueDays}
-              </span>
-            </TD>
-            <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
-              <TableActionDropdown actions={OVERDUE_VEHICLE_ACTIONS} />
-            </TD>
-          </TR>
-        ))}
+        {visibleOverdueVehicles.map((item) => {
+          const selected = selectedSet.has(item.id);
+
+          return (
+            <TR key={item.id} selected={selected}>
+              <TD
+                sticky="left"
+                stickyOffset={0}
+                className="w-10 cursor-pointer"
+                onClick={() => handleSelectRow(item.id, !selected)}
+              >
+                <TableCheckbox
+                  checked={selected}
+                  onCheckedChange={(checked) => handleSelectRow(item.id, checked)}
+                  aria-label={`Chọn ${item.lotCardNumber}`}
+                />
+              </TD>
+              <TD className="font-medium">{item.lotCardNumber}</TD>
+              <TD>{item.ticketNumber}</TD>
+              <TD>{item.cardCode}</TD>
+              <TD>{item.vehicleType}</TD>
+              <TD>{item.ticketType}</TD>
+              <TD>{item.checkedInAt}</TD>
+              <TD>
+                <VehicleImageThumb label={item.plateImageLabel} variant="plate" />
+              </TD>
+              <TD>
+                <VehicleImageThumb label={item.overviewImageLabel} variant="overview" />
+              </TD>
+              <TD>{item.recognitionText}</TD>
+              <TD>{item.customerName}</TD>
+              <TD>{item.apartment}</TD>
+              <TD>{item.vehicleName}</TD>
+              <TD className="font-medium">{item.plate}</TD>
+              <TD className="text-center">
+                <span className="inline-flex min-w-12 justify-center rounded-[8px] bg-[var(--sp-orange-soft)] px-2 py-1 font-semibold text-[var(--sp-orange)]">
+                  {item.overdueDays}
+                </span>
+              </TD>
+              <TD sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center">
+                <TableActionDropdown actions={OVERDUE_VEHICLE_ACTIONS} />
+              </TD>
+            </TR>
+          );
+        })}
       </TBody>
     </DataTable>
   );

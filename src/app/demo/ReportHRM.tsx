@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { MagnifyingGlassIcon, DocumentTextIcon, ArrowDownTrayIcon, ChartBarIcon, FunnelIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import { CommonTable, ColumnDef } from "../components/common/CommonTable";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
@@ -86,7 +86,7 @@ function EmptyState({ reportTitle }: { reportTitle: string }) {
   return (
     <div className="flex-1 flex items-center justify-center">
       <div className="flex flex-col items-center text-center max-w-[440px]">
-        <div className="w-[80px] h-[80px] rounded-full bg-muted flex items-center justify-center mb-3">
+        <div className="w-[80px] h-[80px] rounded-full bg-badge-neutral-bg flex items-center justify-center mb-3">
           <DocumentTextIcon className="w-[40px] h-[40px] text-muted-foreground" />
         </div>
         <h3 className="text-foreground mb-3 text-lg font-semibold">
@@ -673,7 +673,7 @@ export function ReportHRM({ onBack }: ReportHRMProps) {
   };
 
   return (
-    <div className="flex-1 bg-muted overflow-auto pb-4 pr-4">
+    <div className="flex-1 bg-badge-neutral-bg overflow-auto pb-4 pr-4">
       <div className=" overflow-hidden h-full flex flex-col rounded-xl">
         {/* Header "Báo cáo" chung */}
         <div className=" relative shrink-0 w-full  rounded-t-xl">
@@ -684,7 +684,7 @@ export function ReportHRM({ onBack }: ReportHRMProps) {
                 { label: 'Trang chủ', onClick: onBack },
                 { label: 'Báo cáo' }
               ]}
-              bgColor="bg-muted"
+              bgColor="bg-badge-neutral-bg"
             />
             <div className="flex-1" />
             {/* Filter controls on the right */}
@@ -761,7 +761,7 @@ export function ReportHRM({ onBack }: ReportHRMProps) {
 
         {/* Container 2 cột: Sidebar + Content */}
         <div className="flex-1 overflow-hidden  pl-4 ">
-          <div className="flex h-full overflow-hidden bg-muted rounded-xl">
+          <div className="flex h-full overflow-hidden bg-badge-neutral-bg rounded-xl">
             {/* Cột trái: Sidebar */}
             <div className="bg-card h-full relative shrink-0 border border-border rounded-xl">
               <div className="flex flex-col h-full items-start overflow-clip py-3 px-3 relative w-[300px]">
@@ -794,7 +794,7 @@ export function ReportHRM({ onBack }: ReportHRMProps) {
                         setHasFiltered(false);
                       }}
                       className={`relative shrink-0 w-full transition-colors rounded-lg ${
-                        activeReport === report.id ? "bg-primary/10 border-l-[2.5px] border-l-primary" : "hover:bg-muted border-l-[2.5px] border-l-transparent"
+                        activeReport === report.id ? "bg-primary/10 border-l-[2.5px] border-l-primary" : "hover:bg-badge-neutral-bg border-l-[2.5px] border-l-transparent"
                       }`}
                     >
                       <MenuItem

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { SearchInput } from "@/app/components/ui/input";
-import { Check, Menu, Moon, Palette, Sun } from "lucide-react";
+﻿import { useEffect, useRef, useState } from "react";
+import type { PageId } from "@/app/types";
+import { Check, Menu, Moon, Palette, Plus, Sun } from "lucide-react";
 import { useAppNavigation, useMobileMenu, useTheme } from "./AppShell";
 import { cn } from "@/lib/utils";
 
@@ -9,19 +9,33 @@ const brandOptions = [
   { value: "green" as const, label: "Xanh lá", color: "#009b5c" },
 ];
 
+type BreadcrumbItem =
+  | string
+  | {
+      label: string;
+      page?: PageId;
+      onClick?: () => void;
+    };
+
 export function Topbar({
   title,
   breadcrumbs = [],
 }: {
   title: string;
-  breadcrumbs?: string[];
+  breadcrumbs?: BreadcrumbItem[];
 }) {
+  const hasBreadcrumbs = breadcrumbs.length > 0;
   const { openMobileMenu } = useMobileMenu();
   const { activePage, navigate } = useAppNavigation();
   const { brand, setBrand, theme, toggleTheme } = useTheme();
   const [brandMenuOpen, setBrandMenuOpen] = useState(false);
+  const [quickControlsOpen, setQuickControlsOpen] = useState(false);
   const brandMenuRef = useRef<HTMLDivElement>(null);
   const isDark = theme === "dark";
+  const nextBrand = brand === "blue" ? "green" : "blue";
+  const breadcrumbItems: Array<{ label: string; page?: PageId; onClick?: () => void }> = breadcrumbs.map((item) =>
+    typeof item === "string" ? { label: item } : item,
+  );
 
   useEffect(() => {
     if (!brandMenuOpen) return;
@@ -49,7 +63,7 @@ export function Topbar({
 
   return (
     <div className="sp-topbar-frame">
-      <header className="sp-topbar">
+      <header className="sp-topbar" data-has-breadcrumbs={hasBreadcrumbs ? "true" : "false"}>
         <div className="sp-topbar-heading flex min-w-0 items-center gap-6">
           <button
             type="button"
@@ -60,52 +74,88 @@ export function Topbar({
             <Menu className="size-5" strokeWidth={2.2} />
           </button>
           <div className="sp-topbar-title-stack min-w-0">
-            <h1 className="sp-topbar-title whitespace-nowrap text-[18px] font-semibold text-[var(--sp-theme-strong)]">
+            <h1 className="sp-topbar-title whitespace-nowrap text-[18px] font-semibold text-theme-strong">
               {title}
             </h1>
-            {breadcrumbs.length > 0 ? (
+            {hasBreadcrumbs ? (
               <div className="sp-mobile-breadcrumbs">
-                {breadcrumbs.map((item, index) => (
-                  <span
-                    key={`${item}-${index}`}
-                    className={index === breadcrumbs.length - 1 ? "font-semibold text-[var(--sp-strong)]" : ""}
-                  >
-                    {index > 0 ? <span className="mx-2 text-[var(--sp-muted)]">›</span> : null}
-                    {item}
-                  </span>
-                ))}
+                {breadcrumbItems.map((item, index) => {
+                  const isLast = index === breadcrumbItems.length - 1;
+                  const canNavigate = Boolean(!isLast && (item.page || item.onClick));
+
+                  return (
+                    <span key={`${item.label}-${index}`} className="inline-flex items-center">
+                      {index > 0 ? <span className="mx-2 text-muted">›</span> : null}
+                      {canNavigate ? (
+                        <button
+                          type="button"
+                          className="rounded px-0.5 font-medium text-muted transition-colors hover:text-theme"
+                          onClick={() => {
+                            if (item.onClick) {
+                              item.onClick();
+                              return;
+                            }
+                            if (item.page) navigate(item.page);
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      ) : (
+                        <span className={isLast ? "font-semibold text-strong" : ""}>
+                          {item.label}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             ) : null}
           </div>
-          {breadcrumbs.length > 0 ? (
+          {hasBreadcrumbs ? (
             <>
-              <div className="sp-topbar-divider h-8 w-px bg-[var(--sp-border)]" />
-              <div className="sp-topbar-breadcrumbs flex min-w-0 items-center gap-2 text-md text-[var(--sp-muted)]">
-                {breadcrumbs.map((item, index) => (
-                  <span
-                    key={`${item}-${index}`}
-                    className={
-                      index === breadcrumbs.length - 1
-                        ? "font-medium text-[var(--sp-strong)]"
-                        : ""
-                    }
-                  >
-                    {index > 0 ? (
-                      <span className="mx-2 text-[var(--sp-muted)]">›</span>
-                    ) : null}
-                    {item}
-                  </span>
-                ))}
+              <div className="sp-topbar-divider h-8 w-px bg-border" />
+              <div className="sp-topbar-breadcrumbs flex min-w-0 items-center gap-2 text-md text-muted">
+                {breadcrumbItems.map((item, index) => {
+                  const isLast = index === breadcrumbItems.length - 1;
+                  const canNavigate = Boolean(!isLast && (item.page || item.onClick));
+
+                  return (
+                    <span key={`${item.label}-${index}`} className="inline-flex items-center">
+                      {index > 0 ? (
+                        <span className="mx-2 text-muted">›</span>
+                      ) : null}
+                      {canNavigate ? (
+                        <button
+                          type="button"
+                          className="rounded px-0.5 font-medium text-muted transition-colors hover:text-theme"
+                          onClick={() => {
+                            if (item.onClick) {
+                              item.onClick();
+                              return;
+                            }
+                            if (item.page) navigate(item.page);
+                          }}
+                        >
+                          {item.label}
+                        </button>
+                      ) : (
+                        <span className={isLast ? "font-medium text-strong" : ""}>
+                          {item.label}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
               </div>
             </>
           ) : null}
         </div>
 
         <div className="sp-topbar-actions flex shrink-0 items-center gap-[14px]">
-          <div ref={brandMenuRef} className="relative">
+          <div ref={brandMenuRef} className="sp-topbar-brand-control relative">
             <button
               type="button"
-              className="grid size-9 place-items-center rounded-lg text-[var(--sp-muted)] transition-colors hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]"
+              className="grid size-9 place-items-center rounded-lg text-muted transition-colors hover:bg-theme-soft hover:text-theme"
               aria-label="Chọn màu thương hiệu"
               aria-expanded={brandMenuOpen}
               aria-haspopup="menu"
@@ -114,13 +164,13 @@ export function Topbar({
             >
               <span className="relative grid size-[22px] place-items-center" aria-hidden="true">
                 <Palette className="size-[22px]" strokeWidth={2.2} />
-                <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border border-[var(--sp-surface)] bg-[var(--sp-theme)]" />
+                <span className="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border border-surface bg-theme" />
               </span>
             </button>
 
             {brandMenuOpen ? (
               <div
-                className="absolute right-0 top-[calc(100%+8px)] z-[90] w-44 rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-1 shadow-[var(--shadow-soft)]"
+                className="absolute right-0 top-[calc(100%+8px)] z-[90] w-44 rounded-[8px] border border-border bg-surface p-1 shadow-sp-soft"
                 role="menu"
               >
                 {brandOptions.map((option) => {
@@ -130,7 +180,7 @@ export function Topbar({
                     <button
                       key={option.value}
                       type="button"
-                      className="flex h-9 w-full items-center gap-2 rounded-[7px] px-3 text-left text-base font-medium text-[var(--sp-text)] transition hover:bg-[var(--badge-neutral-bg)]"
+                      className="flex h-9 w-full items-center gap-2 rounded-[7px] px-3 text-left text-base font-medium text-text transition hover:bg-badge-neutral-bg"
                       role="menuitemradio"
                       aria-checked={selected}
                       onClick={() => {
@@ -144,7 +194,7 @@ export function Topbar({
                         aria-hidden="true"
                       />
                       <span className="min-w-0 flex-1 truncate">{option.label}</span>
-                      {selected ? <Check className="size-4 shrink-0 text-[var(--sp-theme)]" /> : null}
+                      {selected ? <Check className="size-4 shrink-0 text-theme" /> : null}
                     </button>
                   );
                 })}
@@ -153,7 +203,7 @@ export function Topbar({
           </div>
           <button
             type="button"
-            className="grid size-9 place-items-center rounded-lg text-[var(--sp-muted)] transition-colors hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]"
+            className="sp-topbar-theme-control grid size-9 place-items-center rounded-lg text-muted transition-colors hover:bg-theme-soft hover:text-theme"
             aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
             aria-pressed={isDark}
             title={isDark ? "Light theme" : "Dark theme"}
@@ -165,15 +215,14 @@ export function Topbar({
               <Moon className="size-[22px]" strokeWidth={2.2} aria-hidden="true" />
             )}
           </button>
-          <SearchInput className="sp-topbar-search h-9 w-[330px] rounded-lg" placeholder="Tìm kiếm..." />
-          <button className="grid size-9 place-items-center text-[var(--sp-muted)] transition-colors hover:text-[var(--sp-theme)]" aria-label="Thông báo">
+          <button className="grid size-9 place-items-center text-muted transition-colors hover:text-theme" aria-label="Thông báo">
             <i className="bi bi-bell-fill text-[22px] leading-none" aria-hidden="true" />
           </button>
           <button
             type="button"
             className={cn(
-              "grid size-9 place-items-center rounded-lg text-[var(--sp-muted)] transition-colors hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]",
-              activePage === "ui-atoms" && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
+              "grid size-9 place-items-center rounded-lg text-muted transition-colors hover:bg-theme-soft hover:text-theme",
+              activePage === "ui-atoms" && "bg-theme-soft text-theme",
             )}
             aria-label="Atom components"
             title="Atom components"
@@ -181,11 +230,58 @@ export function Topbar({
           >
             <i className="bi bi-info-circle-fill text-[22px] leading-none" aria-hidden="true" />
           </button>
-          <div className="grid size-[42px] place-items-center rounded-full bg-[var(--sp-theme-soft)] text-sm font-extrabold text-[var(--sp-theme)]">
+          <div className="grid size-[42px] place-items-center rounded-full bg-theme-soft text-sm font-extrabold text-theme">
             VN
           </div>
         </div>
       </header>
+
+      <div
+        className="sp-mobile-quick-actions"
+        data-open={quickControlsOpen ? "true" : undefined}
+      >
+        <button
+          type="button"
+          className="sp-mobile-quick-action"
+          aria-label="Đổi màu thương hiệu"
+          title="Đổi màu thương hiệu"
+          onClick={() => {
+            setBrand(nextBrand);
+            setQuickControlsOpen(false);
+          }}
+        >
+          <span className="relative grid size-5 place-items-center" aria-hidden="true">
+            <Palette className="size-5" strokeWidth={2.2} />
+            <span className="absolute -bottom-0.5 -right-0.5 size-2 rounded-full border border-surface bg-theme" />
+          </span>
+        </button>
+        <button
+          type="button"
+          className="sp-mobile-quick-action"
+          aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+          aria-pressed={isDark}
+          title={isDark ? "Light theme" : "Dark theme"}
+          onClick={() => {
+            toggleTheme();
+            setQuickControlsOpen(false);
+          }}
+        >
+          {isDark ? (
+            <Sun className="size-5" strokeWidth={2.2} aria-hidden="true" />
+          ) : (
+            <Moon className="size-5" strokeWidth={2.2} aria-hidden="true" />
+          )}
+        </button>
+        <button
+          type="button"
+          className="sp-mobile-quick-actions-trigger"
+          aria-label="Mở tùy chọn giao diện"
+          aria-expanded={quickControlsOpen}
+          onClick={() => setQuickControlsOpen((current) => !current)}
+        >
+          <Plus className="size-6" strokeWidth={2.4} aria-hidden="true" />
+        </button>
+      </div>
     </div>
   );
 }

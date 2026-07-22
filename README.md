@@ -1,6 +1,7 @@
 # S-Parking CMS
 
 React + TypeScript + Tailwind v4 project generated from `parking.pen`.
+Ưu tiên sử dụng thư viện từ Shadcn/ui
 
 Initial screens:
 - Dashboard

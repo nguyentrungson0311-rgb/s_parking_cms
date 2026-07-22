@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { CheckIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -27,9 +27,9 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         data-state={state}
         disabled={disabled}
         className={cn(
-          "peer grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-[6px] border border-[var(--badge-disabled-fg)] bg-[var(--sp-surface)] text-[var(--primary-foreground)] shadow-none outline-none transition-all",
-          "hover:border-[var(--sp-theme)]/55 focus-visible:border-[var(--sp-theme)] focus-visible:ring-4 focus-visible:ring-primary/10",
-          "data-[state=checked]:border-[var(--sp-theme)] data-[state=checked]:bg-[var(--sp-theme)] data-[state=indeterminate]:bg-[var(--sp-surface)] data-[state=indeterminate]:text-[var(--sp-theme)]",
+          "peer grid size-[18px] shrink-0 cursor-pointer place-items-center rounded-[6px] border border-badge-disabled-fg bg-surface text-primary-foreground shadow-none outline-none transition-all",
+          "hover:border-theme/55 focus-visible:border-theme focus-visible:ring-4 focus-visible:ring-primary/10",
+          "data-[state=checked]:border-theme data-[state=checked]:bg-theme data-[state=indeterminate]:bg-surface data-[state=indeterminate]:text-theme",
           "disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
@@ -42,7 +42,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
         {...props}
       >
         {isIndeterminate ? (
-          <span className="size-2 rounded-[2px] bg-[var(--sp-theme)]" aria-hidden="true" />
+          <span className="size-2 rounded-[2px] bg-theme" aria-hidden="true" />
         ) : isChecked ? (
           <CheckIcon className="size-3" aria-hidden="true" strokeWidth={3} />
         ) : null}

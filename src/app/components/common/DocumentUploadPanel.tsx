@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { useCommonDrawerOverlay } from "@/app/components/common/CommonDrawer";
 import { LoadingOverlay } from "@/app/components/common/LoadingOverlay";
 import { Button } from "@/app/components/ui/button";
@@ -153,7 +153,7 @@ export function DocumentUploadPanel({
   return (
     <Card className="sp-card relative p-4">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h3 className="text-lg font-bold text-[var(--sp-strong)]">{title}</h3>
+        <h3 className="text-lg font-bold text-strong">{title}</h3>
        
           <ViewToggle value={viewMode} onChange={setViewMode} />
         
@@ -161,8 +161,8 @@ export function DocumentUploadPanel({
 
       <div
         className={cn(
-          "rounded-lg border border-dashed border-[var(--sp-border)] bg-[var(--sp-surface)] p-5 transition-colors",
-          dragActive && "border-[var(--sp-theme)] bg-[var(--sp-theme-soft)]",
+          "rounded-lg border border-dashed border-border bg-surface p-5 transition-colors",
+          dragActive && "border-theme bg-theme-soft",
         )}
         onDragEnter={(event) => {
           event.preventDefault();
@@ -196,13 +196,13 @@ export function DocumentUploadPanel({
 
         <button
           type="button"
-          className="flex min-h-10 w-full items-center justify-center gap-1 rounded-md text-base text-[var(--sp-muted)] transition hover:bg-[var(--badge-neutral-bg)]"
+          className="flex min-h-10 w-full items-center justify-center gap-1 rounded-md text-base text-muted transition hover:bg-badge-neutral-bg"
           onClick={() => inputRef.current?.click()}
         >
-          <UploadCloud className="size-5 text-[var(--sp-theme)]" />
+          <UploadCloud className="size-5 text-theme" />
           Kéo thả file vào đây hoặc
-          <span className="font-bold text-[var(--sp-theme)]">chọn file</span>
-          <span className="text-[var(--sp-muted)]">· PDF, JPG, PNG, DOC, DOCX, XLSX (Tối đa 5MB)</span>
+          <span className="font-bold text-theme">chọn file</span>
+          <span className="text-muted">· PDF, JPG, PNG, DOC, DOCX, XLSX (Tối đa 5MB)</span>
         </button>
 
         {documents.length > 0 ? (
@@ -218,7 +218,7 @@ export function DocumentUploadPanel({
               ))}
             </div>
           ) : (
-            <div className="mt-5 divide-y divide-[var(--sp-border)] overflow-hidden rounded-md border border-[var(--sp-border)]">
+            <div className="mt-5 divide-y divide-border overflow-hidden rounded-md border border-border">
               {documents.map((document) => (
                 <DocumentRow
                   key={document.id}
@@ -245,12 +245,12 @@ function ViewToggle({
   onChange: (value: DocumentViewMode) => void;
 }) {
   return (
-    <div className="flex items-center rounded-md bg-[var(--sp-surface)] p-1">
+    <div className="flex items-center rounded-md bg-surface p-1">
       <button
         type="button"
         className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-[var(--sp-muted)] transition",
-          value === "grid" && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
+          "grid size-8 place-items-center rounded-[6px] text-muted transition",
+          value === "grid" && "bg-theme-soft text-theme",
         )}
         onClick={() => onChange("grid")}
         aria-label="Xem dạng thumbnail"
@@ -260,8 +260,8 @@ function ViewToggle({
       <button
         type="button"
         className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-[var(--sp-muted)] transition",
-          value === "list" && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
+          "grid size-8 place-items-center rounded-[6px] text-muted transition",
+          value === "list" && "bg-theme-soft text-theme",
         )}
         onClick={() => onChange("list")}
         aria-label="Xem dạng danh sách"
@@ -284,12 +284,12 @@ function DocumentThumb({
   const Icon = getDocumentIcon(document);
 
   return (
-    <article className="group overflow-hidden rounded-md border border-[var(--sp-border)] bg-[var(--sp-surface)]">
-      <div className="relative h-32 bg-[var(--badge-neutral-bg)]">
+    <article className="group overflow-hidden rounded-md border border-border bg-surface">
+      <div className="relative h-32 bg-badge-neutral-bg">
         {isImage(document) ? (
           <img src={document.url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <div className="grid h-full place-items-center text-[var(--sp-theme)]">
+          <div className="grid h-full place-items-center text-theme">
             <Icon className="size-10" />
           </div>
         )}
@@ -303,8 +303,8 @@ function DocumentThumb({
         </div>
       </div>
       <div className="p-3">
-        <div className="truncate text-base font-bold text-[var(--sp-strong)]">{document.name}</div>
-        <div className="mt-1 text-sm text-[var(--sp-muted)]">
+        <div className="truncate text-base font-bold text-strong">{document.name}</div>
+        <div className="mt-1 text-sm text-muted">
           {document.uploadedAt} · {formatBytes(document.size)}
         </div>
       </div>
@@ -324,8 +324,8 @@ function DocumentRow({
   const Icon = getDocumentIcon(document);
 
   return (
-    <article className="flex min-h-[68px] items-center gap-3 bg-[var(--sp-surface)] px-4 py-3">
-      <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-md bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]">
+    <article className="flex min-h-[68px] items-center gap-3 bg-surface px-4 py-3">
+      <div className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-md bg-theme-soft text-theme">
         {isImage(document) ? (
           <img src={document.url} alt="" className="h-full w-full object-cover" />
         ) : (
@@ -333,8 +333,8 @@ function DocumentRow({
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-base font-bold text-[var(--sp-strong)]">{document.name}</div>
-        <div className="text-sm text-[var(--sp-muted)]">
+        <div className="truncate text-base font-bold text-strong">{document.name}</div>
+        <div className="text-sm text-muted">
           {document.uploadedAt} · {formatBytes(document.size)}
         </div>
       </div>
@@ -368,8 +368,8 @@ function IconButton({
       type="button"
       disabled={disabled}
       className={cn(
-        "grid size-8 place-items-center rounded-md bg-[var(--sp-surface)] text-[var(--sp-muted)] shadow-sm transition hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)] disabled:cursor-not-allowed disabled:opacity-40",
-        tone === "danger" && "hover:bg-[#FDECEC] hover:text-[var(--destructive)]",
+        "grid size-8 place-items-center rounded-md bg-surface text-muted shadow-sm transition hover:bg-theme-soft hover:text-theme disabled:cursor-not-allowed disabled:opacity-40",
+        tone === "danger" && "hover:bg-[#FDECEC] hover:text-destructive",
       )}
       onClick={onClick}
       aria-label={label}

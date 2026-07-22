@@ -1,4 +1,4 @@
-import { Button } from "@/app/components/ui/button";
+﻿import { Button } from "@/app/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { ChevronDown } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
@@ -14,9 +14,9 @@ export function ShiftTrafficCard() {
       <CardHeader className="items-start">
         <div>
           <CardTitle>Lưu lượng xe Ca -1</CardTitle>
-          <p className="mt-1 text-md text-[var(--sp-muted)]">13/07/2026</p>
+          <p className="mt-1 text-md text-muted">13/07/2026</p>
         </div>
-        <Button variant="outline" size="md" className="shrink-0 font-medium text-[var(--sp-muted)]">
+        <Button variant="outline" size="md" className="shrink-0 font-medium text-muted">
           Hôm nay
           <ChevronDown />
         </Button>
@@ -24,12 +24,12 @@ export function ShiftTrafficCard() {
 
       <div className="mt-7 flex items-center justify-center gap-10">
         <div className="flex items-center gap-3">
-          <span className="size-4 rounded-sm bg-[var(--sp-cyan)]" />
-          <span className="text-base font-medium text-[var(--sp-text)]">Lượt vào</span>
+          <span className="size-4 rounded-sm bg-cyan" />
+          <span className="text-base font-medium text-text">Lượt vào</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="size-4 rounded-sm bg-[#F05252]" />
-          <span className="text-base font-medium text-[var(--sp-text)]">Lượt ra</span>
+          <span className="text-base font-medium text-text">Lượt ra</span>
         </div>
       </div>
 
@@ -53,13 +53,13 @@ export function ShiftTrafficCard() {
               ticks={[0, 200, 400, 600, 800]}
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#A0A7B2", fontSize: 12, fontFamily: "var(--font-mono)" }}
+              tick={{ fill: "#A0A7B2", fontSize: 12, fontFamily: "Geist Mono, SF Mono, JetBrains Mono, ui-monospace, monospace" }}
             />
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#A0A7B2", fontSize: 16, fontFamily: "var(--font-sans)" }}
+              tick={{ fill: "#A0A7B2", fontSize: 16, fontFamily: "Inter, SF Pro Text, -apple-system, BlinkMacSystemFont, Segoe UI, system-ui, sans-serif" }}
               dy={12}
             />
             <Bar dataKey="in" fill="url(#trafficIn)" radius={[8, 8, 0, 0]} barSize={28} />

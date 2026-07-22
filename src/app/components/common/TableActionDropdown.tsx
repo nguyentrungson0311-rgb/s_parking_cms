@@ -1,4 +1,4 @@
-import { Button } from "@/app/components/ui/button";
+﻿import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Eye, MoreVertical } from "lucide-react";
 import * as React from "react";
@@ -112,19 +112,26 @@ export function TableActionDropdown({
 
   return (
     <>
-      <span ref={buttonRef} className="mx-auto inline-flex">
+      <span
+        ref={buttonRef}
+        className="mx-auto inline-flex"
+        data-table-row-action
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
+      >
         <Button
           type="button"
           variant="ghost"
           size="icon-sm"
           className={cn(
-            "shadow-sm text-[var(--sp-muted)] hover:bg-[var(--sp-theme-soft)] hover:text-[var(--sp-theme)]",
-            open && "bg-[var(--sp-theme-soft)] text-[var(--sp-theme)]",
+            "shadow-sm text-muted hover:bg-theme-soft hover:text-theme",
+            open && "bg-theme-soft text-theme",
           )}
           aria-label="Mở menu hành động"
           aria-haspopup="menu"
           aria-expanded={open}
-          onClick={() => {
+          onClick={(event) => {
+            event.stopPropagation();
             updatePosition();
             setOpen((current) => !current);
           }}
@@ -137,9 +144,12 @@ export function TableActionDropdown({
         ? createPortal(
             <div
               ref={menuRef}
-              className="fixed z-[120] min-w-36 max-w-[calc(100vw-16px)] max-h-72 overflow-y-auto rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-1 shadow-[var(--shadow-soft)]"
+              className="fixed z-[120] min-w-36 max-w-[calc(100vw-16px)] max-h-72 overflow-y-auto rounded-[8px] border border-border bg-surface p-1 shadow-sp-soft"
               style={{ top: position.top, left: position.left }}
               role="menu"
+              data-table-row-action
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
             >
               {menuItems.map((item) => (
                 <button
@@ -148,10 +158,13 @@ export function TableActionDropdown({
                   role="menuitem"
                   disabled={item.disabled}
                   className={cn(
-                    "flex min-h-9 w-full items-center gap-2 rounded-[7px] px-3 text-left text-base font-medium text-[var(--sp-text)] transition hover:bg-[var(--badge-neutral-bg)] disabled:cursor-not-allowed disabled:text-[var(--sp-subtle)]",
-                    item.tone === "danger" && "text-[var(--destructive)]",
+                    "flex min-h-9 w-full items-center gap-2 rounded-[7px] px-3 text-left text-base font-medium text-text transition hover:bg-badge-neutral-bg disabled:cursor-not-allowed disabled:text-subtle",
+                    item.tone === "danger" && "text-destructive",
                   )}
-                  onClick={() => handleSelect(item)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleSelect(item);
+                  }}
                 >
                   {item.icon ? (
                     <span className="grid size-4 shrink-0 place-items-center">{item.icon}</span>

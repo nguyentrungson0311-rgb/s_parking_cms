@@ -11,6 +11,7 @@ import {
   TH,
   THead,
   TR,
+  useTablePagination,
 } from "@/app/components/ui/table";
 import { InputDate, InputSelect, SearchInput, type DropdownOption } from "@/app/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,8 @@ const reportPeriodOptions: DropdownOption[] = [
   { value: "quarter", label: "Theo quý" },
   { value: "year", label: "Theo năm" },
 ];
+
+const monthlyReportPageSizeOptions = [10, 30, 50, 100];
 
 function formatCurrency(value: number) {
   return `${value.toLocaleString("vi-VN")}đ`;
@@ -158,8 +161,15 @@ export function MonthlyReport() {
   const [selectedDate, setSelectedDate] = useState("2026-07-01");
   const activeReportConfig = reportMenu.find((report) => report.id === activeReport) ?? reportMenu[0];
   const displayRows = activeReport === "monthly" ? rows : [];
-  const allSelected = displayRows.length > 0 && selectedRows.length === displayRows.length;
-  const partiallySelected = selectedRows.length > 0 && !allSelected;
+  const pagination = useTablePagination({
+    data: displayRows,
+    defaultPageSize: 30,
+    pageSizeOptions: monthlyReportPageSizeOptions,
+  });
+  const visibleRows = pagination.paginatedData;
+  const allSelected =
+    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
+  const partiallySelected = visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
   const filteredReports = reportMenu.filter((report) => {
     const keyword = searchReport.toLowerCase();
     return (
@@ -203,6 +213,7 @@ export function MonthlyReport() {
                       setActiveReport(report.id);
                       setHasFiltered(false);
                       setSelectedRows([]);
+                      pagination.setPage(1);
                     }}
                     className={cn(
                       "relative flex w-full gap-3 rounded-md border-l-4 px-3 py-3 text-left transition-colors",
@@ -235,57 +246,62 @@ export function MonthlyReport() {
 
           <div className="min-h-0 min-w-0 overflow-hidden">
             <MainTableCard
-            className="gap-2"
-            title={activeReportConfig.title}
-            
-            searchPlaceholder="Tìm ngày, ca, số lượt, thu nhập..."
-            actions={
-              <>
-                <InputSelect
-                  wrapperClassName="w-[160px]"
-                  options={reportPeriodOptions}
-                  value={period}
-                  onValueChange={setPeriod}
+              className="monthly-report-card gap-2 p-3"
+              title={activeReportConfig.title}
+              actions={
+                <>
+                  <InputSelect
+                    wrapperClassName="w-[160px]"
+                    options={reportPeriodOptions}
+                    value={period}
+                    onValueChange={setPeriod}
+                  />
+                  <InputDate
+                    wrapperClassName="w-[170px]"
+                    value={selectedDate}
+                    onValueChange={setSelectedDate}
+                  />
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={() => {
+                      setHasFiltered(true);
+                      setSelectedRows([]);
+                      pagination.setPage(1);
+                    }}
+                  >
+                    <ListFilter />
+                    Lọc
+                  </Button>
+                  <Button size="md" disabled={!hasFiltered || displayRows.length === 0}>
+                    <Save />
+                    Lưu
+                  </Button>
+                </>
+              }
+            >
+              {!hasFiltered ? (
+                <ReportEmptyState
+                  title={activeReportConfig.title}
+                  description={activeReportConfig.description}
                 />
-                <InputDate
-                  wrapperClassName="w-[170px]"
-                  value={selectedDate}
-                  onValueChange={setSelectedDate}
-                />
-                <Button
-                  variant="outline"
-                  size="md"
-                  onClick={() => {
-                    setHasFiltered(true);
-                    setSelectedRows([]);
-                  }}
-                >
-                  <ListFilter />
-                  Lọc
-                </Button>
-              </>
-            }
-          >
-            {!hasFiltered ? (
-              <ReportEmptyState
-                title={activeReportConfig.title}
-                description={activeReportConfig.description}
-              />
-            ) : displayRows.length === 0 ? (
-              <ReportNoDataState title={activeReportConfig.title} />
-            ) : (
-              <div className="flex h-full min-h-0 min-w-0 flex-col gap-1">
-              <div className="flex shrink-0 justify-end">
-                <Button size="md">
-                  <Save />
-                  Lưu
-                </Button>
-              </div>
-                <DataTable
-                  containerClassName="h-auto"
-                  minWidth={1540}
-                  footer={<TablePagination summary={`1-${displayRows.length} of ${displayRows.length} results`} />}
-                >
+              ) : displayRows.length === 0 ? (
+                <ReportNoDataState title={activeReportConfig.title} />
+              ) : (
+                <div className="flex h-full min-h-0 min-w-0 flex-col">
+                  <DataTable
+                    minWidth={1540}
+                    footer={
+                      <TablePagination
+                        page={pagination.page}
+                        pageSize={pagination.pageSize}
+                        totalItems={pagination.totalItems}
+                        onPageChange={pagination.setPage}
+                        onPageSizeChange={pagination.setPageSize}
+                        pageSizeOptions={monthlyReportPageSizeOptions}
+                      />
+                    }
+                  >
               <THead>
                 <TR>
                   <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
@@ -293,7 +309,12 @@ export function MonthlyReport() {
                       checked={allSelected}
                       indeterminate={partiallySelected}
                       onCheckedChange={(checked) => {
-                        setSelectedRows(checked ? displayRows.map((row) => row.id) : []);
+                        const visibleIds = visibleRows.map((row) => row.id);
+                        setSelectedRows((current) =>
+                          checked
+                            ? Array.from(new Set([...current, ...visibleIds]))
+                            : current.filter((id) => !visibleIds.includes(id)),
+                        );
                       }}
                     />
                   </TH>
@@ -308,11 +329,11 @@ export function MonthlyReport() {
                   <TH className="w-[150px] text-right">Số lần mất thẻ</TH>
                   <TH className="w-[150px] text-right">Tổng số mất thẻ</TH>
                   <TH className="w-[150px] text-right">Tổng thu nhập</TH>
-                  <TH className="w-[120px] text-center" sticky="right" stickyOffset={0}>Thao tác</TH>
+                  <TH className="w-[120px] text-center" sticky="right" stickyOffset={0} stickyOnCompact>Thao tác</TH>
                 </TR>
               </THead>
               <TBody>
-                {displayRows.map((row, index) => {
+                {visibleRows.map((row, index) => {
                   const selected = selectedRows.includes(row.id);
 
                   return (
@@ -323,7 +344,7 @@ export function MonthlyReport() {
                           onCheckedChange={(checked) => toggleRow(row.id, checked)}
                         />
                       </TD>
-                      <TD sticky="left" stickyOffset={40}>{index + 1}</TD>
+                      <TD sticky="left" stickyOffset={40}>{pagination.startIndex + index + 1}</TD>
                       <TD>{row.date}</TD>
                       <TD>
                         <span
@@ -347,7 +368,7 @@ export function MonthlyReport() {
                       <TD className="text-right font-semibold text-[var(--sp-strong)]">
                         {row.totalIncome}
                       </TD>
-                      <TD className="text-center" sticky="right" stickyOffset={0}>
+                      <TD className="text-center" sticky="right" stickyOffset={0} stickyOnCompact>
                         <div className="flex justify-center gap-1">
                           <Button variant="ghost" size="icon-sm" aria-label="Xem chi tiết">
                             <Eye />

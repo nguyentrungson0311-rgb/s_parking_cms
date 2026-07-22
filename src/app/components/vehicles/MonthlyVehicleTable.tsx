@@ -9,6 +9,7 @@ import {
   TH,
   THead,
   TR,
+  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
@@ -20,28 +21,33 @@ import { Lock, Pencil, Unlock } from "lucide-react";
 
 const ACTION_COLUMN_WIDTH = 56;
 
-const MONTHLY_VEHICLE_ACTIONS: TableActionDropdownItem[] = [
-  { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
-  { id: "lock-card", label: "Khóa thẻ", icon: <Lock className="size-4" />, tone: "danger" },
-  { id: "unlock-card", label: "Mở thẻ", icon: <Unlock className="size-4" /> },
-];
-
 export const MONTHLY_VEHICLE_STATUS: Record<MonthlyVehicleStatus, StatusBadgeConfig> = {
   active: { label: "Đang hoạt động", tone: "green" },
   paymentOverdue: { label: "Quá hạn TT", tone: "yellow" },
   locked: { label: "Khóa thẻ", tone: "red" },
 };
 
-export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void }) {
+export function MonthlyVehicleTable({
+  onOpenDetail,
+}: {
+  onOpenDetail: (mode?: "view" | "edit") => void;
+}) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const pagination = useTablePagination({ data: vehicles, defaultPageSize: 10 });
+  const visibleVehicles = pagination.paginatedData;
   const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
   const isAllSelected =
-    vehicles.length > 0 && vehicles.every((vehicle) => selectedSet.has(vehicle.id));
+    visibleVehicles.length > 0 && visibleVehicles.every((vehicle) => selectedSet.has(vehicle.id));
   const isSomeSelected =
-    vehicles.some((vehicle) => selectedSet.has(vehicle.id)) && !isAllSelected;
+    visibleVehicles.some((vehicle) => selectedSet.has(vehicle.id)) && !isAllSelected;
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedRows(checked ? vehicles.map((vehicle) => vehicle.id) : []);
+    const visibleIds = visibleVehicles.map((vehicle) => vehicle.id);
+    setSelectedRows((current) =>
+      checked
+        ? Array.from(new Set([...current, ...visibleIds]))
+        : current.filter((rowId) => !visibleIds.includes(rowId)),
+    );
   };
 
   const handleSelectRow = (id: string, checked: boolean) => {
@@ -52,9 +58,16 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
 
   return (
     <DataTable
-      className="monthly-vehicle-table"
-      minWidth="var(--monthly-vehicle-table-min-width, 2640px)"
-      footer={<TablePagination summary="1-10 of 7,056 results" />}
+      minWidth={2640}
+      footer={
+        <TablePagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          totalItems={pagination.totalItems}
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.setPageSize}
+        />
+      }
     >
       <THead>
         <TR>
@@ -71,7 +84,7 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[160px]">Số thẻ (LOT)</TH>
+          <TH className="w-[60px]">Mã (#)</TH>
           <TH className="w-[120px]">Ngày giao</TH>
           <TH className="w-[150px]">Biển số</TH>
           <TH className="w-[170px]">Phương tiện</TH>
@@ -90,21 +103,47 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
           <TH sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="w-[150px] pl-3 text-left">
             Trạng thái
           </TH>
-          <TH sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
+          <TH sticky="right" stickyOffset={0} stickyOnCompact className="w-[56px] px-1 text-center">
             
           </TH>
         </TR>
       </THead>
       <TBody>
-        {vehicles.map((vehicle) => {
+        {visibleVehicles.map((vehicle) => {
           const selected = selectedSet.has(vehicle.id);
           const status = MONTHLY_VEHICLE_STATUS[vehicle.status];
+          const actions: TableActionDropdownItem[] = [
+            {
+              id: "edit",
+              label: "Sửa",
+              icon: <Pencil className="size-4" />,
+              onSelect: () => onOpenDetail("edit"),
+            },
+            {
+              id: "lock-card",
+              label: "Khóa thẻ",
+              icon: <Lock className="size-4" />,
+              tone: "danger",
+            },
+            {
+              id: "unlock-card",
+              label: "Mở thẻ",
+              icon: <Unlock className="size-4" />,
+            },
+          ];
+
           return (
-            <TR key={vehicle.id} selected={selected}>
+            <TR
+              key={vehicle.id}
+              selected={selected}
+              onRowDetail={() => onOpenDetail("view")}
+              rowDetailLabel={`Xem chi tiết ${vehicle.lotCardNumber}`}
+            >
               <TD
                 sticky="left"
                 stickyOffset={0}
                 className="w-10 cursor-pointer"
+                data-no-row-detail
                 onClick={() => handleSelectRow(vehicle.id, !selected)}
               >
                 <TableCheckbox
@@ -134,8 +173,17 @@ export function MonthlyVehicleTable({ onOpenDetail }: { onOpenDetail: () => void
               <TD sticky="right" stickyOffset={ACTION_COLUMN_WIDTH} className="pl-3 text-left">
                 <StatusBadge tone={status.tone}>{status.label}</StatusBadge>
               </TD>
-              <TD sticky="right" stickyOffset={0} className="w-[56px] px-1 text-center">
-                <TableActionDropdown onViewDetail={onOpenDetail} actions={MONTHLY_VEHICLE_ACTIONS} />
+              <TD
+                sticky="right"
+                stickyOffset={0}
+                stickyOnCompact
+                className="w-[56px] px-1 text-center"
+                data-no-row-detail
+              >
+                <TableActionDropdown
+                  onViewDetail={() => onOpenDetail("view")}
+                  actions={actions}
+                />
               </TD>
             </TR>
           );

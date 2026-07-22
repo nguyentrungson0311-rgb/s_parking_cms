@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { CalendarDays, ChevronDown, Search } from "lucide-react";
 import { CalendarBox, formatDisplayDate, parseDisplayDate } from "@/app/components/ui/calendar";
 import { DropdownBox, type DropdownOption } from "@/app/components/ui/dropdownbox";
@@ -8,7 +8,11 @@ export type { DropdownOption };
 export { CalendarBox, DropdownBox };
 
 const fieldShellClass =
-  "sp-ui-control h-9 w-full rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 text-base font-medium text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] enabled:hover:border-[var(--sp-theme)] focus:border-[var(--sp-theme)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]";
+  "sp-ui-control h-9 w-full rounded-[8px] border border-border bg-surface px-3 text-base font-medium text-text outline-none transition placeholder:text-subtle enabled:hover:border-theme focus:border-theme disabled:cursor-not-allowed disabled:bg-grey-soft disabled:text-muted";
+const fieldErrorClass =
+  "border-destructive  enabled:hover:border-destructive focus:border-destructive focus:ring-2 focus:ring-destructive/10";
+
+type FieldError = string | boolean;
 
 function getInputPlaceholder(placeholder?: string, label?: string) {
   if (placeholder !== undefined) return placeholder;
@@ -74,24 +78,40 @@ function FieldLabel({
     <label
       htmlFor={htmlFor}
       className={cn(
-        "mb-2 block text-md font-medium text-[var(--sp-text)]",
-        disabled && "text-[var(--sp-muted)]",
+        "mb-2 block text-md font-medium text-text",
+        disabled && "text-muted",
       )}
     >
       {label}
-      {required && showRequiredMark ? <span className="ml-1 text-[var(--destructive)]">*</span> : null}
+      {required && showRequiredMark ? <span className="ml-1 text-destructive">*</span> : null}
     </label>
   );
 }
 
+function getErrorMessage(error?: FieldError) {
+  if (!error) return "";
+  return typeof error === "string" ? error : "Trường này là bắt buộc.";
+}
+
+function FieldErrorMessage({ error }: { error?: FieldError }) {
+  const message = getErrorMessage(error);
+  if (!message) return null;
+
+  return <p className="mt-1 text-sm font-medium text-destructive">{message}</p>;
+}
+
 export function Input({
   className,
+  error,
   placeholder,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement>) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  error?: FieldError;
+}) {
   return (
     <input
-      className={cn(fieldShellClass, className)}
+      aria-invalid={Boolean(error) || props["aria-invalid"]}
+      className={cn(fieldShellClass, error && fieldErrorClass, className)}
       placeholder={getInputPlaceholder(placeholder)}
       {...props}
     />
@@ -111,14 +131,14 @@ export function SearchInput({
     <div className={cn("relative", className)}>
       <Search
         className={cn(
-          "pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[var(--sp-muted)]",
-          disabled && "text-[var(--sp-subtle)]",
+          "pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted",
+          disabled && "text-subtle",
         )}
       />
       <Input
         type="search"
         className={cn(
-          "h-full bg-[var(--sp-surface)] pl-10 font-normal",
+          "h-full bg-surface pl-10 font-normal",
           inputClassName,
         )}
         disabled={disabled}
@@ -139,6 +159,7 @@ export function InputField({
   className,
   id,
   disabled = false,
+  error,
   placeholder,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
@@ -148,6 +169,7 @@ export function InputField({
   wrapperClassName?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  error?: FieldError;
 }) {
   const generatedId = React.useId();
   const inputId = id ?? generatedId;
@@ -165,8 +187,8 @@ export function InputField({
         {leftIcon ? (
           <span
             className={cn(
-              "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--sp-muted)]",
-              disabled && "text-[var(--sp-subtle)]",
+              "pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted",
+              disabled && "text-subtle",
             )}
           >
             {leftIcon}
@@ -176,6 +198,7 @@ export function InputField({
           id={inputId}
           required={required}
           disabled={disabled}
+          error={error}
           placeholder={getInputPlaceholder(placeholder, label)}
           className={cn(
             leftIcon && "pl-10",
@@ -187,14 +210,15 @@ export function InputField({
         {rightIcon ? (
           <span
             className={cn(
-              "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--sp-muted)]",
-              disabled && "text-[var(--sp-subtle)]",
+              "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted",
+              disabled && "text-subtle",
             )}
           >
             {rightIcon}
           </span>
         ) : null}
       </div>
+      <FieldErrorMessage error={error} />
     </div>
   );
 }
@@ -209,7 +233,11 @@ export function InputSelect({
   defaultValue,
   onValueChange,
   wrapperClassName,
+  triggerClassName,
+  dropdownClassName,
+  showSelectedIcon,
   disabled = false,
+  error,
 }: {
   label?: string;
   required?: boolean;
@@ -220,7 +248,11 @@ export function InputSelect({
   defaultValue?: string;
   onValueChange?: (value: string) => void;
   wrapperClassName?: string;
+  triggerClassName?: string;
+  dropdownClassName?: string;
+  showSelectedIcon?: boolean;
   disabled?: boolean;
+  error?: FieldError;
 }) {
   const generatedId = React.useId();
   const [open, setOpen] = React.useState(false);
@@ -252,13 +284,16 @@ export function InputSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-required={required}
+        aria-invalid={Boolean(error)}
         onClick={() => {
           if (!disabled) setOpen((current) => !current);
         }}
         className={cn(
           fieldShellClass,
           "flex items-center justify-between gap-3 text-left",
-          !selectedOption && "text-[var(--sp-subtle)]",
+          error && fieldErrorClass,
+          !selectedOption && "text-subtle",
+          triggerClassName,
         )}
       >
         <span className="min-w-0 truncate">{selectedOption?.label ?? placeholder}</span>
@@ -266,7 +301,7 @@ export function InputSelect({
           className={cn(
             "size-4 shrink-0 transition-transform",
             open && "rotate-180",
-            disabled && "text-[var(--sp-subtle)]",
+            disabled && "text-subtle",
           )}
         />
       </button>
@@ -278,8 +313,11 @@ export function InputSelect({
             setCurrentValue(nextValue);
             setOpen(false);
           }}
+          className={dropdownClassName}
+          showSelectedIcon={showSelectedIcon}
         />
       ) : null}
+      <FieldErrorMessage error={error} />
     </div>
   );
 }
@@ -294,6 +332,7 @@ export function InputDate({
   placeholder = "dd/mm/yyyy",
   wrapperClassName,
   disabled = false,
+  error,
 }: {
   label?: string;
   required?: boolean;
@@ -304,6 +343,7 @@ export function InputDate({
   placeholder?: string;
   wrapperClassName?: string;
   disabled?: boolean;
+  error?: FieldError;
 }) {
   const generatedId = React.useId();
   const [open, setOpen] = React.useState(false);
@@ -332,6 +372,7 @@ export function InputDate({
           id={generatedId}
           required={required}
           disabled={disabled}
+          error={error}
           value={currentValue ? formatDisplayDate(currentValue) : ""}
           placeholder={placeholder}
           inputMode="numeric"
@@ -344,7 +385,7 @@ export function InputDate({
         <button
           type="button"
           disabled={disabled}
-          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-[var(--sp-muted)] disabled:cursor-not-allowed disabled:text-[var(--sp-subtle)]"
+          className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-md text-muted disabled:cursor-not-allowed disabled:text-subtle"
           onClick={() => {
             if (!disabled) setOpen((current) => !current);
           }}
@@ -363,6 +404,7 @@ export function InputDate({
           }}
         />
       ) : null}
+      <FieldErrorMessage error={error} />
     </div>
   );
 }
@@ -392,6 +434,7 @@ export function TextAreaField({
   onChange,
   maxLength,
   disabled = false,
+  error,
   placeholder,
   ...props
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -401,6 +444,7 @@ export function TextAreaField({
   showCount?: boolean;
   maxWords?: number;
   wrapperClassName?: string;
+  error?: FieldError;
 }) {
   const generatedId = React.useId();
   const textareaId = id ?? generatedId;
@@ -423,6 +467,7 @@ export function TextAreaField({
         id={textareaId}
         required={required}
         disabled={disabled}
+        aria-invalid={Boolean(error)}
         maxLength={maxWords ? undefined : maxLength}
         value={value !== undefined ? value : internalValue}
         placeholder={getInputPlaceholder(placeholder, label)}
@@ -433,13 +478,15 @@ export function TextAreaField({
           onChange?.(event);
         }}
         className={cn(
-          "sp-ui-control min-h-[112px] w-full resize-y rounded-[8px] border border-[var(--sp-border)] bg-[var(--sp-surface)] px-3 py-3 text-base font-medium leading-6 text-[var(--sp-text)] outline-none transition placeholder:text-[var(--sp-subtle)] enabled:hover:border-[var(--sp-theme)] focus:border-[var(--sp-theme)] disabled:cursor-not-allowed disabled:bg-[var(--sp-grey-soft)] disabled:text-[var(--sp-muted)]",
+          "sp-ui-control min-h-[112px] w-full resize-y rounded-[8px] border border-border bg-surface px-3 py-3 text-base font-medium leading-6 text-text outline-none transition placeholder:text-subtle enabled:hover:border-theme focus:border-theme disabled:cursor-not-allowed disabled:bg-grey-soft disabled:text-muted",
+          error && fieldErrorClass,
           className,
         )}
         {...props}
       />
+      <FieldErrorMessage error={error} />
       {showCount && maxCount ? (
-        <div className="mt-1 text-right text-sm font-medium text-[var(--sp-muted)]">
+        <div className="mt-1 text-right text-sm font-medium text-muted">
           {currentCount}/{maxCount} {countLabel}
         </div>
       ) : null}
