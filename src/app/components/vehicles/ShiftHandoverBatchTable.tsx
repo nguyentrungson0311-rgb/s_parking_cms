@@ -84,7 +84,7 @@ export function ShiftHandoverBatchTable({
           <TH className="w-[150px]">Người cập nhật</TH>
           <TH className="w-[190px]">Thời gian cập nhật cuối</TH>
           <TH
-            className="w-[150px]"
+            className="w-[170px]"
             sticky="right"
             stickyOffset={ACTION_COLUMN_WIDTH}
             stickyOnCompact

@@ -280,7 +280,7 @@ function AsideGroup({
                 "flex min-h-10 w-full items-center gap-2 rounded-[8px] px-3 text-left text-sm font-semibold transition",
                 active
                   ? "bg-theme-soft text-theme"
-                  : "text-text hover:bg-badge-neutral-bg hover:text-strong",
+                  : "text-muted hover:bg-badge-neutral-bg hover:text-strong",
               )}
               onClick={() => onSelect(item.id)}
             >
