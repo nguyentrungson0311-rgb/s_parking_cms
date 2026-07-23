@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { ComplexTableCard } from "@/app/components/common/ComplexTableCard";
 import {
+  ShiftHandoverProfitSummary,
   ShiftHandoverTicketTable,
   ShiftSlotOverview,
 } from "@/app/components/vehicles/ShiftHandoverDetailTables";
 import { Button } from "@/app/components/ui/button";
 import {
   shiftHandoverSections,
-  shiftProfitSummaryCards,
   shiftSlotRows,
   shiftTicketSectionMap,
   type ShiftHandoverDetailSection,
@@ -15,10 +15,11 @@ import {
   type ShiftSlotRow,
   type ShiftSlotView,
 } from "@/app/data/shifthandoverdetail";
+import { toastMessage } from "@/app/components/ui/toast";
 import { ShiftAssignDetail } from "@/app/pages/ShiftAssignDetail";
 import type { ShiftAssign, ShiftHandoverBatch } from "@/app/types";
 import { cn } from "@/lib/utils";
-import { BarChart3, FileCheck2, Grid2X2, List, MoreVertical } from "lucide-react";
+import { FileCheck2, Grid2X2, List, MoreVertical } from "lucide-react";
 
 export function ShiftHandoverDetail({
   batch,
@@ -33,6 +34,7 @@ export function ShiftHandoverDetail({
   const [slotView, setSlotView] = useState<ShiftSlotView>("table");
   const [slotRows, setSlotRows] = useState(shiftSlotRows);
   const [selectedVehicle, setSelectedVehicle] = useState<ShiftAssign | null>(null);
+  const [finalizedTicketTypes, setFinalizedTicketTypes] = useState<ShiftAssign["ticketType"][]>([]);
   const ticketType = shiftTicketSectionMap[activeSection];
   const tableContent = Boolean(ticketType) || (activeSection === "slots" && slotView === "table");
 
@@ -40,6 +42,18 @@ export function ShiftHandoverDetail({
     setSlotRows((current) =>
       current.map((row) => (row.id === id ? { ...row, totalSlots } : row)),
     );
+  };
+
+  const handleFinalizeTicketType = (nextTicketType: ShiftAssign["ticketType"]) => {
+    setFinalizedTicketTypes((current) => {
+      if (current.includes(nextTicketType)) {
+        toastMessage.info("Nhóm vé đã được chốt", nextTicketType);
+        return current;
+      }
+
+      toastMessage.success("Đã chốt phương tiện", nextTicketType);
+      return [...current, nextTicketType];
+    });
   };
 
   return (
@@ -54,6 +68,7 @@ export function ShiftHandoverDetail({
             ticketType={ticketType}
             slotView={slotView}
             onSlotViewChange={setSlotView}
+            onFinalizeTicketType={handleFinalizeTicketType}
           />
         }
         aside={
@@ -72,9 +87,10 @@ export function ShiftHandoverDetail({
                     variant="outline"
                     size="icon-sm"
                     className="size-9.5"
-                    aria-label="Mở thêm hành động"
+                    aria-label="Bộ lọc"
+                    title="Bộ lọc"
                   >
-                    <MoreVertical />
+                    <i className="bi bi-funnel-fill text-base leading-none" aria-hidden="true" />
                   </Button>
                 ),
               }
@@ -88,6 +104,7 @@ export function ShiftHandoverDetail({
           slotView={slotView}
           ticketType={ticketType}
           shiftAssignRows={shiftAssignRows}
+          finalizedTicketTypes={finalizedTicketTypes}
           onApplyTotalSlots={handleApplyTotalSlots}
           onOpenVehicleDetail={setSelectedVehicle}
         />
@@ -108,6 +125,7 @@ function ShiftHandoverDetailContent({
   slotView,
   ticketType,
   shiftAssignRows,
+  finalizedTicketTypes,
   onApplyTotalSlots,
   onOpenVehicleDetail,
 }: {
@@ -116,6 +134,7 @@ function ShiftHandoverDetailContent({
   slotView: ShiftSlotView;
   ticketType?: ShiftAssign["ticketType"];
   shiftAssignRows: ShiftAssign[];
+  finalizedTicketTypes: ShiftAssign["ticketType"][];
   onApplyTotalSlots: (id: string, totalSlots: number) => void;
   onOpenVehicleDetail: (item: ShiftAssign) => void;
 }) {
@@ -140,7 +159,12 @@ function ShiftHandoverDetailContent({
   }
 
   if (activeSection === "profit") {
-    return <ShiftHandoverProfitSummary />;
+    return (
+      <ShiftHandoverProfitSummary
+        rows={shiftAssignRows}
+        finalizedTicketTypes={finalizedTicketTypes}
+      />
+    );
   }
 
   return <ShiftHandoverReportBuilder />;
@@ -151,11 +175,13 @@ function ShiftHandoverHeaderActions({
   ticketType,
   slotView,
   onSlotViewChange,
+  onFinalizeTicketType,
 }: {
   activeSection: ShiftHandoverDetailSection;
   ticketType?: ShiftAssign["ticketType"];
   slotView: ShiftSlotView;
   onSlotViewChange: (view: ShiftSlotView) => void;
+  onFinalizeTicketType: (ticketType: ShiftAssign["ticketType"]) => void;
 }) {
   if (activeSection === "slots") {
     return <SlotViewToggle view={slotView} onViewChange={onSlotViewChange} />;
@@ -163,10 +189,21 @@ function ShiftHandoverHeaderActions({
 
   if (ticketType) {
     return (
-      <Button size="md">
-        <i className="bi bi-check-square-fill text-base leading-none" aria-hidden="true" />
-        Chốt phương tiện
-      </Button>
+      <>
+        <Button size="md" onClick={() => onFinalizeTicketType(ticketType)}>
+          <i className="bi bi-check-square-fill text-base leading-none" aria-hidden="true" />
+          Chốt phương tiện
+        </Button>
+        <Button
+          variant="outline"
+          size="icon-sm"
+          className="size-9.5"
+          aria-label="Mở thêm hành động"
+          title="Mở thêm hành động"
+        >
+          <MoreVertical />
+        </Button>
+      </>
     );
   }
 
@@ -289,25 +326,6 @@ function AsideGroup({
             </button>
           );
         })}
-      </div>
-    </div>
-  );
-}
-
-function ShiftHandoverProfitSummary() {
-  return (
-    <div className="flex h-full min-h-0 flex-col gap-4 overflow-auto">
-      <div className="flex items-center gap-3">
-        <BarChart3 className="size-5 text-theme" />
-        <h3 className="text-xl font-semibold text-strong">Tổng hợp lợi nhuận</h3>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {shiftProfitSummaryCards.map((card) => (
-          <div key={card.label} className="rounded-md border border-border bg-surface p-4">
-            <div className="text-sm font-semibold text-muted">{card.label}</div>
-            <div className="mt-3 text-2xl font-semibold text-strong">{card.value}</div>
-          </div>
-        ))}
       </div>
     </div>
   );

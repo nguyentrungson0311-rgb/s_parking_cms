@@ -13,6 +13,14 @@ import {
 import type { ShiftSlotRow, ShiftSlotView } from "@/app/data/shifthandoverdetail";
 import type { ShiftAssign } from "@/app/types";
 import { cn } from "@/lib/utils";
+import { BarChart3, FileCheck2 } from "lucide-react";
+
+const PROFIT_VEHICLE_TYPES: ShiftAssign["vehicleType"][] = [
+  "Ô tô",
+  "Xe máy",
+  "Xe máy điện",
+  "Xe đạp",
+];
 
 export function ShiftHandoverTicketTable({
   rows,
@@ -50,6 +58,141 @@ export function ShiftSlotOverview({
         <SlotStatisticGrid rows={rows} onApplyTotalSlots={onApplyTotalSlots} />
       )}
     </div>
+  );
+}
+
+export function ShiftHandoverProfitSummary({
+  rows,
+  finalizedTicketTypes,
+}: {
+  rows: ShiftAssign[];
+  finalizedTicketTypes: ShiftAssign["ticketType"][];
+}) {
+  const finalizedRows = rows.filter(
+    (row) => row.status === "exited" && finalizedTicketTypes.includes(row.ticketType),
+  );
+  const summaryRows = PROFIT_VEHICLE_TYPES.map((vehicleType) => {
+    const vehicleRows = finalizedRows.filter((row) => row.vehicleType === vehicleType);
+    const revenue = vehicleRows.reduce((total, row) => total + parseCurrency(row.payment), 0);
+
+    return {
+      vehicleType,
+      count: vehicleRows.length,
+      revenue,
+    };
+  });
+  const totalRevenue = summaryRows.reduce((total, row) => total + row.revenue, 0);
+
+  if (finalizedTicketTypes.length === 0) {
+    return <ProfitEmptyState />;
+  }
+
+  return (
+    <div className="flex h-full min-h-0 flex-col gap-4 overflow-auto">
+      <div className="flex shrink-0 items-center gap-3">
+        <BarChart3 className="size-5 text-theme" />
+        <h3 className="text-[20px] font-semibold text-strong">
+          Tổng hợp lợi nhuận theo loại xe đã ra
+        </h3>
+      </div>
+
+      <div className="grid shrink-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {summaryRows.map((row) => (
+          <div key={row.vehicleType} className="rounded-md border border-border bg-surface p-4">
+            <div className="text-sm font-semibold text-muted">{row.vehicleType}</div>
+            <div className="mt-3 text-2xl font-semibold text-strong">
+              {formatCurrency(row.revenue)}
+            </div>
+            <div className="mt-2 text-sm font-medium text-muted">
+              {formatNumber(row.count)} xe đã ra
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="shrink-0 rounded-md border border-border bg-surface p-4">
+        <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+          <div>
+            <div className="text-sm font-semibold text-muted">Tổng lợi nhuận tạm tính</div>
+            <div className="mt-2 text-2xl font-semibold text-strong">
+              {formatCurrency(totalRevenue)}
+            </div>
+          </div>
+          <div className="rounded-md bg-theme-soft px-3 py-2 text-sm font-semibold text-theme">
+            Đã chốt {finalizedTicketTypes.length}/3 nhóm vé
+          </div>
+        </div>
+      </div>
+
+      <div className="min-h-[280px] min-w-0 flex-1 overflow-hidden">
+        <FinalizedExitedVehicleTable rows={finalizedRows} />
+      </div>
+    </div>
+  );
+}
+
+function ProfitEmptyState() {
+  return (
+    <div className="grid h-full min-h-[360px] place-items-center p-6 text-center">
+      <div className="max-w-[420px]">
+        <div className="mx-auto grid size-14 place-items-center rounded-full bg-theme-soft text-theme">
+          <FileCheck2 className="size-7" />
+        </div>
+        <h3 className="mt-4 text-xl font-semibold text-strong">
+          Chưa có dữ liệu lợi nhuận
+        </h3>
+        <p className="mt-2 text-sm leading-5 text-muted">
+          Chốt phương tiện ở Vé tháng, Vé ngày hoặc Vé ngoài để tổng hợp xe đã ra và tính lợi nhuận theo loại xe.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function FinalizedExitedVehicleTable({ rows }: { rows: ShiftAssign[] }) {
+  return (
+    <DataTable borderless minWidth={1160}>
+      <THead>
+        <TR>
+          <TH className="w-[120px] pl-4">Mã(#)</TH>
+          <TH className="w-[120px]">Loại vé</TH>
+          <TH className="w-[150px]">Loại phương tiện</TH>
+          <TH className="w-[160px]">Biển số</TH>
+          <TH className="w-[190px]">Khách hàng</TH>
+          <TH className="w-[170px]">Ngày ra</TH>
+          <TH className="w-[130px] text-right">Doanh thu</TH>
+          <TH className="w-[130px] text-center">Trạng thái</TH>
+        </TR>
+      </THead>
+      <TBody>
+        {rows.length === 0 ? (
+          <TR>
+            <TD colSpan={8} className="h-24 text-center text-muted">
+              Chưa có xe đã ra trong các nhóm vé đã chốt.
+            </TD>
+          </TR>
+        ) : (
+          rows.map((row) => (
+            <TR key={`profit-${row.id}`}>
+              <TD className="pl-4 font-medium text-strong">{row.lotCardNumber}</TD>
+              <TD>{row.ticketType}</TD>
+              <TD>{row.vehicleType}</TD>
+              <TD>{row.plate}</TD>
+              <TD>{row.customer}</TD>
+              <TD>{row.checkedOutAt}</TD>
+              <TD className="text-right font-semibold text-strong">
+                {formatCurrency(parseCurrency(row.payment))}
+              </TD>
+              <TD className="text-center">
+                <span className="inline-flex items-center rounded-[8px] bg-green-soft px-2 py-1.5 text-sm font-medium leading-none text-green">
+                  Đã chốt
+                </span>
+              </TD>
+            </TR>
+          ))
+        )}
+      </TBody>
+    </DataTable>
   );
 }
 
@@ -268,6 +411,15 @@ function MaterialPedalBikeIcon({ className }: { className?: string }) {
       <path d="m18.18 10-1.7-4.68A2.008 2.008 0 0 0 14.6 4H12v2h2.6l1.46 4h-4.81l-.36-1H12V7H7v2h1.75l1.82 5H9.9c-.44-2.23-2.31-3.88-4.65-3.99C2.45 9.87 0 12.2 0 15c0 2.8 2.2 5 5 5 2.46 0 4.45-1.69 4.9-4h4.2c.44 2.23 2.31 3.88 4.65 3.99 2.8.13 5.25-2.19 5.25-5 0-2.8-2.2-5-5-5h-.82zM7.82 16c-.4 1.17-1.49 2-2.82 2-1.68 0-3-1.32-3-3s1.32-3 3-3c1.33 0 2.42.83 2.82 2H5v2h2.82zm6.28-2h-1.4l-.73-2H15c-.44.58-.76 1.25-.9 2zm4.9 4c-1.68 0-3-1.32-3-3 0-.93.41-1.73 1.05-2.28l.96 2.64 1.88-.68-.97-2.67c.03 0 .06-.01.09-.01 1.68 0 3 1.32 3 3s-1.33 3-3.01 3z" />
     </svg>
   );
+}
+
+function parseCurrency(value: string) {
+  const amount = Number(value.replace(/[^\d]/g, ""));
+  return Number.isFinite(amount) ? amount : 0;
+}
+
+function formatCurrency(value: number) {
+  return `${formatNumber(value)}đ`;
 }
 
 function formatNumber(value: number) {
