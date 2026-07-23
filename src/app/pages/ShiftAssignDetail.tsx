@@ -47,7 +47,7 @@ export function ShiftAssignDetail({
     <CommonDrawer
       open={open}
       onClose={onClose}
-      title="Chi tiết giao ca"
+      title="Chi tiết ra /vào ca"
       headerContent={<ShiftSummary item={item} />}
       footer={
         <>
@@ -146,7 +146,7 @@ function BasicInfoTable({ item }: { item: ShiftAssign }) {
 
   return (
     <DataTable
-      minWidth={920}
+      minWidth={1040}
       containerClassName="h-auto flex-none rounded-md"
       scrollClassName="max-h-none"
     >

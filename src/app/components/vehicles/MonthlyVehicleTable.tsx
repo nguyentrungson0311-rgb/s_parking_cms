@@ -84,7 +84,7 @@ export function MonthlyVehicleTable({
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[60px]">Mã (#)</TH>
+          <TH className="w-[100px]">Mã (#)</TH>
           <TH className="w-[120px]">Ngày giao</TH>
           <TH className="w-[150px]">Biển số</TH>
           <TH className="w-[170px]">Phương tiện</TH>

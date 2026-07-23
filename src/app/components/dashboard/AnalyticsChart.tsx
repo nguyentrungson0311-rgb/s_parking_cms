@@ -10,6 +10,36 @@ import {
   YAxis,
 } from "recharts";
 
+type ChartTooltipPayload = {
+  name?: string;
+  value?: number | string;
+};
+
+function ChartTooltip({
+  active,
+  label,
+  payload,
+}: {
+  active?: boolean;
+  label?: string;
+  payload?: ChartTooltipPayload[];
+}) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="rounded-[14px] border border-border bg-surface px-3 py-2 text-sm font-medium text-text shadow-soft">
+      <div className="mb-1 font-semibold text-strong">{label}</div>
+      <div className="space-y-1">
+        {payload.map((item) => (
+          <div key={item.name} className="whitespace-nowrap leading-5 text-text">
+            {item.name} : {item.value}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function AnalyticsChart() {
   return (
     <Card className="sp-card-large h-[460px] sp-card-borderless">
@@ -39,11 +69,8 @@ export function AnalyticsChart() {
             <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#7B8494", fontSize: 12 }} />
             <YAxis axisLine={false} tickLine={false} tick={{ fill: "#7B8494", fontSize: 12 }} />
             <Tooltip
-              contentStyle={{
-                border: "1px solid #E7EAF1",
-                borderRadius: 14,
-                boxShadow: "0 12px 30px rgba(18,32,51,.12)",
-              }}
+              content={<ChartTooltip />}
+              cursor={{ stroke: "var(--sp-border-strong)", strokeWidth: 1 }}
             />
             <Area className="text-primary" type="monotone" dataKey="cars" name="Ô tô" stroke="currentColor" strokeWidth={3} fill="url(#cars)" />
             <Area className="text-chart-secondary" type="monotone" dataKey="bikes" name="Xe máy" stroke="currentColor" strokeWidth={3} fill="url(#bikes)" />

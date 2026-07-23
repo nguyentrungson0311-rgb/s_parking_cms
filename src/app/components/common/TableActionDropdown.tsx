@@ -1,6 +1,7 @@
 ﻿import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Eye, MoreVertical } from "lucide-react";
+import { useTableActionMenu } from "@/app/components/ui/table";
 import * as React from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
@@ -30,10 +31,13 @@ export function TableActionDropdown({
   onViewDetail?: () => void;
   actions?: TableActionDropdownItem[];
 }) {
-  const [open, setOpen] = React.useState(false);
+  const actionMenu = useTableActionMenu();
+  const dropdownId = React.useId();
+  const [localOpen, setLocalOpen] = React.useState(false);
   const [position, setPosition] = React.useState({ top: 0, left: 0 });
   const buttonRef = React.useRef<HTMLSpanElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
+  const open = actionMenu ? actionMenu.openActionMenuId === dropdownId : localOpen;
 
   const menuItems: TableActionDropdownItem[] = [
     {
@@ -44,6 +48,21 @@ export function TableActionDropdown({
     },
     ...actions,
   ];
+
+  const setOpen = React.useCallback(
+    (nextOpen: React.SetStateAction<boolean>) => {
+      const resolvedOpen =
+        typeof nextOpen === "function" ? nextOpen(open) : nextOpen;
+
+      if (actionMenu) {
+        actionMenu.setOpenActionMenuId(resolvedOpen ? dropdownId : null);
+        return;
+      }
+
+      setLocalOpen(resolvedOpen);
+    },
+    [actionMenu, dropdownId, open],
+  );
 
   const updatePosition = React.useCallback(() => {
     const button = buttonRef.current;

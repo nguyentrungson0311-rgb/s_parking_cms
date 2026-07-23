@@ -10,9 +10,16 @@ import {
   type DynamicFormField,
   type DynamicFormValues,
 } from "@/app/components/ui/dynamic-form";
+import {
+  formatDisplayDate as formatIsoDisplayDate,
+  isValidIsoDate,
+  toIsoDate,
+} from "@/app/components/ui/calendar";
 import { toastMessage } from "@/app/components/ui/toast";
 import { ShiftHandoverBatchTable } from "@/app/components/vehicles/ShiftHandoverBatchTable";
-import { shiftHandoverBatches } from "@/app/data/shiftassign";
+import { shiftAssigns } from "@/app/data/shiftassign";
+import { shiftHandoverBatches } from "@/app/data/shifthandover";
+import { ShiftHandoverDetail } from "@/app/pages/ShiftHandoverDetail";
 import type { ShiftHandoverBatch } from "@/app/types";
 import { MoreVertical, Plus, Save } from "lucide-react";
 
@@ -72,11 +79,17 @@ const shiftHandoverFields: DynamicFormField[] = [
     placeholder: "Nhập tên đợt giao ca",
   },
   {
+    name: "date",
+    label: "Ngày giao ca",
+    type: "date",
+    required: true,
+    placeholder: "Chọn ngày giao ca",
+  },
+  {
     name: "shift",
     label: "Ca",
     type: "radio",
     required: true,
-    colSpan: 2,
     options: [
       { value: "Ca 1", label: "Ca 1" },
       { value: "Ca 2", label: "Ca 2" },
@@ -99,6 +112,7 @@ const shiftHandoverFields: DynamicFormField[] = [
 export function ShiftAssign() {
   const [rows, setRows] = useState<ShiftHandoverBatch[]>(shiftHandoverBatches);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState<ShiftHandoverBatch | null>(null);
   const [values, setValues] = useState<DynamicFormValues>(createEmptyValues());
   const [errors, setErrors] = useState<DynamicFormErrors>({});
 
@@ -115,12 +129,19 @@ export function ShiftAssign() {
 
   const handleSubmit = () => {
     const nextErrors = getRequiredErrors(shiftHandoverFields, values);
+    const selectedDate = valueAsString(values.date);
     const fromTime = valueAsString(values.fromTime);
     const toTime = valueAsString(values.toTime);
 
     if (Object.keys(nextErrors).length > 0) {
       setErrors(nextErrors);
       toastMessage.error("Không thể lưu", "Vui lòng nhập đầy đủ thông tin bắt buộc.");
+      return;
+    }
+
+    if (!isValidIsoDate(selectedDate)) {
+      setErrors({ date: "Ngày giao ca không hợp lệ." });
+      toastMessage.error("Không thể lưu", "Ngày giao ca không hợp lệ.");
       return;
     }
 
@@ -136,7 +157,7 @@ export function ShiftAssign() {
       code: valueAsString(values.code).trim(),
       name: valueAsString(values.name).trim(),
       shift: valueAsString(values.shift) as "Ca 1" | "Ca 2",
-      date: formatDisplayDate(now),
+      date: formatIsoDisplayDate(selectedDate),
       fromTime,
       toTime,
       createdAt: formatTimestamp(now),
@@ -159,26 +180,34 @@ export function ShiftAssign() {
 
       <div className="sp-page-scroll sp-page-scroll-fill">
         <section className="sp-layout sp-layout-fill h-full min-h-0 min-w-0 overflow-hidden">
-          <MainTableCard
-            title="Danh sách giao ca"
-            searchPlaceholder="Tìm mã giao ca, tên đợt giao ca..."
-            filterFields={shiftHandoverFilterFields}
-            defaultFilterValues={shiftHandoverDefaultFilters}
-            actions={({ filterButton }) => (
-              <>
-                {filterButton}
-                <Button size="md" onClick={openCreateDrawer}>
-                  <Plus />
-                  Thêm mới
-                </Button>
-                <Button variant="outline" size="icon-sm" className="size-9.5">
-                  <MoreVertical />
-                </Button>
-              </>
-            )}
-          >
-            <ShiftHandoverBatchTable rows={rows} />
-          </MainTableCard>
+          {selectedBatch ? (
+            <ShiftHandoverDetail
+              batch={selectedBatch}
+              shiftAssignRows={shiftAssigns}
+              onBack={() => setSelectedBatch(null)}
+            />
+          ) : (
+            <MainTableCard
+              title="Danh sách giao ca"
+              searchPlaceholder="Tìm mã giao ca, tên đợt giao ca..."
+              filterFields={shiftHandoverFilterFields}
+              defaultFilterValues={shiftHandoverDefaultFilters}
+              actions={({ filterButton }) => (
+                <>
+                  {filterButton}
+                  <Button size="md" onClick={openCreateDrawer}>
+                    <Plus />
+                    Thêm mới
+                  </Button>
+                  <Button variant="outline" size="icon-sm" className="size-9.5">
+                    <MoreVertical />
+                  </Button>
+                </>
+              )}
+            >
+              <ShiftHandoverBatchTable rows={rows} onOpenDetail={setSelectedBatch} />
+            </MainTableCard>
+          )}
         </section>
       </div>
 
@@ -219,6 +248,7 @@ function createEmptyValues(): DynamicFormValues {
   return {
     code: "",
     name: "",
+    date: toIsoDate(new Date()),
     shift: "Ca 1",
     fromTime: "",
     toTime: "",

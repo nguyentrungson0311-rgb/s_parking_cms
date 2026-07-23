@@ -15,24 +15,23 @@ import {
   TR,
   useTablePagination,
 } from "@/app/components/ui/table";
-import { shiftHandoverBatches } from "@/app/data/shiftassign";
 import type { ShiftHandoverBatch, ShiftHandoverStatus } from "@/app/types";
-import { Calculator, FileCheck2, LockKeyhole, Pencil, Trash2 } from "lucide-react";
+import { LockKeyhole, LockOpen, Pencil, Trash2 } from "lucide-react";
 
 const ACTION_COLUMN_WIDTH = 56;
 
 export const SHIFT_HANDOVER_STATUS: Record<ShiftHandoverStatus, StatusBadgeConfig> = {
   new: { label: "Mới tạo", tone: "blue" },
-  profitCalculated: { label: "Đã tính lợi nhuận", tone: "orange" },
+  profitCalculated: { label: "Đã tính lợi nhuận", tone: "green" },
   reportPublished: { label: "Đã phát hành báo cáo", tone: "purple" },
   locked: { label: "Đã khóa/Hoàn thành", tone: "grey" },
 };
 
 export function ShiftHandoverBatchTable({
-  rows = shiftHandoverBatches,
+  rows,
   onOpenDetail,
 }: {
-  rows?: ShiftHandoverBatch[];
+  rows: ShiftHandoverBatch[];
   onOpenDetail?: (item: ShiftHandoverBatch) => void;
 }) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -55,7 +54,7 @@ export function ShiftHandoverBatchTable({
 
   return (
     <DataTable
-      minWidth={1480}
+      minWidth={1580}
       footer={
         <TablePagination
           page={pagination.page}
@@ -131,7 +130,7 @@ export function ShiftHandoverBatchTable({
               </TD>
               <TD className="text-center" sticky="right" stickyOffset={0} stickyOnCompact data-no-row-detail>
                 <TableActionDropdown
-                  detailLabel="Xem"
+                  detailLabel="Xem chi tiết"
                   onViewDetail={() => onOpenDetail?.(row)}
                   actions={getActionsByStatus(row.status)}
                 />
@@ -148,7 +147,6 @@ function getActionsByStatus(status: ShiftHandoverStatus): TableActionDropdownIte
   if (status === "new") {
     return [
       { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
-      { id: "calculate-profit", label: "Tính lợi nhuận", icon: <Calculator className="size-4" /> },
       { id: "delete", label: "Xóa", icon: <Trash2 className="size-4" />, tone: "danger" },
     ];
   }
@@ -156,7 +154,8 @@ function getActionsByStatus(status: ShiftHandoverStatus): TableActionDropdownIte
   if (status === "profitCalculated") {
     return [
       { id: "edit", label: "Sửa", icon: <Pencil className="size-4" /> },
-      { id: "publish-report", label: "Phát hành báo cáo", icon: <FileCheck2 className="size-4" /> },
+      { id: "delete", label: "Xóa", icon: <Trash2 className="size-4" />, tone: "danger" },
+      { id: "lock", label: "Khóa/Hoàn thành", icon: <LockKeyhole className="size-4" /> },
     ];
   }
 
@@ -166,5 +165,7 @@ function getActionsByStatus(status: ShiftHandoverStatus): TableActionDropdownIte
     ];
   }
 
-  return [];
+  return [
+    { id: "unlock", label: "Mở khóa", icon: <LockOpen className="size-4" /> },
+  ];
 }

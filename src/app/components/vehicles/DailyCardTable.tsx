@@ -87,7 +87,7 @@ export function DailyCardTable() {
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[120px]">Số thẻ</TH>
+          <TH className="w-[100px]">Số thẻ</TH>
           <TH className="w-[150px]">Ngày nhập thẻ</TH>
           <TH className="w-[160px]">Loại phương tiện</TH>
           <TH className="w-[130px]">Mã dự án</TH>

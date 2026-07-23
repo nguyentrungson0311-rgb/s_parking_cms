@@ -103,11 +103,40 @@ function FieldErrorMessage({ error }: { error?: FieldError }) {
 export function Input({
   className,
   error,
+  inputClassName,
   placeholder,
+  rightAction,
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   error?: FieldError;
+  inputClassName?: string;
+  rightAction?: React.ReactNode;
 }) {
+  if (rightAction) {
+    return (
+      <div
+        className={cn(
+          fieldShellClass,
+          "flex items-center gap-2 px-1 py-1",
+          error && fieldErrorClass,
+          props.disabled && "cursor-not-allowed bg-grey-soft",
+          className,
+        )}
+      >
+        <input
+          aria-invalid={Boolean(error) || props["aria-invalid"]}
+          className={cn(
+            "min-w-0 flex-1 border-0 bg-transparent px-2 text-base font-medium text-text outline-none placeholder:text-subtle disabled:cursor-not-allowed disabled:text-muted",
+            inputClassName,
+          )}
+          placeholder={getInputPlaceholder(placeholder)}
+          {...props}
+        />
+        <span className="shrink-0">{rightAction}</span>
+      </div>
+    );
+  }
+
   return (
     <input
       aria-invalid={Boolean(error) || props["aria-invalid"]}
@@ -156,6 +185,8 @@ export function InputField({
   wrapperClassName,
   leftIcon,
   rightIcon,
+  rightAction,
+  inputClassName,
   className,
   id,
   disabled = false,
@@ -169,6 +200,8 @@ export function InputField({
   wrapperClassName?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  rightAction?: React.ReactNode;
+  inputClassName?: string;
   error?: FieldError;
 }) {
   const generatedId = React.useId();
@@ -205,6 +238,8 @@ export function InputField({
             rightIcon && "pr-10",
             className,
           )}
+          inputClassName={inputClassName}
+          rightAction={rightAction}
           {...props}
         />
         {rightIcon ? (

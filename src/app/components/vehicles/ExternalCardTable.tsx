@@ -87,7 +87,7 @@ export function ExternalCardTable() {
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[60px]">Mã(#)</TH>
+          <TH className="w-[100px]">Mã(#)</TH>
           <TH className="w-[130px]">Ngày phát thẻ</TH>
           <TH className="w-[190px]">Họ tên</TH>
           <TH className="w-[150px]">Số điện thoại</TH>

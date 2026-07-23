@@ -184,7 +184,7 @@ export function VehicleGroupDrawer({
           className="h-full"
         >
           <DataTable
-            minWidth={1180}
+            minWidth={1520}
             footer={
               <TablePagination
                 page={pagination.page}
@@ -197,7 +197,7 @@ export function VehicleGroupDrawer({
           >
             <THead>
               <TR>
-                <TH className="w-10 text-center">
+                <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
                   <TableCheckbox
                     checked={allSelected}
                     indeterminate={partiallySelected}
@@ -248,7 +248,7 @@ export function VehicleGroupDrawer({
                     onRowDetail={() => openForm("view", row)}
                     rowDetailLabel={`Xem cấu hình ${row.name}`}
                   >
-                    <TD className="text-center" data-no-row-detail>
+                    <TD className="text-center" sticky="left" stickyOffset={0} data-no-row-detail>
                       <TableCheckbox
                         checked={selected}
                         onCheckedChange={(checked) => {

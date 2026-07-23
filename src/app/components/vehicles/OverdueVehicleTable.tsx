@@ -77,7 +77,7 @@ export function OverdueVehicleTable() {
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[60px]">Mã(#)</TH>
+          <TH className="w-[100px]">Mã(#)</TH>
           <TH className="w-[130px]">Số vé</TH>
           <TH className="w-[130px]">Mã thẻ</TH>
           <TH className="w-[160px]">Loại phương tiện</TH>

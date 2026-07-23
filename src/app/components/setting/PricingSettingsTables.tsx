@@ -31,7 +31,7 @@ export function VehicleTypeTable() {
   return (
     <DataTable
       borderless
-      minWidth={780}
+      minWidth={900}
       noRoundedTop
       footer={
         <TablePagination
@@ -110,7 +110,7 @@ export function ServicePricingTable({
   return (
     <DataTable
       borderless
-      minWidth={1400}
+      minWidth={1810}
       noRoundedTop
       footer={
         <TablePagination
@@ -220,7 +220,7 @@ export function MonthlyServicePricingTable({
   return (
     <DataTable
       borderless
-      minWidth={1180}
+      minWidth={1510}
       noRoundedTop
       footer={
         <TablePagination

@@ -94,7 +94,7 @@ export interface ShiftAssign {
   ticketNumber: string;
   cardCode: string;
   vehicleType: "Ô tô" | "Xe máy" | "Xe máy điện" | "Xe đạp";
-  ticketType: "Vé tháng" | "Vé lượt";
+  ticketType: "Vé tháng" | "Vé ngày" | "Vé ngoài";
   checkedInAt: string;
   checkedOutAt: string;
   payment: string;

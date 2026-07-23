@@ -38,7 +38,7 @@ export function MonthlyVehicleFeeTable({
 
   return (
     <DataTable
-      minWidth={1020}
+      minWidth={1120}
       footer={
         <TablePagination
           page={pagination.page}

@@ -4,6 +4,7 @@ import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import {
   DataTable,
+  TABLE_SELECTION_COLUMN_WIDTH,
   TableCheckbox,
   TablePagination,
   TBody,
@@ -318,7 +319,7 @@ export function MonthlyReport() {
                       }}
                     />
                   </TH>
-                  <TH className="w-[64px]" sticky="left" stickyOffset={40}>#</TH>
+                  <TH className="w-[64px]" sticky="left" stickyOffset={TABLE_SELECTION_COLUMN_WIDTH}>#</TH>
                   <TH className="w-[130px]">Ngày vào</TH>
                   <TH className="w-[92px]">Ca</TH>
                   <TH className="w-[150px]">Thời gian bắt đầu</TH>
@@ -344,7 +345,7 @@ export function MonthlyReport() {
                           onCheckedChange={(checked) => toggleRow(row.id, checked)}
                         />
                       </TD>
-                      <TD sticky="left" stickyOffset={40}>{pagination.startIndex + index + 1}</TD>
+                      <TD sticky="left" stickyOffset={TABLE_SELECTION_COLUMN_WIDTH}>{pagination.startIndex + index + 1}</TD>
                       <TD>{row.date}</TD>
                       <TD>
                         <span

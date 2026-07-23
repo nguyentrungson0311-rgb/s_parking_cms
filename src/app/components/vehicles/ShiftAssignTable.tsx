@@ -15,7 +15,6 @@ import {
   TableActionDropdown,
   type TableActionDropdownItem,
 } from "@/app/components/common/TableActionDropdown";
-import { shiftAssigns } from "@/app/data/shiftassign";
 import type { ShiftAssign, ShiftAssignStatus } from "@/app/types";
 import { AlertTriangle, LogOut, Pencil } from "lucide-react";
 
@@ -38,12 +37,22 @@ export const SHIFT_ASSIGN_STATUS: Record<ShiftAssignStatus, StatusBadgeConfig> =
 };
 
 export function ShiftAssignTable({
+  rows,
+  ticketType,
+  embedded = false,
   onOpenDetail,
 }: {
-  onOpenDetail: (item: ShiftAssign) => void;
+  rows: ShiftAssign[];
+  ticketType?: ShiftAssign["ticketType"];
+  embedded?: boolean;
+  onOpenDetail?: (item: ShiftAssign) => void;
 }) {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const pagination = useTablePagination({ data: shiftAssigns, defaultPageSize: 10 });
+  const filteredRows = useMemo(
+    () => (ticketType ? rows.filter((item) => item.ticketType === ticketType) : rows),
+    [rows, ticketType],
+  );
+  const pagination = useTablePagination({ data: filteredRows, defaultPageSize: 10 });
   const visibleShiftAssigns = pagination.paginatedData;
   const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
   const isAllSelected =
@@ -69,6 +78,9 @@ export function ShiftAssignTable({
   return (
     <DataTable
       className="shift-assign-table"
+      borderless={embedded}
+      noRoundedTop={embedded}
+      noRoundedLeft={embedded}
       minWidth="var(--shift-assign-table-min-width, 2520px)"
       footer={
         <TablePagination
@@ -85,7 +97,7 @@ export function ShiftAssignTable({
           <TH
             sticky="left"
             stickyOffset={0}
-            className="w-10 cursor-pointer"
+            className="w-10 text-center"
             onClick={() => handleSelectAll(!isAllSelected)}
           >
             <TableCheckbox
@@ -95,7 +107,7 @@ export function ShiftAssignTable({
               aria-label="Chọn tất cả"
             />
           </TH>
-          <TH className="w-[60px]">Mã(#)</TH>
+          <TH className="w-[100px]">Mã(#)</TH>
           <TH className="w-[130px]">Vé số</TH>
           <TH className="w-[130px]">Mã số thẻ</TH>
           <TH className="w-[170px]">Loại phương tiện</TH>
@@ -124,13 +136,13 @@ export function ShiftAssignTable({
             <TR
               key={item.id}
               selected={selected}
-              onRowDetail={() => onOpenDetail(item)}
+              onRowDetail={onOpenDetail ? () => onOpenDetail(item) : undefined}
               rowDetailLabel={`Xem chi tiết ${item.lotCardNumber}`}
             >
               <TD
                 sticky="left"
                 stickyOffset={0}
-                className="w-10 cursor-pointer"
+                className="w-10 text-center"
                 data-no-row-detail
                 onClick={() => handleSelectRow(item.id, !selected)}
               >
@@ -166,7 +178,7 @@ export function ShiftAssignTable({
                 data-no-row-detail
               >
                 <TableActionDropdown
-                  onViewDetail={() => onOpenDetail(item)}
+                  onViewDetail={onOpenDetail ? () => onOpenDetail(item) : undefined}
                   actions={SHIFT_ASSIGN_ACTIONS}
                 />
               </TD>

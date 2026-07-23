@@ -21,6 +21,29 @@ type TableRowProps = React.HTMLAttributes<HTMLTableRowElement> & {
   rowDetailLabel?: string;
 };
 
+type TableActionMenuContextValue = {
+  openActionMenuId: string | null;
+  setOpenActionMenuId: (id: string | null) => void;
+};
+
+const TABLE_ACTION_MENU_OPEN_EVENT = "sp-table-action-menu-open";
+const TableActionMenuContext = React.createContext<TableActionMenuContextValue | null>(null);
+export const TABLE_SELECTION_COLUMN_WIDTH = 48;
+const TABLE_CHECKBOX_CELL_CLASS =
+  "w-[48px] min-w-[48px] max-w-[48px] cursor-pointer px-4 text-left [&_[data-slot=checkbox]]:mx-0";
+const TABLE_CHECKBOX_CELL_STYLE: React.CSSProperties = {
+  boxSizing: "border-box",
+  width: TABLE_SELECTION_COLUMN_WIDTH,
+  minWidth: TABLE_SELECTION_COLUMN_WIDTH,
+  maxWidth: TABLE_SELECTION_COLUMN_WIDTH,
+  paddingLeft: 16,
+  paddingRight: 14,
+  textAlign: "left",
+};
+const TABLE_CHECKBOX_COLUMN_STYLE: React.CSSProperties = {
+  width: TABLE_SELECTION_COLUMN_WIDTH,
+};
+
 interface DataTableProps extends React.HTMLAttributes<HTMLTableElement> {
   borderless?: boolean;
   containerClassName?: string;
@@ -28,45 +51,92 @@ interface DataTableProps extends React.HTMLAttributes<HTMLTableElement> {
   footer?: React.ReactNode;
   minWidth?: number | string;
   noRoundedTop?: boolean;
+  noRoundedLeft?: boolean;
 }
 
 export function DataTable({
   borderless = false,
+  children,
   className,
   containerClassName,
   scrollClassName,
   footer,
   minWidth = 1040,
   noRoundedTop = false,
+  noRoundedLeft = false,
   style,
   ...props
 }: DataTableProps) {
-  return (
-    <div
-      className={cn(
-        "flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden bg-table-bg",
-        borderless ? "border-0" : "border border-border",
-        noRoundedTop ? "rounded-b-md rounded-t-none" : "rounded-md",
-        containerClassName,
-      )}
-    >
-      <div className={cn("sp-table-scroll min-h-0 min-w-0 flex-1 overflow-auto", scrollClassName)}>
-        <table
-          className={cn("w-full border-collapse text-left", className)}
-          style={{
-            minWidth: typeof minWidth === "number" ? `${minWidth}px` : minWidth,
-            ...style,
-          }}
-          {...props}
-        />
-      </div>
-      {footer ? (
-        <div className="min-w-0 shrink-0 border-t border-border bg-table-footer">
-          {footer}
-        </div>
-      ) : null}
-    </div>
+  const [openActionMenuId, setInternalOpenActionMenuId] = React.useState<string | null>(null);
+  const setOpenActionMenuId = React.useCallback((id: string | null) => {
+    if (id && typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent(TABLE_ACTION_MENU_OPEN_EVENT, { detail: id }));
+    }
+
+    setInternalOpenActionMenuId(id);
+  }, []);
+  const actionMenuContext = React.useMemo(
+    () => ({ openActionMenuId, setOpenActionMenuId }),
+    [openActionMenuId, setOpenActionMenuId],
   );
+
+  React.useEffect(() => {
+    const handleActionMenuOpen = (event: Event) => {
+      if (!(event instanceof CustomEvent) || typeof event.detail !== "string") return;
+
+      setInternalOpenActionMenuId((current) =>
+        current && current !== event.detail ? null : current,
+      );
+    };
+
+    window.addEventListener(TABLE_ACTION_MENU_OPEN_EVENT, handleActionMenuOpen);
+    return () => window.removeEventListener(TABLE_ACTION_MENU_OPEN_EVENT, handleActionMenuOpen);
+  }, []);
+
+  const checkboxColumnStyles = getCheckboxColumnStyles(children);
+
+  return (
+    <TableActionMenuContext.Provider value={actionMenuContext}>
+      <div
+        className={cn(
+          "flex h-full min-h-0 min-w-0 max-w-full flex-1 flex-col overflow-hidden bg-table-bg",
+          borderless ? "border-0" : "border border-border",
+          noRoundedTop ? "rounded-b-md rounded-t-none" : "rounded-md",
+          noRoundedLeft && "rounded-l-none",
+          containerClassName,
+        )}
+      >
+        <div className={cn("sp-table-scroll min-h-0 min-w-0 flex-1 overflow-auto", scrollClassName)}>
+          <table
+            className={cn("w-full table-fixed border-collapse text-left", className)}
+            style={{
+              minWidth: typeof minWidth === "number" ? `${minWidth}px` : minWidth,
+              ...style,
+            }}
+            {...props}
+          >
+            {checkboxColumnStyles.some(Boolean) ? (
+              <colgroup>
+                {Array.from({ length: checkboxColumnStyles.length }, (_, index) => (
+                  <col key={index} style={checkboxColumnStyles[index]} />
+                ))}
+              </colgroup>
+            ) : null}
+            {children}
+          </table>
+        </div>
+        {footer ? (
+          <div className="min-w-0 shrink-0 border-t border-border bg-table-footer">
+            {footer}
+          </div>
+        ) : null}
+      </div>
+    </TableActionMenuContext.Provider>
+  );
+}
+
+export function useTableActionMenu() {
+  return React.useContext(TableActionMenuContext);
 }
 
 export function THead({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
@@ -168,6 +238,8 @@ export function TH({
   style,
   ...props
 }: React.ThHTMLAttributes<HTMLTableCellElement> & StickyCellProps) {
+  const checkboxCell = sticky === "left" && hasTableCheckboxChild(props.children);
+
   return (
     <th
       className={cn(
@@ -179,11 +251,13 @@ export function TH({
             !stickyOnCompact && "max-[1179px]:static max-[1179px]:shadow-none",
           ),
         className,
+        checkboxCell && TABLE_CHECKBOX_CELL_CLASS,
       )}
       style={{
+        ...style,
         ...(sticky === "left" ? { left: stickyOffset } : null),
         ...(sticky === "right" ? { right: stickyOffset } : null),
-        ...style,
+        ...(checkboxCell ? TABLE_CHECKBOX_CELL_STYLE : null),
       }}
       {...props}
     />
@@ -198,6 +272,8 @@ export function TD({
   style,
   ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement> & StickyCellProps) {
+  const checkboxCell = sticky === "left" && hasTableCheckboxChild(props.children);
+
   return (
     <td
       className={cn(
@@ -209,15 +285,63 @@ export function TD({
             !stickyOnCompact && "max-[1179px]:static max-[1179px]:shadow-none",
           ),
         className,
+        checkboxCell && TABLE_CHECKBOX_CELL_CLASS,
       )}
       style={{
+        ...style,
         ...(sticky === "left" ? { left: stickyOffset } : null),
         ...(sticky === "right" ? { right: stickyOffset } : null),
-        ...style,
+        ...(checkboxCell ? TABLE_CHECKBOX_CELL_STYLE : null),
       }}
       {...props}
     />
   );
+}
+
+function getCheckboxColumnStyles(children: React.ReactNode): Array<React.CSSProperties | undefined> {
+  const firstRowCells = getFirstTableRowCells(children);
+  if (!firstRowCells.length) return [];
+
+  const columnStyles: Array<React.CSSProperties | undefined> = [];
+  let columnIndex = 0;
+
+  firstRowCells.forEach((cell) => {
+    const props = cell.props as React.ThHTMLAttributes<HTMLTableCellElement> &
+      React.TdHTMLAttributes<HTMLTableCellElement> &
+      StickyCellProps;
+    const span = Number(props.colSpan) || 1;
+
+    if (props.sticky === "left" && hasTableCheckboxChild(props.children)) {
+      columnStyles[columnIndex] = TABLE_CHECKBOX_COLUMN_STYLE;
+    }
+
+    columnIndex += span;
+  });
+
+  return columnStyles;
+}
+
+function getFirstTableRowCells(children: React.ReactNode): React.ReactElement[] {
+  for (const child of React.Children.toArray(children)) {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) continue;
+
+    if (child.type === TR) {
+      return React.Children.toArray(child.props.children).filter(React.isValidElement);
+    }
+
+    const nestedCells = getFirstTableRowCells(child.props.children);
+    if (nestedCells.length) return nestedCells;
+  }
+
+  return [];
+}
+
+function hasTableCheckboxChild(children: React.ReactNode): boolean {
+  return React.Children.toArray(children).some((child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) return false;
+    if (child.type === TableCheckbox) return true;
+    return hasTableCheckboxChild(child.props.children);
+  });
 }
 
 export function TableCheckbox({
