@@ -194,16 +194,18 @@ export function DocumentUploadPanel({
           }}
         />
 
-        <button
+        <Button
           type="button"
-          className="flex min-h-10 w-full items-center justify-center gap-1 rounded-md text-base text-muted transition hover:bg-badge-neutral-bg"
+          variant="ghost"
+          size="lg"
+          className="min-h-10 w-full flex-wrap justify-center gap-1 rounded-md px-2 text-base font-medium text-muted hover:bg-badge-neutral-bg hover:text-muted"
           onClick={() => inputRef.current?.click()}
         >
           <UploadCloud className="size-5 text-theme" />
           Kéo thả file vào đây hoặc
           <span className="font-bold text-theme">chọn file</span>
           <span className="text-muted">· PDF, JPG, PNG, DOC, DOCX, XLSX (Tối đa 5MB)</span>
-        </button>
+        </Button>
 
         {documents.length > 0 ? (
           viewMode === "grid" ? (
@@ -246,28 +248,32 @@ function ViewToggle({
 }) {
   return (
     <div className="flex items-center rounded-md bg-surface p-1">
-      <button
+      <Button
         type="button"
+        variant={value === "grid" ? "secondary" : "ghost"}
+        size="icon-sm"
         className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-muted transition",
-          value === "grid" && "bg-theme-soft text-theme",
+          "rounded-[6px]",
+          value === "grid" ? "text-theme" : "text-muted",
         )}
         onClick={() => onChange("grid")}
         aria-label="Xem dạng thumbnail"
       >
         <Grid2X2 className="size-4" />
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        variant={value === "list" ? "secondary" : "ghost"}
+        size="icon-sm"
         className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-muted transition",
-          value === "list" && "bg-theme-soft text-theme",
+          "rounded-[6px]",
+          value === "list" ? "text-theme" : "text-muted",
         )}
         onClick={() => onChange("list")}
         aria-label="Xem dạng danh sách"
       >
         <List className="size-4" />
-      </button>
+      </Button>
     </div>
   );
 }
@@ -364,11 +370,13 @@ function IconButton({
   tone?: "default" | "danger";
 }) {
   return (
-    <button
+    <Button
       type="button"
       disabled={disabled}
+      variant="outline-plain"
+      size="icon-sm"
       className={cn(
-        "grid size-8 place-items-center rounded-md bg-surface text-muted shadow-sm transition hover:bg-theme-soft hover:text-theme disabled:cursor-not-allowed disabled:opacity-40",
+        "rounded-md bg-surface text-muted shadow-sm hover:bg-theme-soft hover:text-theme disabled:opacity-40",
         tone === "danger" && "hover:bg-[#FDECEC] hover:text-destructive",
       )}
       onClick={onClick}
@@ -376,7 +384,7 @@ function IconButton({
       title={label}
     >
       {children}
-    </button>
+    </Button>
   );
 }
 

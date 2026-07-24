@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import { StatusBadge, type StatusBadgeConfig } from "@/app/components/ui/status-badge";
 import {
   DataTable,
@@ -9,14 +8,13 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
 } from "@/app/components/common/TableActionDropdown";
-import { dailyCards } from "@/app/data/dailycard";
-import type { DailyCardStatus } from "@/app/types";
+import { useTableState } from "@/app/hooks/useTableState";
+import type { DailyCard, DailyCardStatus } from "@/app/types";
 import { Lock, Pencil, Unlock } from "lucide-react";
 
 const ACTION_COLUMN_WIDTH = 56;
@@ -33,33 +31,13 @@ export const DAILY_CARD_STATUS: Record<DailyCardStatus, StatusBadgeConfig> = {
   expired: { label: "Hết hiệu lực", tone: "grey" },
 };
 
-export function DailyCardTable() {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const pagination = useTablePagination({ data: dailyCards, defaultPageSize: 10 });
-  const visibleCards = pagination.paginatedData;
-  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const isAllSelected =
-    visibleCards.length > 0 && visibleCards.every((card) => selectedSet.has(card.id));
-  const isSomeSelected =
-    visibleCards.some((card) => selectedSet.has(card.id)) && !isAllSelected;
-
-  const handleSelectAll = (checked: boolean) => {
-    const visibleIds = visibleCards.map((card) => card.id);
-    setSelectedRows((current) =>
-      checked
-        ? Array.from(new Set([...current, ...visibleIds]))
-        : current.filter((rowId) => !visibleIds.includes(rowId)),
-    );
-  };
-
-  const handleSelectRow = (id: string, checked: boolean) => {
-    setSelectedRows((current) =>
-      checked ? [...current, id] : current.filter((rowId) => rowId !== id),
-    );
-  };
+export function DailyCardTable({ rows }: { rows: DailyCard[] }) {
+  const table = useTableState({ rows, getRowId: (card) => card.id });
+  const { pagination, visibleRows: visibleCards } = table;
 
   return (
     <DataTable
+      empty={visibleCards.length === 0}
       className="daily-card-table"
       minWidth="var(--daily-card-table-min-width, 1620px)"
       footer={
@@ -78,12 +56,12 @@ export function DailyCardTable() {
             sticky="left"
             stickyOffset={0}
             className="w-10 cursor-pointer"
-            onClick={() => handleSelectAll(!isAllSelected)}
+            onClick={() => table.selectAllVisible(!table.allSelected)}
           >
             <TableCheckbox
-              checked={isAllSelected}
-              indeterminate={isSomeSelected}
-              onCheckedChange={handleSelectAll}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
+              onCheckedChange={table.selectAllVisible}
               aria-label="Chọn tất cả"
             />
           </TH>
@@ -104,7 +82,7 @@ export function DailyCardTable() {
       </THead>
       <TBody>
         {visibleCards.map((card) => {
-          const selected = selectedSet.has(card.id);
+          const selected = table.selectedSet.has(card.id);
           const status = DAILY_CARD_STATUS[card.status];
           return (
             <TR key={card.id} selected={selected}>
@@ -112,11 +90,11 @@ export function DailyCardTable() {
                 sticky="left"
                 stickyOffset={0}
                 className="w-10 cursor-pointer"
-                onClick={() => handleSelectRow(card.id, !selected)}
+                onClick={() => table.selectRow(card.id, !selected)}
               >
                 <TableCheckbox
                   checked={selected}
-                  onCheckedChange={(checked) => handleSelectRow(card.id, checked)}
+                  onCheckedChange={(checked) => table.selectRow(card.id, checked)}
                   aria-label={`Chọn ${card.cardNumber}`}
                 />
               </TD>

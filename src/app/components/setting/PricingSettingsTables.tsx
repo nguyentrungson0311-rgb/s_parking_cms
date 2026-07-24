@@ -1,4 +1,3 @@
-﻿import { useState } from "react";
 import { TableActionDropdown } from "@/app/components/common/TableActionDropdown";
 import {
   DataTable,
@@ -9,8 +8,8 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
+import { useTableState } from "@/app/hooks/useTableState";
 import {
   vehicleTypeRows,
   type MonthlyPricingRow,
@@ -20,17 +19,13 @@ import { StatusBadge } from "@/app/components/ui/status-badge";
 import { Copy, Edit3, Trash2 } from "lucide-react";
 
 export function VehicleTypeTable() {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const pagination = useTablePagination({ data: vehicleTypeRows, defaultPageSize: 10 });
-  const visibleVehicleTypes = pagination.paginatedData;
-  const allSelected =
-    visibleVehicleTypes.length > 0 && visibleVehicleTypes.every((row) => selectedRows.includes(row.id));
-  const partiallySelected =
-    visibleVehicleTypes.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const table = useTableState({ rows: vehicleTypeRows, getRowId: (row) => row.id });
+  const { pagination, visibleRows: visibleVehicleTypes } = table;
 
   return (
     <DataTable
       borderless
+      empty={visibleVehicleTypes.length === 0}
       minWidth={900}
       noRoundedTop
       footer={
@@ -47,15 +42,10 @@ export function VehicleTypeTable() {
         <TR>
           <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
             <TableCheckbox
-              checked={allSelected}
-              indeterminate={partiallySelected}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
               onCheckedChange={(checked) => {
-                const visibleIds = visibleVehicleTypes.map((row) => row.id);
-                setSelectedRows((current) =>
-                  checked
-                    ? Array.from(new Set([...current, ...visibleIds]))
-                    : current.filter((id) => !visibleIds.includes(id)),
-                );
+                table.selectAllVisible(checked);
               }}
             />
           </TH>
@@ -68,14 +58,12 @@ export function VehicleTypeTable() {
       </THead>
       <TBody>
         {visibleVehicleTypes.map((row) => (
-          <TR key={row.id} selected={selectedRows.includes(row.id)}>
+          <TR key={row.id} selected={table.selectedSet.has(row.id)}>
             <TD className="text-center" sticky="left" stickyOffset={0}>
               <TableCheckbox
-                checked={selectedRows.includes(row.id)}
+                checked={table.selectedSet.has(row.id)}
                 onCheckedChange={(checked) => {
-                  setSelectedRows((current) =>
-                    checked ? [...current, row.id] : current.filter((id) => id !== row.id),
-                  );
+                  table.selectRow(row.id, checked);
                 }}
               />
             </TD>
@@ -100,16 +88,13 @@ export function ServicePricingTable({
   title: string;
   rows: PricingServiceRow[];
 }) {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const pagination = useTablePagination({ data: rows, defaultPageSize: 10 });
-  const visibleRows = pagination.paginatedData;
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
-  const partiallySelected = visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const table = useTableState({ rows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
 
   return (
     <DataTable
       borderless
+      empty={visibleRows.length === 0}
       minWidth={1810}
       noRoundedTop
       footer={
@@ -126,15 +111,10 @@ export function ServicePricingTable({
         <TR>
           <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
             <TableCheckbox
-              checked={allSelected}
-              indeterminate={partiallySelected}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
               onCheckedChange={(checked) => {
-                const visibleIds = visibleRows.map((row) => row.id);
-                setSelectedRows((current) =>
-                  checked
-                    ? Array.from(new Set([...current, ...visibleIds]))
-                    : current.filter((id) => !visibleIds.includes(id)),
-                );
+                table.selectAllVisible(checked);
               }}
             />
           </TH>
@@ -156,14 +136,12 @@ export function ServicePricingTable({
       </THead>
       <TBody>
         {visibleRows.map((row) => (
-          <TR key={`${title}-${row.id}`} selected={selectedRows.includes(row.id)}>
+          <TR key={`${title}-${row.id}`} selected={table.selectedSet.has(row.id)}>
             <TD className="text-center" sticky="left" stickyOffset={0}>
               <TableCheckbox
-                checked={selectedRows.includes(row.id)}
+                checked={table.selectedSet.has(row.id)}
                 onCheckedChange={(checked) => {
-                  setSelectedRows((current) =>
-                    checked ? [...current, row.id] : current.filter((id) => id !== row.id),
-                  );
+                  table.selectRow(row.id, checked);
                 }}
               />
             </TD>
@@ -210,16 +188,13 @@ export function MonthlyServicePricingTable({
   onDuplicate: (row: MonthlyPricingRow) => void;
   onDelete: (row: MonthlyPricingRow) => void;
 }) {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const pagination = useTablePagination({ data: rows, defaultPageSize: 10 });
-  const visibleRows = pagination.paginatedData;
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
-  const partiallySelected = visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const table = useTableState({ rows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
 
   return (
     <DataTable
       borderless
+      empty={visibleRows.length === 0}
       minWidth={1510}
       noRoundedTop
       footer={
@@ -236,15 +211,10 @@ export function MonthlyServicePricingTable({
         <TR>
           <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
             <TableCheckbox
-              checked={allSelected}
-              indeterminate={partiallySelected}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
               onCheckedChange={(checked) => {
-                const visibleIds = visibleRows.map((row) => row.id);
-                setSelectedRows((current) =>
-                  checked
-                    ? Array.from(new Set([...current, ...visibleIds]))
-                    : current.filter((id) => !visibleIds.includes(id)),
-                );
+                table.selectAllVisible(checked);
               }}
             />
           </TH>
@@ -266,17 +236,15 @@ export function MonthlyServicePricingTable({
         {visibleRows.map((row) => (
           <TR
             key={`monthly-${row.id}`}
-            selected={selectedRows.includes(row.id)}
+            selected={table.selectedSet.has(row.id)}
             onRowDetail={() => onOpenDetail(row)}
             rowDetailLabel={`Xem chi tiết ${row.service}`}
           >
             <TD className="text-center" sticky="left" stickyOffset={0} data-no-row-detail>
               <TableCheckbox
-                checked={selectedRows.includes(row.id)}
+                checked={table.selectedSet.has(row.id)}
                 onCheckedChange={(checked) => {
-                  setSelectedRows((current) =>
-                    checked ? [...current, row.id] : current.filter((id) => id !== row.id),
-                  );
+                  table.selectRow(row.id, checked);
                 }}
               />
             </TD>

@@ -1,8 +1,14 @@
 import { MainTableCard } from "@/app/components/common/MainTableCard";
-import type { FilterPanelField } from "@/app/components/common/FilterPanel";
+import type { FilterPanelField, FilterPanelValues } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { OverdueVehicleTable } from "@/app/components/vehicles/OverdueVehicleTable";
+import { overdueVehicles } from "@/app/data/overduevehicle";
+import {
+  matchesTableFilterValue,
+  useTableQuery,
+} from "@/app/hooks/useTableQuery";
+import type { OverdueVehicle as OverdueVehicleRow } from "@/app/types";
 import { MoreVertical } from "lucide-react";
 
 const overdueVehicleFilterFields: FilterPanelField[] = [
@@ -42,12 +48,38 @@ const overdueVehicleFilterFields: FilterPanelField[] = [
   },
 ];
 
-const overdueVehicleDefaultFilters = {
+const overdueVehicleDefaultFilters: FilterPanelValues = {
   ticketType: "all",
   vehicleType: "all",
 };
 
+const overdueVehicleSearchFields: Array<keyof OverdueVehicleRow> = [
+  "lotCardNumber",
+  "ticketNumber",
+  "cardCode",
+  "plate",
+  "customerName",
+  "vehicleName",
+  "vehicleType",
+  "ticketType",
+];
+
 export function OverdueVehicle() {
+  const query = useTableQuery({
+    rows: overdueVehicles,
+    defaultFilters: overdueVehicleDefaultFilters,
+    searchFields: overdueVehicleSearchFields,
+    filter: (row, filters) => {
+      if (!matchesTableFilterValue(row.ticketType, filters.ticketType)) return false;
+      if (!matchesTableFilterValue(row.vehicleType, filters.vehicleType)) return false;
+      if (typeof filters.overdueDays === "string" && filters.overdueDays.trim()) {
+        if (row.overdueDays !== Number(filters.overdueDays)) return false;
+      }
+
+      return true;
+    },
+  });
+
   return (
     <div className="sp-page">
       <Topbar
@@ -60,8 +92,13 @@ export function OverdueVehicle() {
           <MainTableCard
             title="Danh sách xe để quá ngày"
             searchPlaceholder="Tìm số thẻ, số vé, mã thẻ, biển số, họ tên..."
+            searchValue={query.search}
+            onSearchChange={query.setSearch}
             filterFields={overdueVehicleFilterFields}
+            filterValues={query.filters}
             defaultFilterValues={overdueVehicleDefaultFilters}
+            onFilterApply={query.setFilters}
+            onFilterReset={query.resetFilters}
             actions={({ filterButton }) => (
               <>
                 {filterButton}
@@ -71,7 +108,7 @@ export function OverdueVehicle() {
               </>
             )}
           >
-            <OverdueVehicleTable />
+            <OverdueVehicleTable rows={query.filteredRows} />
           </MainTableCard>
         </section>
       </div>

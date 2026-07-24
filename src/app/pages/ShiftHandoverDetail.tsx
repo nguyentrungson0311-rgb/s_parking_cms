@@ -1,4 +1,8 @@
 import { useState } from "react";
+import type {
+  FilterPanelField,
+  FilterPanelValues,
+} from "@/app/components/common/FilterPanel";
 import { ComplexTableCard } from "@/app/components/common/ComplexTableCard";
 import {
   ShiftHandoverProfitSummary,
@@ -15,11 +19,68 @@ import {
   type ShiftSlotRow,
   type ShiftSlotView,
 } from "@/app/data/shifthandoverdetail";
+import {
+  matchesTableFilterValue,
+  parseTableDate,
+  useTableQuery,
+} from "@/app/hooks/useTableQuery";
 import { toastMessage } from "@/app/components/ui/toast";
 import { ShiftAssignDetail } from "@/app/pages/ShiftAssignDetail";
 import type { ShiftAssign, ShiftHandoverBatch } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { FileCheck2, Grid2X2, List, MoreVertical } from "lucide-react";
+
+const shiftTicketFilterFields: FilterPanelField[] = [
+  {
+    type: "select",
+    name: "vehicleType",
+    label: "Loại xe",
+    options: [
+      { value: "all", label: "Tất cả" },
+      { value: "Ô tô", label: "Ô tô" },
+      { value: "Xe máy", label: "Xe máy" },
+      { value: "Xe máy điện", label: "Xe máy điện" },
+      { value: "Xe đạp", label: "Xe đạp" },
+    ],
+  },
+  {
+    type: "select",
+    name: "status",
+    label: "Trạng thái",
+    options: [
+      { value: "all", label: "Tất cả" },
+      { value: "inYard", label: "Đang trong bãi" },
+      { value: "exited", label: "Đã ra" },
+    ],
+  },
+  {
+    type: "date-range",
+    name: "checkedInRange",
+    label: "Ngày vào",
+    fromName: "checkedInFrom",
+    toName: "checkedInTo",
+    fromLabel: "Từ ngày",
+    toLabel: "Đến ngày",
+    fromPlaceholder: "Tất cả",
+    toPlaceholder: "Tất cả",
+    colSpan: 3,
+  },
+];
+
+const shiftTicketDefaultFilters: FilterPanelValues = {
+  vehicleType: "all",
+  status: "all",
+};
+
+const shiftTicketSearchFields: Array<keyof ShiftAssign> = [
+  "lotCardNumber",
+  "ticketNumber",
+  "cardCode",
+  "plate",
+  "customer",
+  "vehicleType",
+  "ticketType",
+];
 
 export function ShiftHandoverDetail({
   batch,
@@ -37,6 +98,24 @@ export function ShiftHandoverDetail({
   const [finalizedTicketTypes, setFinalizedTicketTypes] = useState<ShiftAssign["ticketType"][]>([]);
   const ticketType = shiftTicketSectionMap[activeSection];
   const tableContent = Boolean(ticketType) || (activeSection === "slots" && slotView === "table");
+  const ticketQuery = useTableQuery({
+    rows: shiftAssignRows,
+    defaultFilters: shiftTicketDefaultFilters,
+    searchFields: shiftTicketSearchFields,
+    filter: (row, filters) => {
+      if (!matchesTableFilterValue(row.vehicleType, filters.vehicleType)) return false;
+      if (!matchesTableFilterValue(row.status, filters.status)) return false;
+      if (filters.checkedInRange) {
+        const checkedInDate = parseTableDate(row.checkedInAt);
+        const checkedInFrom = parseTableDate(filters.checkedInFrom);
+        const checkedInTo = parseTableDate(filters.checkedInTo);
+        if (checkedInFrom && (!checkedInDate || checkedInDate < checkedInFrom)) return false;
+        if (checkedInTo && (!checkedInDate || checkedInDate > checkedInTo)) return false;
+      }
+
+      return true;
+    },
+  });
 
   const handleApplyTotalSlots = (id: string, totalSlots: number) => {
     setSlotRows((current) =>
@@ -74,6 +153,7 @@ export function ShiftHandoverDetail({
         aside={
           <ShiftHandoverDetailAside
             activeSection={activeSection}
+            finalizedTicketTypes={finalizedTicketTypes}
             onSelect={setActiveSection}
           />
         }
@@ -81,18 +161,14 @@ export function ShiftHandoverDetail({
           ticketType
             ? {
                 title: ticketType,
+                searchValue: ticketQuery.search,
+                onSearchChange: ticketQuery.setSearch,
+                filterFields: shiftTicketFilterFields,
+                filterValues: ticketQuery.filters,
+                defaultFilterValues: shiftTicketDefaultFilters,
+                onFilterApply: ticketQuery.setFilters,
+                onFilterReset: ticketQuery.resetFilters,
                 searchPlaceholder: "Tìm số thẻ, mã thẻ, biển số, khách hàng...",
-                actions: (
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    className="size-9.5"
-                    aria-label="Bộ lọc"
-                    title="Bộ lọc"
-                  >
-                    <i className="bi bi-funnel-fill text-base leading-none" aria-hidden="true" />
-                  </Button>
-                ),
               }
             : undefined
         }
@@ -104,6 +180,7 @@ export function ShiftHandoverDetail({
           slotView={slotView}
           ticketType={ticketType}
           shiftAssignRows={shiftAssignRows}
+          ticketRows={ticketQuery.filteredRows}
           finalizedTicketTypes={finalizedTicketTypes}
           onApplyTotalSlots={handleApplyTotalSlots}
           onOpenVehicleDetail={setSelectedVehicle}
@@ -125,6 +202,7 @@ function ShiftHandoverDetailContent({
   slotView,
   ticketType,
   shiftAssignRows,
+  ticketRows,
   finalizedTicketTypes,
   onApplyTotalSlots,
   onOpenVehicleDetail,
@@ -134,6 +212,7 @@ function ShiftHandoverDetailContent({
   slotView: ShiftSlotView;
   ticketType?: ShiftAssign["ticketType"];
   shiftAssignRows: ShiftAssign[];
+  ticketRows: ShiftAssign[];
   finalizedTicketTypes: ShiftAssign["ticketType"][];
   onApplyTotalSlots: (id: string, totalSlots: number) => void;
   onOpenVehicleDetail: (item: ShiftAssign) => void;
@@ -151,7 +230,7 @@ function ShiftHandoverDetailContent({
   if (ticketType) {
     return (
       <ShiftHandoverTicketTable
-        rows={shiftAssignRows}
+        rows={ticketRows}
         ticketType={ticketType}
         onOpenDetail={onOpenVehicleDetail}
       />
@@ -232,61 +311,69 @@ function SlotViewToggle({
   onViewChange: (view: ShiftSlotView) => void;
 }) {
   return (
-    <div className="flex items-center rounded-md bg-surface p-1">
-      <button
+    <div className="flex items-center rounded-md bg-surface">
+            <Button
         type="button"
+        variant={view === "grid" ? "secondary" : "ghost"}
+        size="icon-sm"
         className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-muted transition",
-          view === "table" && "bg-theme-soft text-theme",
-        )}
-        title="Xem dạng bảng"
-        aria-label="Xem dạng bảng"
-        onClick={() => onViewChange("table")}
-      >
-        <List className="size-4" />
-      </button>
-      <button
-        type="button"
-        className={cn(
-          "grid size-8 place-items-center rounded-[6px] text-muted transition",
-          view === "grid" && "bg-theme-soft text-theme",
+          "rounded-[8px] size-9",
+          view === "grid" ? "text-theme" : "text-muted",
         )}
         title="Xem dạng thống kê"
         aria-label="Xem dạng thống kê"
         onClick={() => onViewChange("grid")}
       >
         <Grid2X2 className="size-4" />
-      </button>
+      </Button>
+      <Button
+        type="button"
+        variant={view === "table" ? "secondary" : "ghost"}
+        size="icon-sm"
+        className={cn(
+          "rounded-[8px] size-9",
+          view === "table" ? "text-theme" : "text-muted",
+        )}
+        title="Xem dạng bảng"
+        aria-label="Xem dạng bảng"
+        onClick={() => onViewChange("table")}
+      >
+        <List className="size-4" />
+      </Button>
     </div>
   );
 }
 
 function ShiftHandoverDetailAside({
   activeSection,
+  finalizedTicketTypes,
   onSelect,
 }: {
   activeSection: ShiftHandoverDetailSection;
+  finalizedTicketTypes: ShiftAssign["ticketType"][];
   onSelect: (section: ShiftHandoverDetailSection) => void;
 }) {
   const handoverItems = shiftHandoverSections.filter((item) => item.group === "handover");
   const summaryItems = shiftHandoverSections.filter((item) => item.group === "summary");
 
   return (
-    <>
+    <nav className="flex flex-col gap-3 max-lg:flex-row max-lg:items-center max-lg:gap-2">
       <AsideGroup
         title="Chốt phương tiện ra / vào"
         items={handoverItems}
         activeSection={activeSection}
+        finalizedTicketTypes={finalizedTicketTypes}
         onSelect={onSelect}
       />
-      <div className="my-3 h-px bg-border" />
+      <div className="h-px bg-border max-lg:h-7 max-lg:w-px max-lg:shrink-0" />
       <AsideGroup
         title="Tổng hợp"
         items={summaryItems}
         activeSection={activeSection}
+        finalizedTicketTypes={finalizedTicketTypes}
         onSelect={onSelect}
       />
-    </>
+    </nav>
   );
 }
 
@@ -294,27 +381,31 @@ function AsideGroup({
   title,
   items,
   activeSection,
+  finalizedTicketTypes,
   onSelect,
 }: {
   title: string;
   items: ShiftHandoverSectionItem[];
   activeSection: ShiftHandoverDetailSection;
+  finalizedTicketTypes: ShiftAssign["ticketType"][];
   onSelect: (section: ShiftHandoverDetailSection) => void;
 }) {
   return (
-    <div>
-      <div className="px-2 py-1 text-xs font-bold uppercase leading-4 text-muted">
+    <div className="max-lg:flex max-lg:shrink-0 max-lg:items-center max-lg:gap-2">
+      <div className="px-2 py-1 text-xs font-bold uppercase leading-4 text-muted max-lg:hidden">
         {title}
       </div>
-      <div className="mt-1 space-y-1">
+      <div className="mt-1 space-y-1 max-lg:mt-0 max-lg:flex max-lg:items-center max-lg:gap-2 max-lg:space-y-0">
         {items.map((item) => {
           const active = item.id === activeSection;
+          const ticketType = shiftTicketSectionMap[item.id];
+          const finalized = ticketType ? finalizedTicketTypes.includes(ticketType) : false;
           return (
             <button
               key={item.id}
               type="button"
               className={cn(
-                "flex min-h-10 w-full items-center gap-2 rounded-[8px] px-3 text-left text-sm font-semibold transition",
+                "flex min-h-10 w-full items-center gap-2 rounded-[8px] px-3 text-left text-sm font-semibold transition max-lg:min-h-9 max-lg:w-auto max-lg:shrink-0 max-lg:whitespace-nowrap",
                 active
                   ? "bg-theme-soft text-theme"
                   : "text-muted hover:bg-badge-neutral-bg hover:text-strong",
@@ -322,7 +413,14 @@ function AsideGroup({
               onClick={() => onSelect(item.id)}
             >
               <i className={cn("text-base leading-none", item.icon)} aria-hidden="true" />
-              <span className="min-w-0 truncate">{item.label}</span>
+              <span className="min-w-0 flex-1 truncate">{item.label}</span>
+              {finalized ? (
+                <i
+                  className="bi bi-check-circle-fill ml-auto shrink-0 text-sm leading-none text-green"
+                  aria-label="Đã chốt"
+                  title="Đã chốt"
+                />
+              ) : null}
             </button>
           );
         })}

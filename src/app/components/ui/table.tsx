@@ -1,5 +1,6 @@
 ﻿import * as React from "react";
 import { Checkbox } from "@/app/components/ui/checkbox";
+import { Files } from "lucide-react";
 import { cn } from "@/lib/utils";
 export { TablePagination, useTablePagination } from "@/app/components/ui/pagination";
 
@@ -47,6 +48,11 @@ const TABLE_CHECKBOX_COLUMN_STYLE: React.CSSProperties = {
 interface DataTableProps extends React.HTMLAttributes<HTMLTableElement> {
   borderless?: boolean;
   containerClassName?: string;
+  empty?: boolean;
+  emptyColSpan?: number;
+  emptyDescription?: React.ReactNode;
+  emptyIcon?: React.ReactNode;
+  emptyTitle?: React.ReactNode;
   scrollClassName?: string;
   footer?: React.ReactNode;
   minWidth?: number | string;
@@ -59,6 +65,11 @@ export function DataTable({
   children,
   className,
   containerClassName,
+  empty = false,
+  emptyColSpan,
+  emptyDescription = "Chưa có dữ liệu để hiển thị",
+  emptyIcon,
+  emptyTitle = "No data available",
   scrollClassName,
   footer,
   minWidth = 1040,
@@ -67,6 +78,10 @@ export function DataTable({
   style,
   ...props
 }: DataTableProps) {
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+  const tableRef = React.useRef<HTMLTableElement>(null);
+  const [emptyViewportHeight, setEmptyViewportHeight] = React.useState(0);
+  const [scrollViewportWidth, setScrollViewportWidth] = React.useState(0);
   const [openActionMenuId, setInternalOpenActionMenuId] = React.useState<string | null>(null);
   const setOpenActionMenuId = React.useCallback((id: string | null) => {
     if (id && typeof window !== "undefined") {
@@ -93,7 +108,44 @@ export function DataTable({
     return () => window.removeEventListener(TABLE_ACTION_MENU_OPEN_EVENT, handleActionMenuOpen);
   }, []);
 
+  React.useEffect(() => {
+    const element = scrollRef.current;
+    if (!element) return;
+
+    const updateViewportSize = () => {
+      const headerHeight =
+        tableRef.current?.querySelector("thead")?.getBoundingClientRect().height ?? 0;
+      setScrollViewportWidth(element.clientWidth);
+      setEmptyViewportHeight(Math.max(260, element.clientHeight - headerHeight));
+    };
+    updateViewportSize();
+
+    const resizeObserver = new ResizeObserver(updateViewportSize);
+    resizeObserver.observe(element);
+    window.addEventListener("resize", updateViewportSize);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateViewportSize);
+    };
+  }, []);
+
   const checkboxColumnStyles = getCheckboxColumnStyles(children);
+  const columnCount = emptyColSpan ?? getTableColumnCount(children) ?? 1;
+  const tableChildren = empty
+    ? injectEmptyRowIntoBody(
+        children,
+        <TableEmptyRow colSpan={columnCount}>
+          <TableEmptyState
+            description={emptyDescription}
+            height={emptyViewportHeight}
+            icon={emptyIcon}
+            title={emptyTitle}
+            width={scrollViewportWidth}
+          />
+        </TableEmptyRow>,
+      )
+    : children;
 
   return (
     <TableActionMenuContext.Provider value={actionMenuContext}>
@@ -106,8 +158,12 @@ export function DataTable({
           containerClassName,
         )}
       >
-        <div className={cn("sp-table-scroll min-h-0 min-w-0 flex-1 overflow-auto", scrollClassName)}>
+        <div
+          ref={scrollRef}
+          className={cn("sp-table-scroll min-h-0 min-w-0 flex-1 overflow-auto", scrollClassName)}
+        >
           <table
+            ref={tableRef}
             className={cn("w-full table-fixed border-collapse text-left", className)}
             style={{
               minWidth: typeof minWidth === "number" ? `${minWidth}px` : minWidth,
@@ -122,7 +178,7 @@ export function DataTable({
                 ))}
               </colgroup>
             ) : null}
-            {children}
+            {tableChildren}
           </table>
         </div>
         {footer ? (
@@ -139,11 +195,57 @@ export function useTableActionMenu() {
   return React.useContext(TableActionMenuContext);
 }
 
+function TableEmptyRow({
+  children,
+  colSpan,
+}: {
+  children: React.ReactNode;
+  colSpan: number;
+}) {
+  return (
+    <tr>
+      <td colSpan={colSpan} className="bg-muted/5 p-0 align-middle">
+        {children}
+      </td>
+    </tr>
+  );
+}
+
+function TableEmptyState({
+  description,
+  height,
+  icon,
+  title,
+  width,
+}: {
+  description: React.ReactNode;
+  height: number;
+  icon?: React.ReactNode;
+  title: React.ReactNode;
+  width: number;
+}) {
+  return (
+    <div
+      className="sticky left-0 flex min-h-[260px] flex-col items-center justify-center px-6 py-10 text-center"
+      style={{
+        height: height ? `${height}px` : undefined,
+        width: width ? `${width}px` : "100%",
+      }}
+    >
+      <div className="grid size-30 place-items-center rounded-full bg-muted/10 text-muted">
+        {icon ?? <Files className="size-14 stroke-[1.5]" />}
+      </div>
+      <div className="mt-5 text-base font-semibold leading-6 text-strong">{title}</div>
+      <div className="mt-1 text-base font-regular leading-6 text-muted">{description}</div>
+    </div>
+  );
+}
+
 export function THead({ className, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
     <thead
       className={cn(
-        "sticky top-0 z-30 border-b border-border-strong bg-table-header text-md font-medium text-muted",
+        "sticky top-0 z-30 border-b border-border-strong bg-table-header text-md font-medium text-muted shadow-[0_1px_0_var(--sp-border-strong)]",
         className,
       )}
       {...props}
@@ -319,6 +421,25 @@ function getCheckboxColumnStyles(children: React.ReactNode): Array<React.CSSProp
   });
 
   return columnStyles;
+}
+
+function getTableColumnCount(children: React.ReactNode) {
+  const firstRowCells = getFirstTableRowCells(children);
+  if (!firstRowCells.length) return 0;
+
+  return firstRowCells.reduce((total, cell) => {
+    const props = cell.props as React.ThHTMLAttributes<HTMLTableCellElement> &
+      React.TdHTMLAttributes<HTMLTableCellElement>;
+    return total + (Number(props.colSpan) || 1);
+  }, 0);
+}
+
+function injectEmptyRowIntoBody(children: React.ReactNode, emptyRow: React.ReactNode) {
+  return React.Children.map(children, (child) => {
+    if (!React.isValidElement<{ children?: React.ReactNode }>(child)) return child;
+    if (child.type === TBody) return React.cloneElement(child, undefined, emptyRow);
+    return child;
+  });
 }
 
 function getFirstTableRowCells(children: React.ReactNode): React.ReactElement[] {

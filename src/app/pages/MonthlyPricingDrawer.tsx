@@ -1,6 +1,6 @@
 ﻿import * as React from "react";
 import { CommonDrawer } from "@/app/components/common/CommonDrawer";
-import { MainTableCard } from "@/app/components/common/MainTableCard";
+import { ComplexTableCard } from "@/app/components/common/ComplexTableCard";
 import { MonthlyVehicleFeeTable } from "@/app/components/setting/MonthlyVehicleFeeTable";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -11,12 +11,14 @@ import {
   type DynamicFormMode,
   type DynamicFormValues,
 } from "@/app/components/ui/dynamic-form";
+import { SearchInput } from "@/app/components/ui/input";
 import { toastMessage } from "@/app/components/ui/toast";
 import {
   monthlyVehicleFeeRows,
   type MonthlyPricingRow,
   type MonthlyVehicleFeeRow,
 } from "@/app/data/setting";
+import { useTableQuery } from "@/app/hooks/useTableQuery";
 import { Edit3, Plus, Save } from "lucide-react";
 
 type MonthlyPricingDrawerState = {
@@ -188,6 +190,12 @@ const vehicleFeeFields: DynamicFormField[] = [
   },
 ];
 
+const monthlyVehicleFeeSearchFields: Array<keyof MonthlyVehicleFeeRow> = [
+  "vehicleGroup",
+  "configName",
+  "price",
+];
+
 export function MonthlyPricingDrawer({
   state,
   rowsCount,
@@ -211,6 +219,10 @@ export function MonthlyPricingDrawer({
     values: createEmptyVehicleFeeValues(monthlyVehicleFeeRows),
   });
   const [feeErrors, setFeeErrors] = React.useState<DynamicFormErrors>({});
+  const feeQuery = useTableQuery({
+    rows: vehicleFees,
+    searchFields: monthlyVehicleFeeSearchFields,
+  });
 
   React.useEffect(() => {
     if (!state.open) return;
@@ -380,24 +392,31 @@ export function MonthlyPricingDrawer({
           />
 
           {state.mode === "view" ? (
-            <MainTableCard
+            <ComplexTableCard
               title="Bảng phí từng loại phương tiện"
-              showRefresh={false}
               titleClassName="text-lg font-bold leading-normal"
               actions={
-                <Button
-                  variant="outline-primary"
-                  size="md"
-                  onClick={() => openFeeDrawer("create")}
-                >
-                  <Plus />
-                  Thêm mới
-                </Button>
+                <>
+                  <SearchInput
+                    className="!block h-9 min-w-48 flex-1 rounded-lg md:w-65 md:flex-none"
+                    placeholder="Tìm kiếm..."
+                    value={feeQuery.search}
+                    onChange={(event) => feeQuery.setSearch(event.target.value)}
+                  />
+                  <Button
+                    variant="outline-primary"
+                    size="md"
+                    onClick={() => openFeeDrawer("create")}
+                  >
+                    <Plus />
+                    Thêm mới
+                  </Button>
+                </>
               }
               className="min-h-0 flex-1"
             >
               <MonthlyVehicleFeeTable
-                rows={vehicleFees}
+                rows={feeQuery.filteredRows}
                 onOpenDetail={(row) => openFeeDrawer("view", row)}
                 onEdit={(row) => openFeeDrawer("edit", row)}
                 onDelete={(row) => {
@@ -405,7 +424,7 @@ export function MonthlyPricingDrawer({
                   toastMessage.success("Đã xóa phí phương tiện", row.configName);
                 }}
               />
-            </MainTableCard>
+            </ComplexTableCard>
           ) : null}
         </div>
       </CommonDrawer>

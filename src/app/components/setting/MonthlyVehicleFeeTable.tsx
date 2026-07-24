@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
@@ -12,8 +11,8 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
+import { useTableState } from "@/app/hooks/useTableState";
 import type { MonthlyVehicleFeeRow } from "@/app/data/setting";
 import { Edit3, Trash2 } from "lucide-react";
 
@@ -28,16 +27,14 @@ export function MonthlyVehicleFeeTable({
   onEdit: (row: MonthlyVehicleFeeRow) => void;
   onDelete: (row: MonthlyVehicleFeeRow) => void;
 }) {
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const pagination = useTablePagination({ data: rows, defaultPageSize: 10 });
-  const visibleRows = pagination.paginatedData;
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
-  const partiallySelected =
-    visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const table = useTableState({ rows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
 
   return (
     <DataTable
+      borderless
+      empty={visibleRows.length === 0}
+      noRoundedTop
       minWidth={1120}
       footer={
         <TablePagination
@@ -53,15 +50,10 @@ export function MonthlyVehicleFeeTable({
         <TR>
           <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
             <TableCheckbox
-              checked={allSelected}
-              indeterminate={partiallySelected}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
               onCheckedChange={(checked) => {
-                const visibleIds = visibleRows.map((row) => row.id);
-                setSelectedRows((current) =>
-                  checked
-                    ? Array.from(new Set([...current, ...visibleIds]))
-                    : current.filter((id) => !visibleIds.includes(id)),
-                );
+                table.selectAllVisible(checked);
               }}
             />
           </TH>
@@ -76,7 +68,7 @@ export function MonthlyVehicleFeeTable({
       </THead>
       <TBody>
         {visibleRows.map((row) => {
-          const selected = selectedRows.includes(row.id);
+          const selected = table.selectedSet.has(row.id);
           const actions: TableActionDropdownItem[] = [
             {
               id: "edit",
@@ -104,9 +96,7 @@ export function MonthlyVehicleFeeTable({
                 <TableCheckbox
                   checked={selected}
                   onCheckedChange={(checked) => {
-                    setSelectedRows((current) =>
-                      checked ? [...current, row.id] : current.filter((id) => id !== row.id),
-                    );
+                  table.selectRow(row.id, checked);
                   }}
                 />
               </TD>

@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import { StatusBadge, type StatusBadgeConfig } from "@/app/components/ui/status-badge";
 import {
   DataTable,
@@ -9,14 +8,13 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
 } from "@/app/components/common/TableActionDropdown";
-import { vehicleMonthVehicles as vehicles } from "@/app/data/vehiclemonth";
-import type { MonthlyVehicleStatus } from "@/app/types";
+import { useTableState } from "@/app/hooks/useTableState";
+import type { MonthlyVehicleStatus, Vehicle } from "@/app/types";
 import { Lock, Pencil, Unlock } from "lucide-react";
 
 const ACTION_COLUMN_WIDTH = 56;
@@ -28,36 +26,18 @@ export const MONTHLY_VEHICLE_STATUS: Record<MonthlyVehicleStatus, StatusBadgeCon
 };
 
 export function MonthlyVehicleTable({
+  rows,
   onOpenDetail,
 }: {
+  rows: Vehicle[];
   onOpenDetail: (mode?: "view" | "edit") => void;
 }) {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const pagination = useTablePagination({ data: vehicles, defaultPageSize: 10 });
-  const visibleVehicles = pagination.paginatedData;
-  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const isAllSelected =
-    visibleVehicles.length > 0 && visibleVehicles.every((vehicle) => selectedSet.has(vehicle.id));
-  const isSomeSelected =
-    visibleVehicles.some((vehicle) => selectedSet.has(vehicle.id)) && !isAllSelected;
-
-  const handleSelectAll = (checked: boolean) => {
-    const visibleIds = visibleVehicles.map((vehicle) => vehicle.id);
-    setSelectedRows((current) =>
-      checked
-        ? Array.from(new Set([...current, ...visibleIds]))
-        : current.filter((rowId) => !visibleIds.includes(rowId)),
-    );
-  };
-
-  const handleSelectRow = (id: string, checked: boolean) => {
-    setSelectedRows((current) =>
-      checked ? [...current, id] : current.filter((rowId) => rowId !== id),
-    );
-  };
+  const table = useTableState({ rows, getRowId: (vehicle) => vehicle.id });
+  const { pagination, visibleRows: visibleVehicles } = table;
 
   return (
     <DataTable
+      empty={visibleVehicles.length === 0}
       minWidth={2640}
       footer={
         <TablePagination
@@ -75,12 +55,12 @@ export function MonthlyVehicleTable({
             sticky="left"
             stickyOffset={0}
             className="w-10 cursor-pointer"
-            onClick={() => handleSelectAll(!isAllSelected)}
+            onClick={() => table.selectAllVisible(!table.allSelected)}
           >
             <TableCheckbox
-              checked={isAllSelected}
-              indeterminate={isSomeSelected}
-              onCheckedChange={handleSelectAll}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
+              onCheckedChange={table.selectAllVisible}
               aria-label="Chọn tất cả"
             />
           </TH>
@@ -110,7 +90,7 @@ export function MonthlyVehicleTable({
       </THead>
       <TBody>
         {visibleVehicles.map((vehicle) => {
-          const selected = selectedSet.has(vehicle.id);
+          const selected = table.selectedSet.has(vehicle.id);
           const status = MONTHLY_VEHICLE_STATUS[vehicle.status];
           const actions: TableActionDropdownItem[] = [
             {
@@ -144,11 +124,11 @@ export function MonthlyVehicleTable({
                 stickyOffset={0}
                 className="w-10 cursor-pointer"
                 data-no-row-detail
-                onClick={() => handleSelectRow(vehicle.id, !selected)}
+                onClick={() => table.selectRow(vehicle.id, !selected)}
               >
                 <TableCheckbox
                   checked={selected}
-                  onCheckedChange={(checked) => handleSelectRow(vehicle.id, checked)}
+                  onCheckedChange={(checked) => table.selectRow(vehicle.id, checked)}
                   aria-label={`Chọn ${vehicle.lotCardNumber}`}
                 />
               </TD>

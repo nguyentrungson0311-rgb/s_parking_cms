@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import {
   DataTable,
   TableCheckbox,
@@ -8,13 +7,12 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
 } from "@/app/components/common/TableActionDropdown";
-import { overdueVehicles } from "@/app/data/overduevehicle";
+import { useTableState } from "@/app/hooks/useTableState";
 import type { OverdueVehicle } from "@/app/types";
 import { LogOut, Pencil } from "lucide-react";
 
@@ -23,33 +21,13 @@ const OVERDUE_VEHICLE_ACTIONS: TableActionDropdownItem[] = [
   { id: "release-vehicle", label: "Cho xe ra khỏi bãi", icon: <LogOut className="size-4" /> },
 ];
 
-export function OverdueVehicleTable() {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const pagination = useTablePagination({ data: overdueVehicles, defaultPageSize: 10 });
-  const visibleOverdueVehicles = pagination.paginatedData;
-  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const isAllSelected =
-    visibleOverdueVehicles.length > 0 && visibleOverdueVehicles.every((item) => selectedSet.has(item.id));
-  const isSomeSelected =
-    visibleOverdueVehicles.some((item) => selectedSet.has(item.id)) && !isAllSelected;
-
-  const handleSelectAll = (checked: boolean) => {
-    const visibleIds = visibleOverdueVehicles.map((item) => item.id);
-    setSelectedRows((current) =>
-      checked
-        ? Array.from(new Set([...current, ...visibleIds]))
-        : current.filter((rowId) => !visibleIds.includes(rowId)),
-    );
-  };
-
-  const handleSelectRow = (id: string, checked: boolean) => {
-    setSelectedRows((current) =>
-      checked ? [...current, id] : current.filter((rowId) => rowId !== id),
-    );
-  };
+export function OverdueVehicleTable({ rows }: { rows: OverdueVehicle[] }) {
+  const table = useTableState({ rows, getRowId: (item) => item.id });
+  const { pagination, visibleRows: visibleOverdueVehicles } = table;
 
   return (
     <DataTable
+      empty={visibleOverdueVehicles.length === 0}
       className="overdue-vehicle-table"
       minWidth="var(--overdue-vehicle-table-min-width, 2360px)"
       footer={
@@ -68,12 +46,12 @@ export function OverdueVehicleTable() {
             sticky="left"
             stickyOffset={0}
             className="w-10 cursor-pointer"
-            onClick={() => handleSelectAll(!isAllSelected)}
+            onClick={() => table.selectAllVisible(!table.allSelected)}
           >
             <TableCheckbox
-              checked={isAllSelected}
-              indeterminate={isSomeSelected}
-              onCheckedChange={handleSelectAll}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
+              onCheckedChange={table.selectAllVisible}
               aria-label="Chọn tất cả"
             />
           </TH>
@@ -96,7 +74,7 @@ export function OverdueVehicleTable() {
       </THead>
       <TBody>
         {visibleOverdueVehicles.map((item) => {
-          const selected = selectedSet.has(item.id);
+          const selected = table.selectedSet.has(item.id);
 
           return (
             <TR key={item.id} selected={selected}>
@@ -104,11 +82,11 @@ export function OverdueVehicleTable() {
                 sticky="left"
                 stickyOffset={0}
                 className="w-10 cursor-pointer"
-                onClick={() => handleSelectRow(item.id, !selected)}
+                onClick={() => table.selectRow(item.id, !selected)}
               >
                 <TableCheckbox
                   checked={selected}
-                  onCheckedChange={(checked) => handleSelectRow(item.id, checked)}
+                  onCheckedChange={(checked) => table.selectRow(item.id, checked)}
                   aria-label={`Chọn ${item.lotCardNumber}`}
                 />
               </TD>

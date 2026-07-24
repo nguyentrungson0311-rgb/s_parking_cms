@@ -12,9 +12,10 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
 import { InputDate, InputSelect, SearchInput, type DropdownOption } from "@/app/components/ui/input";
+import { useTableQuery } from "@/app/hooks/useTableQuery";
+import { useTableState } from "@/app/hooks/useTableState";
 import { cn } from "@/lib/utils";
 import { Download, Eye, FileText, ListFilter, Save, SearchX } from "lucide-react";
 
@@ -50,6 +51,13 @@ const reportPeriodOptions: DropdownOption[] = [
 ];
 
 const monthlyReportPageSizeOptions = [10, 30, 50, 100];
+const monthlyReportSearchFields: Array<keyof MonthlyReportRow> = [
+  "date",
+  "shift",
+  "startedAt",
+  "endedAt",
+  "totalIncome",
+];
 
 function formatCurrency(value: number) {
   return `${value.toLocaleString("vi-VN")}đ`;
@@ -154,7 +162,6 @@ function ReportNoDataState({
 
 export function MonthlyReport() {
   const rows = useMemo(() => makeMonthlyReportRows(), []);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [searchReport, setSearchReport] = useState("");
   const [activeReport, setActiveReport] = useState("monthly");
   const [hasFiltered, setHasFiltered] = useState(false);
@@ -162,15 +169,16 @@ export function MonthlyReport() {
   const [selectedDate, setSelectedDate] = useState("2026-07-01");
   const activeReportConfig = reportMenu.find((report) => report.id === activeReport) ?? reportMenu[0];
   const displayRows = activeReport === "monthly" ? rows : [];
-  const pagination = useTablePagination({
-    data: displayRows,
-    defaultPageSize: 30,
-    pageSizeOptions: monthlyReportPageSizeOptions,
+  const reportQuery = useTableQuery({
+    rows: displayRows,
+    searchFields: monthlyReportSearchFields,
   });
-  const visibleRows = pagination.paginatedData;
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
-  const partiallySelected = visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const table = useTableState({
+    rows: reportQuery.filteredRows,
+    getRowId: (row) => row.id,
+    defaultPageSize: 30,
+  });
+  const { pagination, visibleRows } = table;
   const filteredReports = reportMenu.filter((report) => {
     const keyword = searchReport.toLowerCase();
     return (
@@ -178,12 +186,6 @@ export function MonthlyReport() {
       report.description.toLowerCase().includes(keyword)
     );
   });
-
-  const toggleRow = (id: string, checked: boolean) => {
-    setSelectedRows((current) =>
-      checked ? [...current, id] : current.filter((selectedId) => selectedId !== id),
-    );
-  };
 
   return (
     <div className="sp-page">
@@ -193,16 +195,16 @@ export function MonthlyReport() {
       />
 
       <div className="sp-page-scroll sp-page-scroll-fill">
-        <section className="grid h-full min-h-0 min-w-0 grid-cols-[300px_minmax(0,1fr)] gap-4 overflow-hidden max-xl:grid-cols-1">
-          <aside className="sp-card-borderless flex min-h-0 flex-col overflow-hidden rounded-[14px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-3 shadow-[var(--shadow-panel)]">
+        <section className="grid h-full min-h-0 min-w-0 grid-cols-[300px_minmax(0,1fr)] gap-4 overflow-hidden max-xl:grid-cols-1 max-xl:grid-rows-[auto_minmax(0,1fr)] max-xl:content-start max-xl:gap-2">
+          <aside className="sp-card-borderless flex min-h-0 flex-col overflow-hidden rounded-[14px] border border-[var(--sp-border)] bg-[var(--sp-surface)] p-3 shadow-[var(--shadow-panel)] max-xl:p-2">
             <SearchInput
-              className="h-10 shrink-0"
+              className="h-10 shrink-0 max-xl:hidden"
               placeholder="Tìm kiếm báo cáo..."
               value={searchReport}
               onChange={(event) => setSearchReport(event.target.value)}
             />
 
-            <div className="mt-3 grid min-h-0 gap-1 overflow-y-auto">
+            <div className="mt-3 grid min-h-0 gap-1 overflow-y-auto max-xl:mt-0 max-xl:flex max-xl:gap-2 max-xl:overflow-x-auto max-xl:overflow-y-hidden">
               {filteredReports.map((report, index) => {
                 const active = activeReport === report.id;
 
@@ -213,29 +215,29 @@ export function MonthlyReport() {
                     onClick={() => {
                       setActiveReport(report.id);
                       setHasFiltered(false);
-                      setSelectedRows([]);
+                      table.setSelectedRows([]);
                       pagination.setPage(1);
                     }}
                     className={cn(
-                      "relative flex w-full gap-3 rounded-md border-l-4 px-3 py-3 text-left transition-colors",
+                      "relative flex w-full gap-3 rounded-md border-l-4 px-3 py-3 text-left transition-colors max-xl:min-h-9 max-xl:w-auto max-xl:shrink-0 max-xl:items-center max-xl:border-l-0 max-xl:border-b-2 max-xl:px-3 max-xl:py-2",
                       active
-                        ? "border-l-[var(--sp-theme)] bg-[var(--accent)]"
-                        : "border-l-transparent hover:bg-[var(--accent)]",
+                        ? "border-l-[var(--sp-theme)] bg-[var(--accent)] max-xl:border-b-[var(--sp-theme)]"
+                        : "border-l-transparent hover:bg-[var(--accent)] max-xl:border-b-transparent",
                     )}
                   >
-                    <span className="w-5 shrink-0 pt-0.5 text-sm font-medium text-[var(--sp-muted)]">
+                    <span className="w-5 shrink-0 pt-0.5 text-sm font-medium text-[var(--sp-muted)] max-xl:hidden">
                       {index + 1}
                     </span>
                     <span className="min-w-0">
                       <span
                         className={cn(
-                          "block truncate text-base font-medium",
+                          "block truncate text-base font-medium max-xl:max-w-[150px] max-xl:text-sm",
                           active ? "text-[var(--sp-theme)]" : "text-[var(--sp-strong)]",
                         )}
                       >
                         {report.title}
                       </span>
-                      <span className="mt-1 block truncate text-sm text-[var(--sp-muted)]">
+                      <span className="mt-1 block truncate text-sm text-[var(--sp-muted)] max-xl:hidden">
                         {report.description}
                       </span>
                     </span>
@@ -249,6 +251,8 @@ export function MonthlyReport() {
             <MainTableCard
               className="monthly-report-card gap-2 p-3"
               title={activeReportConfig.title}
+              searchValue={reportQuery.search}
+              onSearchChange={reportQuery.setSearch}
               actions={
                 <>
                   <InputSelect
@@ -267,14 +271,14 @@ export function MonthlyReport() {
                     size="md"
                     onClick={() => {
                       setHasFiltered(true);
-                      setSelectedRows([]);
+                      table.setSelectedRows([]);
                       pagination.setPage(1);
                     }}
                   >
                     <ListFilter />
                     Lọc
                   </Button>
-                  <Button size="md" disabled={!hasFiltered || displayRows.length === 0}>
+                  <Button size="md" disabled={!hasFiltered || reportQuery.filteredRows.length === 0}>
                     <Save />
                     Lưu
                   </Button>
@@ -286,7 +290,7 @@ export function MonthlyReport() {
                   title={activeReportConfig.title}
                   description={activeReportConfig.description}
                 />
-              ) : displayRows.length === 0 ? (
+              ) : reportQuery.filteredRows.length === 0 ? (
                 <ReportNoDataState title={activeReportConfig.title} />
               ) : (
                 <div className="flex h-full min-h-0 min-w-0 flex-col">
@@ -307,15 +311,10 @@ export function MonthlyReport() {
                 <TR>
                   <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
                     <TableCheckbox
-                      checked={allSelected}
-                      indeterminate={partiallySelected}
+                      checked={table.allSelected}
+                      indeterminate={table.partiallySelected}
                       onCheckedChange={(checked) => {
-                        const visibleIds = visibleRows.map((row) => row.id);
-                        setSelectedRows((current) =>
-                          checked
-                            ? Array.from(new Set([...current, ...visibleIds]))
-                            : current.filter((id) => !visibleIds.includes(id)),
-                        );
+                        table.selectAllVisible(checked);
                       }}
                     />
                   </TH>
@@ -335,14 +334,14 @@ export function MonthlyReport() {
               </THead>
               <TBody>
                 {visibleRows.map((row, index) => {
-                  const selected = selectedRows.includes(row.id);
+                  const selected = table.selectedSet.has(row.id);
 
                   return (
                     <TR key={row.id} selected={selected}>
                       <TD className="text-center" sticky="left" stickyOffset={0}>
                         <TableCheckbox
                           checked={selected}
-                          onCheckedChange={(checked) => toggleRow(row.id, checked)}
+                          onCheckedChange={(checked) => table.selectRow(row.id, checked)}
                         />
                       </TD>
                       <TD sticky="left" stickyOffset={TABLE_SELECTION_COLUMN_WIDTH}>{pagination.startIndex + index + 1}</TD>

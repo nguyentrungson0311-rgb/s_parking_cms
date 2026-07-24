@@ -4,6 +4,7 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import {
   DataTable,
+  TablePagination,
   TBody,
   TD,
   TH,
@@ -11,6 +12,7 @@ import {
   TR,
 } from "@/app/components/ui/table";
 import type { ShiftSlotRow, ShiftSlotView } from "@/app/data/shifthandoverdetail";
+import { useTableState } from "@/app/hooks/useTableState";
 import type { ShiftAssign } from "@/app/types";
 import { cn } from "@/lib/utils";
 import { BarChart3, FileCheck2 } from "lucide-react";
@@ -91,19 +93,22 @@ export function ShiftHandoverProfitSummary({
     <div className="flex h-full min-h-0 flex-col gap-4 overflow-auto">
       <div className="flex shrink-0 items-center gap-3">
         <BarChart3 className="size-5 text-theme" />
-        <h3 className="text-[20px] font-semibold text-strong">
+        <h3 className="min-w-0 text-[clamp(16px,4vw,20px)] font-semibold leading-6 text-strong">
           Tổng hợp lợi nhuận theo loại xe đã ra
         </h3>
       </div>
 
-      <div className="grid shrink-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid shrink-0 grid-cols-2 gap-2 sm:gap-3 md:grid-cols-2 xl:grid-cols-4">
         {summaryRows.map((row) => (
-          <div key={row.vehicleType} className="rounded-md border border-border bg-surface p-4">
-            <div className="text-sm font-semibold text-muted">{row.vehicleType}</div>
-            <div className="mt-3 text-2xl font-semibold text-strong">
+          <div
+            key={row.vehicleType}
+            className="min-w-0 rounded-md border border-border bg-surface p-3 sm:p-4"
+          >
+            <div className="min-w-0 truncate text-xs font-semibold text-muted sm:text-sm">{row.vehicleType}</div>
+            <div className="mt-2 min-w-0 truncate text-[clamp(18px,5vw,30px)] font-semibold leading-tight text-strong sm:mt-3">
               {formatCurrency(row.revenue)}
             </div>
-            <div className="mt-2 text-sm font-medium text-muted">
+            <div className="mt-2 min-w-0 truncate text-xs font-medium text-muted sm:text-sm">
               {formatNumber(row.count)} xe đã ra
             </div>
           </div>
@@ -114,7 +119,7 @@ export function ShiftHandoverProfitSummary({
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
           <div>
             <div className="text-sm font-semibold text-muted">Tổng lợi nhuận tạm tính</div>
-            <div className="mt-2 text-2xl font-semibold text-strong">
+            <div className="mt-2 min-w-0 truncate text-[clamp(20px,6vw,30px)] font-semibold leading-tight text-strong">
               {formatCurrency(totalRevenue)}
             </div>
           </div>
@@ -150,8 +155,22 @@ function ProfitEmptyState() {
 }
 
 function FinalizedExitedVehicleTable({ rows }: { rows: ShiftAssign[] }) {
+  const table = useTableState({ rows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
+
   return (
-    <DataTable borderless minWidth={1160}>
+    <DataTable
+      minWidth={1160}
+      footer={
+        <TablePagination
+          page={pagination.page}
+          pageSize={pagination.pageSize}
+          totalItems={pagination.totalItems}
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.setPageSize}
+        />
+      }
+    >
       <THead>
         <TR>
           <TH className="w-[120px] pl-4">Mã(#)</TH>
@@ -165,14 +184,14 @@ function FinalizedExitedVehicleTable({ rows }: { rows: ShiftAssign[] }) {
         </TR>
       </THead>
       <TBody>
-        {rows.length === 0 ? (
+        {visibleRows.length === 0 ? (
           <TR>
             <TD colSpan={8} className="h-24 text-center text-muted">
               Chưa có xe đã ra trong các nhóm vé đã chốt.
             </TD>
           </TR>
         ) : (
-          rows.map((row) => (
+          visibleRows.map((row) => (
             <TR key={`profit-${row.id}`}>
               <TD className="pl-4 font-medium text-strong">{row.lotCardNumber}</TD>
               <TD>{row.ticketType}</TD>
@@ -198,7 +217,7 @@ function FinalizedExitedVehicleTable({ rows }: { rows: ShiftAssign[] }) {
 
 function SlotOverviewTable({ rows }: { rows: ShiftSlotRow[] }) {
   return (
-    <DataTable borderless noRoundedTop noRoundedLeft minWidth={1120}>
+    <DataTable borderless empty={rows.length === 0} noRoundedTop noRoundedLeft minWidth={1120}>
       <THead>
         <TR>
           <TH className="w-[180px] pl-4">Loại phương tiện</TH>
@@ -267,7 +286,7 @@ function SlotStatisticGrid({
   onApplyTotalSlots: (id: string, totalSlots: number) => void;
 }) {
   return (
-    <div className="grid h-full min-h-0 gap-4 overflow-auto pr-1 md:grid-cols-2">
+    <div className="grid h-full min-h-0 w-full min-w-0 max-w-full auto-rows-auto grid-cols-1 items-start gap-3 overflow-auto md:auto-rows-fr md:grid-cols-2 md:items-stretch md:gap-4">
       {rows.map((row) => (
         <SlotStatisticCard key={row.id} row={row} onApplyTotalSlots={onApplyTotalSlots} />
       ))}
@@ -295,16 +314,16 @@ function SlotStatisticCard({
   };
 
   return (
-    <div className="flex min-h-[260px] flex-col rounded-md border border-border bg-surface p-4">
+    <div className="flex h-auto w-full min-w-0 max-w-full flex-col self-start overflow-visible rounded-md border border-border bg-surface p-3 md:h-full md:min-h-[260px] md:self-stretch md:overflow-hidden md:p-4">
       <div className="flex items-center gap-3">
-        <span className={cn("grid size-10 shrink-0 place-items-center rounded-[8px]", row.toneClass)}>
+        <span className={cn("grid size-9 shrink-0 place-items-center rounded-[8px] md:size-10", row.toneClass)}>
           <SlotVehicleIcon icon={row.icon} />
         </span>
-        <h4 className="truncate text-xl font-semibold text-strong">{row.vehicleType}</h4>
+        <h4 className="min-w-0 truncate text-[clamp(18px,5vw,20px)] font-semibold leading-6 text-strong">{row.vehicleType}</h4>
       </div>
 
       <Input
-        className="mt-4 h-12 rounded-[8px]"
+        className="mt-3 h-10 rounded-[8px] md:mt-4 md:h-12"
         inputMode="numeric"
         placeholder="Tổng Slot mới"
         value={draftTotalSlots}
@@ -313,21 +332,21 @@ function SlotStatisticCard({
           if (event.key === "Enter") handleApply();
         }}
         rightAction={
-          <Button variant="outline-primary" size="md" className="h-9 shrink-0" onClick={handleApply}>
+          <Button variant="outline-primary" size="md" className="h-8 shrink-0 px-3 md:h-9" onClick={handleApply}>
             Áp dụng
           </Button>
         }
       />
 
-      <div className="mt-5 grid min-h-0 flex-1 grid-cols-[minmax(112px,0.85fr)_minmax(0,1fr)] items-center gap-4 sm:grid-cols-[minmax(128px,0.85fr)_minmax(0,1fr)]">
-        <div className="grid place-items-center">
+      <div className="mt-3 grid w-full min-w-0 grid-cols-[minmax(88px,96px)_minmax(0,1fr)] items-center gap-3 md:mt-5 md:flex-1 md:grid-cols-[minmax(128px,0.85fr)_minmax(0,1fr)] md:gap-4">
+        <div className="grid min-w-0 place-items-center">
           <div
-            className="grid size-28 place-items-center rounded-full sm:size-32 2xl:size-36"
+            className="grid size-24 place-items-center rounded-full md:size-32 2xl:size-36"
             style={{
               background: `conic-gradient(${row.fillColor} ${filledPercent}%, ${row.softColor} 0)`,
             }}
           >
-            <div className="grid size-18 place-items-center rounded-full bg-surface text-center sm:size-22 2xl:size-24">
+            <div className="grid size-16 place-items-center rounded-full bg-surface text-center md:size-22 2xl:size-24">
               <div>
                 <div className="text-lg font-semibold text-strong">{filledPercent}%</div>
                 <div className="text-xs font-bold uppercase text-muted">Lấp đầy</div>
@@ -336,7 +355,7 @@ function SlotStatisticCard({
           </div>
         </div>
 
-        <div className="min-w-0 space-y-2.5">
+        <div className="w-full min-w-0 space-y-1.5 md:space-y-2.5">
           <SlotMetric label="Tổng Slot hiện tại" value={row.totalSlots} strong />
           <SlotMetric label="Vé tháng" value={row.monthlyInside} />
           <SlotMetric label="Vé ngày" value={row.dailyInside} />
@@ -359,11 +378,11 @@ function SlotMetric({
   tone?: "available";
 }) {
   return (
-    <div className="grid min-h-8 grid-cols-[minmax(0,1fr)_auto] items-center gap-4">
-      <span className="min-w-0 truncate text-base font-regular leading-6 text-text">{label}</span>
+    <div className="grid min-h-7 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 md:min-h-8 md:gap-4">
+      <span className="min-w-0 truncate text-sm font-regular leading-5 text-text md:text-base md:leading-6">{label}</span>
       <span
         className={cn(
-          "shrink-0 text-right text-base font-semibold leading-6",
+          "shrink-0 text-right text-sm font-semibold leading-5 md:text-base md:leading-6",
           tone === "available" ? "text-green" : strong ? "text-strong" : "text-text",
         )}
       >

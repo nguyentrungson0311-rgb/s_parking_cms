@@ -26,6 +26,8 @@ export function MainTableCard({
   refreshLabel = "Làm mới",
   showRefresh = true,
   searchPlaceholder = "Tìm kiếm...",
+  searchValue,
+  onSearchChange,
   actions,
   filterFields,
   filterValues,
@@ -43,6 +45,8 @@ export function MainTableCard({
   refreshLabel?: string;
   showRefresh?: boolean;
   searchPlaceholder?: string;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
   actions?: MainTableCardActions;
   filterFields?: FilterPanelField[];
   filterValues?: FilterPanelValues;
@@ -134,6 +138,8 @@ export function MainTableCard({
             <SearchInput
               className="sp-table-card-search !block h-9 min-w-40 flex-1 rounded-lg md:w-65 md:flex-none"
               placeholder={searchPlaceholder}
+              value={searchValue}
+              onChange={(event) => onSearchChange?.(event.target.value)}
             />
             {hasFilter || actions ? actionContent : null}
           </div>

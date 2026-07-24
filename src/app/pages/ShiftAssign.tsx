@@ -19,6 +19,11 @@ import { toastMessage } from "@/app/components/ui/toast";
 import { ShiftHandoverBatchTable } from "@/app/components/vehicles/ShiftHandoverBatchTable";
 import { shiftAssigns } from "@/app/data/shiftassign";
 import { shiftHandoverBatches } from "@/app/data/shifthandover";
+import {
+  matchesTableFilterValue,
+  parseTableDate,
+  useTableQuery,
+} from "@/app/hooks/useTableQuery";
 import { ShiftHandoverDetail } from "@/app/pages/ShiftHandoverDetail";
 import type { ShiftHandoverBatch } from "@/app/types";
 import { MoreVertical, Plus, Save } from "lucide-react";
@@ -64,6 +69,13 @@ const shiftHandoverDefaultFilters = {
   shift: "all",
   status: "all",
 };
+
+const shiftHandoverSearchFields: Array<keyof ShiftHandoverBatch> = [
+  "code",
+  "name",
+  "shift",
+  "date",
+];
 
 const shiftHandoverFields: DynamicFormField[] = [
   {
@@ -115,6 +127,24 @@ export function ShiftAssign() {
   const [selectedBatch, setSelectedBatch] = useState<ShiftHandoverBatch | null>(null);
   const [values, setValues] = useState<DynamicFormValues>(createEmptyValues());
   const [errors, setErrors] = useState<DynamicFormErrors>({});
+  const query = useTableQuery({
+    rows,
+    defaultFilters: shiftHandoverDefaultFilters,
+    searchFields: shiftHandoverSearchFields,
+    filter: (row, filters) => {
+      if (!matchesTableFilterValue(row.shift, filters.shift)) return false;
+      if (!matchesTableFilterValue(row.status, filters.status)) return false;
+      if (filters.dateRange) {
+        const date = parseTableDate(row.date);
+        const fromDate = parseTableDate(filters.fromDate);
+        const toDate = parseTableDate(filters.toDate);
+        if (fromDate && (!date || date < fromDate)) return false;
+        if (toDate && (!date || date > toDate)) return false;
+      }
+
+      return true;
+    },
+  });
 
   const openCreateDrawer = () => {
     setValues(createEmptyValues());
@@ -190,8 +220,13 @@ export function ShiftAssign() {
             <MainTableCard
               title="Danh sách giao ca"
               searchPlaceholder="Tìm mã giao ca, tên đợt giao ca..."
+              searchValue={query.search}
+              onSearchChange={query.setSearch}
               filterFields={shiftHandoverFilterFields}
+              filterValues={query.filters}
               defaultFilterValues={shiftHandoverDefaultFilters}
+              onFilterApply={query.setFilters}
+              onFilterReset={query.resetFilters}
               actions={({ filterButton }) => (
                 <>
                   {filterButton}
@@ -205,7 +240,7 @@ export function ShiftAssign() {
                 </>
               )}
             >
-              <ShiftHandoverBatchTable rows={rows} onOpenDetail={setSelectedBatch} />
+              <ShiftHandoverBatchTable rows={query.filteredRows} onOpenDetail={setSelectedBatch} />
             </MainTableCard>
           )}
         </section>

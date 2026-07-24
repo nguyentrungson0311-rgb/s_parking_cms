@@ -347,7 +347,8 @@
     padding: 12px;
   }
 
-  .sp-card-borderless h2 {
+  .sp-card-borderless h2,
+  .sp-table-card-title-row h2 {
     font-size: 16px;
     line-height: 22px;
   }

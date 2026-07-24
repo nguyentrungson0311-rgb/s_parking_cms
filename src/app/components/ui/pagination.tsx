@@ -99,7 +99,7 @@ export function TablePagination({
             <Button
               variant="outline"
               size="sm"
-              className="size-8 p-0"
+              className="size-6 p-0 rounded-[8px]"
               disabled={safePage === 1 || isShowingAll}
               onClick={() => onPageChange?.(safePage - 1)}
             >
@@ -111,7 +111,7 @@ export function TablePagination({
                   item === "ellipsis" ? (
                     <span
                       key={`ellipsis-${index}`}
-                      className="grid h-8 min-w-8 place-items-center bg-surface text-xs font-extrabold text-muted"
+                      className="grid h-7 min-w-7 place-items-center bg-surface text-xs font-extrabold text-muted"
                     >
                       ...
                     </span>
@@ -121,8 +121,8 @@ export function TablePagination({
                       type="button"
                       className={
                         item === safePage
-                          ? "grid h-8 min-w-9 place-items-center rounded-[8px] border border-theme bg-theme px-2 font-extrabold text-white"
-                          : "grid h-8 min-w-9 place-items-center rounded-[8px] border border-border bg-surface px-2 font-medium text-muted hover:bg-table-row-hover"
+                          ? "grid h-7 min-w-7 place-items-center rounded-[8px] border border-theme bg-theme px-2 font-extrabold text-white"
+                          : "grid h-7 min-w-7 place-items-center rounded-[8px] border border-border bg-surface px-2 font-medium text-muted hover:bg-table-row-hover"
                       }
                       onClick={() => onPageChange?.(item)}
                     >
@@ -135,7 +135,7 @@ export function TablePagination({
             <Button
               variant="outline"
               size="sm"
-              className="size-8 p-0"
+              className="size-6 p-0 rounded-[8px]"
               disabled={safePage === totalPages || isShowingAll}
               onClick={() => onPageChange?.(safePage + 1)}
             >

@@ -1,8 +1,15 @@
 import { MainTableCard } from "@/app/components/common/MainTableCard";
-import type { FilterPanelField } from "@/app/components/common/FilterPanel";
+import type { FilterPanelField, FilterPanelValues } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { ExternalCardTable } from "@/app/components/vehicles/ExternalCardTable";
+import { externalCards } from "@/app/data/externalcard";
+import {
+  matchesTableFilterValue,
+  parseTableDate,
+  useTableQuery,
+} from "@/app/hooks/useTableQuery";
+import type { ExternalCard as ExternalCardRow } from "@/app/types";
 import { MoreVertical, Plus } from "lucide-react";
 
 const externalCardFilterFields: FilterPanelField[] = [
@@ -64,13 +71,55 @@ const externalCardFilterFields: FilterPanelField[] = [
   },
 ];
 
-const externalCardDefaultFilters = {
+const externalCardDefaultFilters: FilterPanelValues = {
   cardType: "all",
   vehicleType: "all",
-  status: "active",
+  status: "all",
 };
 
+const externalCardSearchFields: Array<keyof ExternalCardRow> = [
+  "lotCardNumber",
+  "cardNumber",
+  "owner",
+  "phone",
+  "plate",
+  "vehicleName",
+  "vehicleType",
+];
+
 export function ExternalCard() {
+  const query = useTableQuery({
+    rows: externalCards,
+    defaultFilters: externalCardDefaultFilters,
+    searchFields: externalCardSearchFields,
+    filter: (row, filters) => {
+      if (!matchesTableFilterValue("external", filters.cardType)) return false;
+      if (!matchesTableFilterValue(row.vehicleType, filters.vehicleType)) return false;
+      if (!matchesTableFilterValue(row.status, filters.status)) return false;
+      if (typeof filters.cardCode === "string" && filters.cardCode.trim()) {
+        const keyword = filters.cardCode.toLowerCase();
+        if (
+          !row.cardNumber.toLowerCase().includes(keyword) &&
+          !row.lotCardNumber.toLowerCase().includes(keyword)
+        ) {
+          return false;
+        }
+      }
+      if (typeof filters.plate === "string" && filters.plate.trim()) {
+        if (!row.plate.toLowerCase().includes(filters.plate.toLowerCase())) return false;
+      }
+      if (filters.enableTime) {
+        const deliveredAt = parseTableDate(row.deliveredAt);
+        const fromDate = parseTableDate(filters.fromDate);
+        const toDate = parseTableDate(filters.toDate);
+        if (fromDate && (!deliveredAt || deliveredAt < fromDate)) return false;
+        if (toDate && (!deliveredAt || deliveredAt > toDate)) return false;
+      }
+
+      return true;
+    },
+  });
+
   return (
     <div className="sp-page">
       <Topbar
@@ -83,8 +132,13 @@ export function ExternalCard() {
           <MainTableCard
             title="Danh sách vé ngoài"
             searchPlaceholder="Tìm số thẻ, họ tên, số điện thoại, biển số..."
+            searchValue={query.search}
+            onSearchChange={query.setSearch}
             filterFields={externalCardFilterFields}
+            filterValues={query.filters}
             defaultFilterValues={externalCardDefaultFilters}
+            onFilterApply={query.setFilters}
+            onFilterReset={query.resetFilters}
             actions={({ filterButton }) => (
               <>
                 {filterButton}
@@ -98,7 +152,7 @@ export function ExternalCard() {
               </>
             )}
           >
-            <ExternalCardTable />
+            <ExternalCardTable rows={query.filteredRows} />
           </MainTableCard>
         </section>
       </div>

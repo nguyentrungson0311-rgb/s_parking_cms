@@ -1,8 +1,15 @@
 import { MainTableCard } from "@/app/components/common/MainTableCard";
-import type { FilterPanelField } from "@/app/components/common/FilterPanel";
+import type { FilterPanelField, FilterPanelValues } from "@/app/components/common/FilterPanel";
 import { Topbar } from "@/app/components/layout/Topbar";
 import { Button } from "@/app/components/ui/button";
 import { MonthlyVehicleTable } from "@/app/components/vehicles/MonthlyVehicleTable";
+import { vehicleMonthVehicles } from "@/app/data/vehiclemonth";
+import {
+  matchesTableFilterValue,
+  parseTableDate,
+  useTableQuery,
+} from "@/app/hooks/useTableQuery";
+import type { Vehicle } from "@/app/types";
 import { MoreVertical, Plus } from "lucide-react";
 
 const monthlyVehicleFilterFields: FilterPanelField[] = [
@@ -64,11 +71,20 @@ const monthlyVehicleFilterFields: FilterPanelField[] = [
   },
 ];
 
-const monthlyVehicleDefaultFilters = {
+const monthlyVehicleDefaultFilters: FilterPanelValues = {
   cardType: "all",
   vehicleType: "all",
-  status: "active",
+  status: "all",
 };
+
+const monthlyVehicleSearchFields: Array<keyof Vehicle> = [
+  "lotCardNumber",
+  "plate",
+  "owner",
+  "phone",
+  "vehicleName",
+  "vehicleType",
+];
 
 export function MonthlyVehicle({
   title,
@@ -77,6 +93,32 @@ export function MonthlyVehicle({
   title: string;
   onOpenDetail: (mode?: "view" | "edit") => void;
 }) {
+  const query = useTableQuery({
+    rows: vehicleMonthVehicles,
+    defaultFilters: monthlyVehicleDefaultFilters,
+    searchFields: monthlyVehicleSearchFields,
+    filter: (row, filters) => {
+      if (!matchesTableFilterValue("monthly", filters.cardType)) return false;
+      if (!matchesTableFilterValue(row.vehicleType, filters.vehicleType)) return false;
+      if (!matchesTableFilterValue(row.status, filters.status)) return false;
+      if (typeof filters.cardCode === "string" && filters.cardCode.trim()) {
+        if (!row.lotCardNumber.toLowerCase().includes(filters.cardCode.toLowerCase())) return false;
+      }
+      if (typeof filters.plate === "string" && filters.plate.trim()) {
+        if (!row.plate.toLowerCase().includes(filters.plate.toLowerCase())) return false;
+      }
+      if (filters.enableTime) {
+        const deliveredAt = parseTableDate(row.deliveredAt);
+        const fromDate = parseTableDate(filters.fromDate);
+        const toDate = parseTableDate(filters.toDate);
+        if (fromDate && (!deliveredAt || deliveredAt < fromDate)) return false;
+        if (toDate && (!deliveredAt || deliveredAt > toDate)) return false;
+      }
+
+      return true;
+    },
+  });
+
   return (
     <div className="sp-page">
       <Topbar
@@ -89,8 +131,13 @@ export function MonthlyVehicle({
           <MainTableCard
             title="Danh sách vé tháng"
             searchPlaceholder="Tìm số thẻ (LOT), biển số, họ tên, số điện thoại..."
+            searchValue={query.search}
+            onSearchChange={query.setSearch}
             filterFields={monthlyVehicleFilterFields}
+            filterValues={query.filters}
             defaultFilterValues={monthlyVehicleDefaultFilters}
+            onFilterApply={query.setFilters}
+            onFilterReset={query.resetFilters}
             actions={({ filterButton }) => (
               <>
                 {filterButton}
@@ -104,7 +151,7 @@ export function MonthlyVehicle({
               </>
             )}
           >
-            <MonthlyVehicleTable onOpenDetail={onOpenDetail} />
+            <MonthlyVehicleTable rows={query.filteredRows} onOpenDetail={onOpenDetail} />
           </MainTableCard>
         </section>
       </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { StatusBadge, type StatusBadgeConfig } from "@/app/components/ui/status-badge";
 import {
   DataTable,
@@ -9,12 +9,12 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
 } from "@/app/components/common/TableActionDropdown";
+import { useTableState } from "@/app/hooks/useTableState";
 import type { ShiftAssign, ShiftAssignStatus } from "@/app/types";
 import { AlertTriangle, LogOut, Pencil } from "lucide-react";
 
@@ -47,36 +47,16 @@ export function ShiftAssignTable({
   embedded?: boolean;
   onOpenDetail?: (item: ShiftAssign) => void;
 }) {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const filteredRows = useMemo(
     () => (ticketType ? rows.filter((item) => item.ticketType === ticketType) : rows),
     [rows, ticketType],
   );
-  const pagination = useTablePagination({ data: filteredRows, defaultPageSize: 10 });
-  const visibleShiftAssigns = pagination.paginatedData;
-  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const isAllSelected =
-    visibleShiftAssigns.length > 0 && visibleShiftAssigns.every((item) => selectedSet.has(item.id));
-  const isSomeSelected =
-    visibleShiftAssigns.some((item) => selectedSet.has(item.id)) && !isAllSelected;
-
-  const handleSelectAll = (checked: boolean) => {
-    const visibleIds = visibleShiftAssigns.map((item) => item.id);
-    setSelectedRows((current) =>
-      checked
-        ? Array.from(new Set([...current, ...visibleIds]))
-        : current.filter((rowId) => !visibleIds.includes(rowId)),
-    );
-  };
-
-  const handleSelectRow = (id: string, checked: boolean) => {
-    setSelectedRows((current) =>
-      checked ? [...current, id] : current.filter((rowId) => rowId !== id),
-    );
-  };
+  const table = useTableState({ rows: filteredRows, getRowId: (item) => item.id });
+  const { pagination, visibleRows: visibleShiftAssigns } = table;
 
   return (
     <DataTable
+      empty={visibleShiftAssigns.length === 0}
       className="shift-assign-table"
       borderless={embedded}
       noRoundedTop={embedded}
@@ -98,12 +78,12 @@ export function ShiftAssignTable({
             sticky="left"
             stickyOffset={0}
             className="w-10 text-center"
-            onClick={() => handleSelectAll(!isAllSelected)}
+            onClick={() => table.selectAllVisible(!table.allSelected)}
           >
             <TableCheckbox
-              checked={isAllSelected}
-              indeterminate={isSomeSelected}
-              onCheckedChange={handleSelectAll}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
+              onCheckedChange={table.selectAllVisible}
               aria-label="Chọn tất cả"
             />
           </TH>
@@ -130,7 +110,7 @@ export function ShiftAssignTable({
       </THead>
       <TBody>
         {visibleShiftAssigns.map((item) => {
-          const selected = selectedSet.has(item.id);
+          const selected = table.selectedSet.has(item.id);
           const status = SHIFT_ASSIGN_STATUS[item.status];
           return (
             <TR
@@ -144,11 +124,11 @@ export function ShiftAssignTable({
                 stickyOffset={0}
                 className="w-10 text-center"
                 data-no-row-detail
-                onClick={() => handleSelectRow(item.id, !selected)}
+                onClick={() => table.selectRow(item.id, !selected)}
               >
                 <TableCheckbox
                   checked={selected}
-                  onCheckedChange={(checked) => handleSelectRow(item.id, checked)}
+                  onCheckedChange={(checked) => table.selectRow(item.id, checked)}
                   aria-label={`Chọn ${item.lotCardNumber}`}
                 />
               </TD>

@@ -5,9 +5,11 @@ import {  TableActionDropdown,  type TableActionDropdownItem,} from "@/app/compo
 import { Button } from "@/app/components/ui/button";
 import {  DynamicForm,  type DynamicFormErrors,  type DynamicFormField,  type DynamicFormMode,  type DynamicFormValues,} from "@/app/components/ui/dynamic-form";
 import { StatusBadge } from "@/app/components/ui/status-badge";
-import {  DataTable,  TableCheckbox,  TablePagination,  TBody,  TD,  TH,  THead,  TR,  useTablePagination,} from "@/app/components/ui/table";
+import {  DataTable,  TableCheckbox,  TablePagination,  TBody,  TD,  TH,  THead,  TR,} from "@/app/components/ui/table";
 import { toastMessage } from "@/app/components/ui/toast";
 import {  vehicleGroupRows,  type VehicleGroupSettingRow,} from "@/app/data/setting";
+import { useTableQuery } from "@/app/hooks/useTableQuery";
+import { useTableState } from "@/app/hooks/useTableState";
 import { Edit3, Plus, Trash2 } from "lucide-react";
 
 const vehicleTypeOptions = [
@@ -57,6 +59,14 @@ const vehicleGroupFields: DynamicFormField[] = [
   },
 ];
 
+const vehicleGroupSearchFields: Array<keyof VehicleGroupSettingRow | ((row: VehicleGroupSettingRow) => string)> = [
+  "name",
+  "createdBy",
+  "updatedBy",
+  "status",
+  (row) => row.vehicleTypes.join(" "),
+];
+
 type VehicleGroupFormState = {
   open: boolean;
   mode: DynamicFormMode;
@@ -72,19 +82,18 @@ export function VehicleGroupDrawer({
   onClose: () => void;
 }) {
   const [rows, setRows] = React.useState<VehicleGroupSettingRow[]>(vehicleGroupRows);
-  const [selectedRows, setSelectedRows] = React.useState<number[]>([]);
   const [formState, setFormState] = React.useState<VehicleGroupFormState>({
     open: false,
     mode: "create",
     values: createEmptyValues(vehicleGroupRows.length + 1),
   });
   const [formErrors, setFormErrors] = React.useState<DynamicFormErrors>({});
-  const pagination = useTablePagination({ data: rows, defaultPageSize: 10 });
-  const visibleRows = pagination.paginatedData;
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedRows.includes(row.id));
-  const partiallySelected =
-    visibleRows.some((row) => selectedRows.includes(row.id)) && !allSelected;
+  const query = useTableQuery({
+    rows,
+    searchFields: vehicleGroupSearchFields,
+  });
+  const table = useTableState({ rows: query.filteredRows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
 
   const openForm = (mode: DynamicFormMode, row?: VehicleGroupSettingRow) => {
     setFormState({
@@ -103,7 +112,7 @@ export function VehicleGroupDrawer({
 
   const handleDelete = (row: VehicleGroupSettingRow) => {
     setRows((current) => current.filter((item) => item.id !== row.id));
-    setSelectedRows((current) => current.filter((id) => id !== row.id));
+    table.selectRow(row.id, false);
     toastMessage.success("Đã xóa cấu hình nhóm xe", row.name);
   };
 
@@ -175,6 +184,8 @@ export function VehicleGroupDrawer({
          >
         <MainTableCard
           title="Danh sách nhóm xe"
+          searchValue={query.search}
+          onSearchChange={query.setSearch}
           actions={
             <Button size="md" onClick={() => openForm("create")}>
               <Plus />
@@ -184,6 +195,7 @@ export function VehicleGroupDrawer({
           className="h-full"
         >
           <DataTable
+            empty={visibleRows.length === 0}
             minWidth={1520}
             footer={
               <TablePagination
@@ -199,15 +211,10 @@ export function VehicleGroupDrawer({
               <TR>
                 <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
                   <TableCheckbox
-                    checked={allSelected}
-                    indeterminate={partiallySelected}
+                    checked={table.allSelected}
+                    indeterminate={table.partiallySelected}
                     onCheckedChange={(checked) => {
-                      const visibleIds = visibleRows.map((row) => row.id);
-                      setSelectedRows((current) =>
-                        checked
-                          ? Array.from(new Set([...current, ...visibleIds]))
-                          : current.filter((id) => !visibleIds.includes(id)),
-                      );
+                      table.selectAllVisible(checked);
                     }}
                   />
                 </TH>
@@ -224,7 +231,7 @@ export function VehicleGroupDrawer({
             </THead>
             <TBody>
               {visibleRows.map((row) => {
-                const selected = selectedRows.includes(row.id);
+                const selected = table.selectedSet.has(row.id);
                 const actions: TableActionDropdownItem[] = [
                   {
                     id: "edit",
@@ -252,11 +259,7 @@ export function VehicleGroupDrawer({
                       <TableCheckbox
                         checked={selected}
                         onCheckedChange={(checked) => {
-                          setSelectedRows((current) =>
-                            checked
-                              ? [...current, row.id]
-                              : current.filter((id) => id !== row.id),
-                          );
+                          table.selectRow(row.id, checked);
                         }}
                       />
                     </TD>

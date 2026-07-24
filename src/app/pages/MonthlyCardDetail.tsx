@@ -205,18 +205,18 @@ export function MonthlyCardDetail({
 
 function TicketSummary() {
   return (
-    <div className="flex items-center gap-6 border-b border-[var(--sp-border)] bg-[var(--sp-surface)] p-4 sm:p-4">
-      <div className="relative h-[100px] w-[226px] shrink-0 overflow-hidden rounded-[14px] bg-[linear-gradient(135deg,var(--color-brand-gradient-start),var(--color-brand-gradient-end))] p-4 text-white shadow-[var(--shadow-brand)]">
+    <div className="grid min-w-0 gap-3 border-b border-[var(--sp-border)] bg-[var(--sp-surface)] p-4 sm:flex sm:items-center sm:gap-6">
+      <div className="relative h-[94px] w-full min-w-0 overflow-hidden rounded-[14px] bg-[linear-gradient(135deg,var(--color-brand-gradient-start),var(--color-brand-gradient-end))] p-4 text-white shadow-[var(--shadow-brand)] sm:h-[100px] sm:w-[226px] sm:shrink-0">
         <Ticket className="absolute right-4 top-4 size-5" />
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-3">
-          <div className="mono truncate text-xl font-medium text-[var(--sp-strong)]">TKT-2407-089</div>
+        <div className="flex min-w-0 items-center gap-2 [&>span:last-child]:shrink-0">
+          <div className="mono min-w-0 flex-1 truncate text-lg font-medium text-[var(--sp-strong)] sm:text-xl">TKT-2407-089</div>
           <Badge variant="success">Vé tháng</Badge>
         </div>
 
-        <div className="mt-4 grid grid-cols-3 gap-6 text-base">
+        <div className="mt-3 grid min-w-0 grid-cols-3 gap-2 text-sm sm:mt-4 sm:gap-6 sm:text-base">
           <Meta label="Hiệu lực" value="01/07 - 31/07" />
           <Meta label="Khu vực" value="Bãi xe B2" />
           <Meta label="Thanh toán" value="Đã thu" />
@@ -228,9 +228,9 @@ function TicketSummary() {
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div>
-      <div className="text-sm font-regular text-[var(--sp-muted)]">{label}</div>
-      <div className="mt-1 font-semibold text-[var(--sp-strong)]">{value}</div>
+    <div className="min-w-0">
+      <div className="truncate text-xs font-regular text-[var(--sp-muted)] sm:text-sm">{label}</div>
+      <div className="mt-1 min-w-0 truncate font-semibold leading-5 text-[var(--sp-strong)]">{value}</div>
     </div>
   );
 }

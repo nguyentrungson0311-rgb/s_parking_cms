@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import {
   TableActionDropdown,
   type TableActionDropdownItem,
@@ -13,8 +12,8 @@ import {
   TH,
   THead,
   TR,
-  useTablePagination,
 } from "@/app/components/ui/table";
+import { useTableState } from "@/app/hooks/useTableState";
 import type { ShiftHandoverBatch, ShiftHandoverStatus } from "@/app/types";
 import { LockKeyhole, LockOpen, Pencil, Trash2 } from "lucide-react";
 
@@ -34,26 +33,12 @@ export function ShiftHandoverBatchTable({
   rows: ShiftHandoverBatch[];
   onOpenDetail?: (item: ShiftHandoverBatch) => void;
 }) {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const pagination = useTablePagination({ data: rows, defaultPageSize: 10 });
-  const visibleRows = pagination.paginatedData;
-  const selectedSet = useMemo(() => new Set(selectedRows), [selectedRows]);
-  const allSelected =
-    visibleRows.length > 0 && visibleRows.every((row) => selectedSet.has(row.id));
-  const partiallySelected =
-    visibleRows.some((row) => selectedSet.has(row.id)) && !allSelected;
-
-  const handleSelectAll = (checked: boolean) => {
-    const visibleIds = visibleRows.map((row) => row.id);
-    setSelectedRows((current) =>
-      checked
-        ? Array.from(new Set([...current, ...visibleIds]))
-        : current.filter((id) => !visibleIds.includes(id)),
-    );
-  };
+  const table = useTableState({ rows, getRowId: (row) => row.id });
+  const { pagination, visibleRows } = table;
 
   return (
     <DataTable
+      empty={visibleRows.length === 0}
       minWidth={1580}
       footer={
         <TablePagination
@@ -69,9 +54,9 @@ export function ShiftHandoverBatchTable({
         <TR>
           <TH className="w-10 text-center" sticky="left" stickyOffset={0}>
             <TableCheckbox
-              checked={allSelected}
-              indeterminate={partiallySelected}
-              onCheckedChange={handleSelectAll}
+              checked={table.allSelected}
+              indeterminate={table.partiallySelected}
+              onCheckedChange={table.selectAllVisible}
             />
           </TH>
           <TH className="w-[150px]">Mã giao ca</TH>
@@ -96,7 +81,7 @@ export function ShiftHandoverBatchTable({
       </THead>
       <TBody>
         {visibleRows.map((row) => {
-          const selected = selectedSet.has(row.id);
+          const selected = table.selectedSet.has(row.id);
           const status = SHIFT_HANDOVER_STATUS[row.status];
 
           return (
@@ -110,9 +95,7 @@ export function ShiftHandoverBatchTable({
                 <TableCheckbox
                   checked={selected}
                   onCheckedChange={(checked) => {
-                    setSelectedRows((current) =>
-                      checked ? [...current, row.id] : current.filter((id) => id !== row.id),
-                    );
+                    table.selectRow(row.id, checked);
                   }}
                 />
               </TD>
